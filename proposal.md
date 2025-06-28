@@ -28,12 +28,13 @@ To support the new features, the existing Go data structures will need significa
     *   `MonitoredAspect string`: "location", "race", or "profession".
     *   `AssociatedID string`: The ID of the location, race, or profession this owner monitors.
     *   `AvailableTools []OwnerTool`: Tools this Owner's controlling LLM can invoke.
+    *   `MemoriesAboutPlayers map[string][]string`: An Owner's private memories about players.
 *   **New `OwnerTool` Struct:**
-    *   `Name string`: Unique identifier for the tool (e.g., "gift_item", "heal_player").
+    *   `Name string`: Unique identifier for the tool (e.g., "gift_item", "heal_player", "OWNER_memorize_dependables").
     *   `Description string`: For the LLM to understand the tool's purpose.
     *   `Parameters map[string]interface{}`: JSON schema-like definition of parameters the tool expects.
 *   **New `NPCTool` Struct:** (Mirrors `OwnerTool` for NPC-specific actions)
-    *   `Name string`: Unique identifier for the tool (e.g., "examine_item", "pickup_item").
+    *   `Name string`: Unique identifier for the tool (e.g., "examine_item", "pickup_item", "NPC_memorize").
     *   `Description string`: For the LLM to understand the tool's purpose.
     *   `Parameters map[string]interface{}`: JSON schema-like definition of parameters the tool expects.
 *   **`Room` Struct:**
@@ -143,36 +144,39 @@ This is the most critical and complex part. We will need to:
 NPCs will become dynamic, AI-driven entities whose behavior is shaped by their knowledge and experiences:
 
 *   **AI-Driven Behavior:**
-    *   When a player interacts with an NPC (e.g., `talk`, `attack`, `say`), or when an NPC needs to react to an event (e.g., player entering room), a prompt will be constructed for the LLM.
-    *   The prompt will include the relevant **Lore**, the NPC's `PersonalityPrompt`, `MemoriesAboutPlayers`, and `AvailableTools`.
-    *   The LLM's response will drive the NPC's narrative and actions (via tool calls), ensuring they are consistent with their background and the world's history.
-*   **Memory System (`MemoriesAboutPlayers`):**
-    *   When a player performs a significant action (e.g., fails a password, attacks an NPC), relevant Owners/NPCs can use a `TOOL_MEMORIZE` to record this information in the NPC's `MemoriesAboutPlayers`.
-    *   These memories will be prepended to future AI prompts for that NPC when interacting with the specific player, influencing the NPC's behavior.
-*   **Item Interaction Tools:**
-    *   Implement Go functions for `TOOL_NPC_EXAMINE_ITEM_IN_ROOM`, `TOOL_NPC_PICK_UP_ITEM_FROM_ROOM`, `TOOL_NPC_DROP_ITEM_TO_ROOM`, `TOOL_GIFT_ITEM`.
-    *   These tools will allow NPCs to dynamically interact with items in their environment and with the player's inventory.
+    *   When a player interacts with an NPC, a prompt will be constructed for the LLM.
+    *   The prompt will include the relevant **Lore**, the NPC's `PersonalityPrompt`, its personal `MemoriesAboutPlayers`, and `AvailableTools`.
+    *   The LLM's response will drive the NPC's narrative and actions.
+*   **Personal Memory:**
+    *   NPCs are primarily responsible for their own memories. They can use an `NPC_memorize` tool to record their direct interactions with a player. This forms their personal opinion.
 
 ## 6. Sentient Owners
 
 Owners are higher-level, LLM-controlled entities that act as guardians or influencers over their domains:
 
-*   **Role and Scope:**
-    *   Owners will be associated with `MonitoredAspect`s (locations, races, professions, factions).
-    *   When a player enters a room, changes race/profession, or performs an action relevant to an Owner's domain, the relevant Owner(s) will be prompted.
-*   **Tool Invocation:**
-    *   Owners will have their own `AvailableTools` (e.g., `TOOL_GIFT_ITEM`, `TOOL_HEAL_PLAYER`, `TOOL_SMITE_PLAYER`, `TOOL_BLESS_PLAYER`).
-    *   Their LLM responses can include tool calls to affect the player or the world, acting in accordance with their knowledge and personality.
-*   **Prayer Mechanism:**
-    *   Implement a `pray [message]` command.
-    *   This command will identify all relevant Owners (based on player's current room's location owner, player's race owner, player's profession owner).
-    *   Each relevant Owner will receive an AI prompt with the player's prayer and context, allowing them to respond and potentially use tools based on their divine or authoritative perspective, shaped by the lore.
+*   **Role and Scope:** Owners monitor broad aspects like locations, races, or factions.
+*   **Tool Invocation:** Owners have powerful tools to influence the world (e.g., `TOOL_GIFT_ITEM`, `TOOL_SMITE_PLAYER`).
+*   **Prayer Mechanism:** The `pray` command prompts relevant Owners, who can respond based on their lore-informed perspective.
 
-## 7. Reputation System
+## 7. Reputation and Multi-Layered Memory System
 
-*   **Owner-to-NPC Communication:** When an Owner "observes" a significant player action, it can use `TOOL_MEMORIZE` to update the memories of its associated NPCs. This creates a top-down reputation flow.
-*   **Directives and Impressions:** Furthermore, Owners can actively send directives about a player to their subordinate NPCs, especially for players who have gained significant favor or disfavor. This can be achieved via a new tool, `TOOL_IMPRINT_MEMORY_ON_NPC(npc_id, player_id, memory_string)`, allowing an Owner's opinion to directly and immediately influence an NPC's behavior.
-*   **NPC Reaction:** An NPC's behavior will be influenced by its own memories and the impressions passed down from its Owners. An NPC might treat a player well based on personal interaction, only to turn hostile after receiving a negative directive from its Owner.
+To create a complex social dynamic, memory and reputation will operate on three distinct levels:
+
+*   **Level 1: NPC Personal Memory:**
+    *   An NPC's direct experiences with a player.
+    *   Managed via an `NPC_memorize` tool available only to that NPC.
+    *   Forms the basis of the NPC's private, firsthand opinion of a player.
+
+*   **Level 2: Owner Private Memory:**
+    *   An Owner's private thoughts and long-term judgments about a player.
+    *   Managed via an `OWNER_memorize` tool available only to that Owner. This tool writes to the Owner's own `MemoriesAboutPlayers` map.
+    *   This allows an Owner to maintain a secret opinion of a player, which might differ from its public actions or the information it shares with its subordinates.
+
+*   **Level 3: Owner-Broadcasted Memory (Reputation):**
+    *   An Owner's public declarations or official stance on a player.
+    *   Managed via a special tool: `OWNER_memorize_dependables(player_id, memory_string)`.
+    *   When used, this tool iterates through all NPCs associated with that Owner and imprints the `memory_string` into their `MemoriesAboutPlayers` map.
+    *   This is how factions announce heroes or villains. An NPC will receive this as a directive, which will influence its behavior, potentially overriding its personal experiences. For example, an NPC who personally likes a player might turn cold after their Owner broadcasts a message that the player is now an enemy of the faction.
 
 ## 8. Skills as Tools
 
@@ -200,40 +204,37 @@ Owners are higher-level, LLM-controlled entities that act as guardians or influe
 
 ## 10. Concurrency Considerations
 
-*   **Go Routines for AI Calls:** When multiple AI interactions are triggered (e.g., a player's prayer prompts multiple Owners, or a `say` command prompts multiple NPCs), use Go routines (`go func()`) and `sync.WaitGroup` or channels to dispatch these LLM API calls concurrently.
-*   **State Management:** Ensure all shared game state (players, rooms, NPCs, items) is protected by mutexes (`sync.Mutex` or `sync.RWMutex`) to prevent race conditions during concurrent updates from AI tool calls or player actions.
+*   **Go Routines for AI Calls:** When multiple AI interactions are triggered, use Go routines (`go func()`) and `sync.WaitGroup` or channels to dispatch these LLM API calls concurrently.
+*   **State Management:** Ensure all shared game state is protected by mutexes (`sync.Mutex` or `sync.RWMutex`) to prevent race conditions.
 
 ## 11. Web Server (Admin & Editor)
 
 *   The existing lightweight web server will be maintained.
 *   It will primarily serve administrative functions, including:
     *   Displaying server statistics.
-    *   Providing a web-based editor for game content (rooms, items, NPCs, Owners, and **Lore**). This editor will allow for easy modification and creation of game entities and their foundational knowledge without direct file manipulation.
+    *   Providing a web-based editor for game content (rooms, items, NPCs, Owners, and **Lore**).
 
 ## 12. High-Level Implementation Phases
 
 1.  **Phase 1: Core Architecture & Data Structures:**
-    *   Implement all new and expanded data structures (`Lore`, `NPCTool`, `OwnerTool`, etc.).
-    *   Implement the **Server-Side Presentation Layer**, including the internal semantic JSON format and the initial **Telnet Renderer**.
+    *   Implement all new and expanded data structures, including the `MemoriesAboutPlayers` map on the `Owner` struct.
+    *   Implement the **Server-Side Presentation Layer** and the initial **Telnet Renderer**.
 2.  **Phase 2: Lore System & Editor:**
     *   Build the backend logic to store and retrieve lore entries.
     *   Update the web editor to allow for creating and editing lore.
-3.  **Phase 3: Basic LLM Integration & Tool Calling:**
+3.  **Phase 3: Basic LLM Integration & Multi-Layered Memory:**
     *   Implement the Go LLM API client and the tool dispatcher.
-    *   Implement the logic to inject lore into the LLM prompt.
-    *   Test with a simple "pray" command.
-4.  **Phase 4: Sentient NPCs & Basic Tools:**
+    *   Implement the `NPC_memorize`, `OWNER_memorize`, and `OWNER_memorize_dependables` tools.
+    *   Test the full memory pipeline.
+4.  **Phase 4: Sentient NPCs & Owners:**
     *   Integrate NPC AI responses with `talk` and `say`.
-    *   Implement `TOOL_MEMORIZE` and item interaction tools.
-5.  **Phase 5: Advanced Owner Logic & Reputation:**
-    *   Implement the full `Owner` logic.
-    *   Implement the `TOOL_IMPRINT_MEMORY_ON_NPC` and other Owner tools.
-    *   Integrate active skills.
-6.  **Phase 6: Advanced Mechanics & Concurrency:**
+    *   Implement the full `Owner` logic and prayer mechanism.
+5.  **Phase 5: Advanced Mechanics & Skills:**
     *   Implement locking, mapping, and conditional AI delivery.
+    *   Integrate active and passive skills.
+6.  **Phase 6: Concurrency & Final Polish:**
     *   Refactor LLM calls for concurrency and review mutex usage.
-7.  **Phase 7: Client Implementation & Final Polish:**
-    *   Build out any additional client renderers (e.g., for a web client).
+    *   Build out any additional client renderers.
     *   Finalize the web editor and polish the overall experience.
 
 This proposal outlines a comprehensive path to evolve the GoMUD into a more dynamic and intelligent multi-user dungeon experience.
