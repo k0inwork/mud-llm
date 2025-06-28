@@ -139,7 +139,27 @@ This is the most critical and complex part. We will need to:
     *   It will then map the `tool_name` to a corresponding Go function (e.g., `handleGiftItem(player, itemID)`, `handleHealPlayer(player, amount)`).
     *   These Go functions will directly modify the game state.
 
-## 5. Sentient NPCs
+## 5. LLM Performance and Caching Strategy
+
+To ensure the MUD is responsive and cost-effective, we will not send the entire prompt to the LLM API on every player action. Large, semi-static parts of the prompt will be cached.
+
+*   **Static vs. Dynamic Content:**
+    *   **Static/Cached Content:** Lore, Personality Prompt, Tool Definitions.
+    *   **Semi-Static Content:** Memories (updated occasionally).
+    *   **Dynamic Content:** The player's immediate action and its context.
+
+*   **Implementation via System Prompts:**
+    *   We will leverage API features like "System Prompts" where available. A large "base prompt" containing all static and semi-static content will be constructed and sent once at the beginning of an interaction.
+    *   This base prompt establishes the full context for the NPC/Owner.
+    *   On subsequent turns, only the new, dynamic content (the player's action) is sent, making the API calls lightweight and fast.
+
+*   **Cache Invalidation:** The cached base prompt for an entity will be invalidated and rebuilt only when its underlying static or semi-static data changes. This happens when:
+    *   A memory is added to the entity (e.g., via `NPC_memorize` or `OWNER_memorize_dependables`).
+    *   An administrator modifies relevant lore, a personality prompt, or tool definitions in the web editor.
+
+This strategy minimizes data transfer and token processing, leading to faster response times and lower operational costs.
+
+## 6. Sentient NPCs
 
 NPCs will become dynamic, AI-driven entities whose behavior is shaped by their knowledge and experiences:
 
@@ -150,7 +170,7 @@ NPCs will become dynamic, AI-driven entities whose behavior is shaped by their k
 *   **Personal Memory:**
     *   NPCs are primarily responsible for their own memories. They can use an `NPC_memorize` tool to record their direct interactions with a player. This forms their personal opinion.
 
-## 6. Sentient Owners
+## 7. Sentient Owners
 
 Owners are higher-level, LLM-controlled entities that act as guardians or influencers over their domains:
 
@@ -158,7 +178,7 @@ Owners are higher-level, LLM-controlled entities that act as guardians or influe
 *   **Tool Invocation:** Owners have powerful tools to influence the world (e.g., `TOOL_GIFT_ITEM`, `TOOL_SMITE_PLAYER`).
 *   **Prayer Mechanism:** The `pray` command prompts relevant Owners, who can respond based on their lore-informed perspective.
 
-## 7. Reputation and Multi-Layered Memory System
+## 8. Reputation and Multi-Layered Memory System
 
 To create a complex social dynamic, memory and reputation will operate on three distinct levels:
 
@@ -176,9 +196,9 @@ To create a complex social dynamic, memory and reputation will operate on three 
     *   An Owner's public declarations or official stance on a player.
     *   Managed via a special tool: `OWNER_memorize_dependables(player_id, memory_string)`.
     *   When used, this tool iterates through all NPCs associated with that Owner and imprints the `memory_string` into their `MemoriesAboutPlayers` map.
-    *   This is how factions announce heroes or villains. An NPC will receive this as a directive, which will influence its behavior, potentially overriding its personal experiences. For example, an NPC who personally likes a player might turn cold after their Owner broadcasts a message that the player is now an enemy of the faction.
+    *   This is how factions announce heroes or villains. An NPC will receive this as a directive, which will influence its behavior, potentially overriding its personal experiences.
 
-## 8. Skills as Tools
+## 9. Skills as Tools
 
 *   **Active Skills:**
     *   These will be defined as `OwnerTool` or `NPCTool` types.
@@ -188,7 +208,7 @@ To create a complex social dynamic, memory and reputation will operate on three 
     *   These will not be explicit tool calls but rather modifiers to player stats or contextual information provided to the LLM.
     *   For example, a "City Lore" passive skill might mean the LLM receives additional context about city events when the player is in a city, leading to more informed NPC/Owner responses.
 
-## 9. Game Mechanics Enhancements
+## 10. Game Mechanics Enhancements
 
 *   **Locking Mechanism:**
     *   Exits can be `IsLocked` and require a `KeyID`.
@@ -200,32 +220,31 @@ To create a complex social dynamic, memory and reputation will operate on three 
     *   For Telnet clients, a simple ASCII art map could be rendered based on this data.
 *   **Conditional AI Delivery:**
     *   AI responses (narrative and tool effects) can be conditional based on player ID or room ID.
-    *   This means the server will hold onto AI responses and only deliver them to the client (or apply effects) if the conditions are met (e.g., player is in the correct room for an NPC's reaction). This will be crucial for managing concurrent AI responses.
+    *   This means the server will hold onto AI responses and only deliver them to the client (or apply effects) if the conditions are met.
 
-## 10. Concurrency Considerations
+## 11. Concurrency Considerations
 
 *   **Go Routines for AI Calls:** When multiple AI interactions are triggered, use Go routines (`go func()`) and `sync.WaitGroup` or channels to dispatch these LLM API calls concurrently.
 *   **State Management:** Ensure all shared game state is protected by mutexes (`sync.Mutex` or `sync.RWMutex`) to prevent race conditions.
 
-## 11. Web Server (Admin & Editor)
+## 12. Web Server (Admin & Editor)
 
 *   The existing lightweight web server will be maintained.
 *   It will primarily serve administrative functions, including:
     *   Displaying server statistics.
     *   Providing a web-based editor for game content (rooms, items, NPCs, Owners, and **Lore**).
 
-## 12. High-Level Implementation Phases
+## 13. High-Level Implementation Phases
 
 1.  **Phase 1: Core Architecture & Data Structures:**
-    *   Implement all new and expanded data structures, including the `MemoriesAboutPlayers` map on the `Owner` struct.
+    *   Implement all new and expanded data structures.
     *   Implement the **Server-Side Presentation Layer** and the initial **Telnet Renderer**.
 2.  **Phase 2: Lore System & Editor:**
     *   Build the backend logic to store and retrieve lore entries.
     *   Update the web editor to allow for creating and editing lore.
-3.  **Phase 3: Basic LLM Integration & Multi-Layered Memory:**
-    *   Implement the Go LLM API client and the tool dispatcher.
-    *   Implement the `NPC_memorize`, `OWNER_memorize`, and `OWNER_memorize_dependables` tools.
-    *   Test the full memory pipeline.
+3.  **Phase 3: LLM Integration & Caching:**
+    *   Implement the Go LLM API client, the tool dispatcher, and the **prompt caching strategy**.
+    *   Implement the multi-layered memory tools (`NPC_memorize`, `OWNER_memorize`, `OWNER_memorize_dependables`).
 4.  **Phase 4: Sentient NPCs & Owners:**
     *   Integrate NPC AI responses with `talk` and `say`.
     *   Implement the full `Owner` logic and prayer mechanism.
