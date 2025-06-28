@@ -1,42 +1,34 @@
-# Phase 2 Design: Lore System & Editor
+# Phase 2 Design: Lore & Data Logic
 
 ## 1. Objectives
 
-This phase focuses on building the systems required to create, store, and manage the world's lore. The goal is to empower game administrators with the ability to build a rich, detailed world without modifying any Go code. This involves creating the backend storage solution for lore and building the web-based editor to manage it.
+This phase focuses on solidifying the Data Access Layer (DAL) and ensuring efficient retrieval of all game data, particularly lore, for use by the LLM and core game logic. While basic CRUD operations were established in Phase 1 for the web editor, Phase 2 deepens the DAL's capabilities to handle complex queries and optimize data access.
 
 ## 2. Key Components to be Implemented
 
-### 2.1. Lore Storage
+### 2.1. Enhanced Data Access Layer (DAL)
 
-*   **Storage Mechanism:** A file-based storage system will be used for simplicity and ease of editing outside the game. All lore entries will be stored in a structured format (e.g., a single JSON file `world_lore.json` or a directory of individual files). This can be upgraded to a database in the future if needed.
-*   **Data Access Layer:** A Go module will be created to handle all interactions with the lore storage. It will provide functions to:
-    *   `GetLoreByID(id string) (*Lore, error)`
-    *   `GetLoreByType(type string) ([]*Lore, error)`
-    *   `CreateLore(lore *Lore) error`
-    *   `UpdateLore(lore *Lore) error`
-    *   `DeleteLore(id string) error`
-*   **Lore Caching:** An in-memory cache will be implemented to hold lore entries, reducing the need to read from disk on every request. The cache will be invalidated and reloaded whenever a change is made via the web editor.
+*   **Advanced Query Methods:** The DAL will be extended to provide more sophisticated query capabilities beyond basic CRUD, enabling efficient retrieval of specific data sets required by the game engine and LLM integration.
+    *   `GetLoreByTypeAndAssociatedID(loreType string, associatedID string) ([]*Lore, error)`: For retrieving specific scoped lore.
+    *   `GetAllGlobalLore() ([]*Lore, error)`: For retrieving all global lore.
+    *   `GetNPCsByRoom(roomID string) ([]*NPC, error)`
+    *   `GetNPCsByOwner(ownerID string) ([]*NPC, error)`
+    *   `GetOwnersByMonitoredAspect(aspectType string, associatedID string) ([]*Owner, error)`
+    *   `GetItemsInRoom(roomID string) ([]*Item, error)`
+    *   `GetPlayerInventory(playerID string) ([]*Item, error)`
+*   **In-Memory Caching within DAL:** A caching layer will be implemented directly within the DAL for frequently accessed, relatively static data (e.g., lore entries, tool definitions, static entity properties). This will minimize direct database hits during gameplay.
+    *   The cache will be populated on server startup.
+    *   Cache invalidation mechanisms will be implemented, triggered by updates or deletions of data via the web editor (Phase 1).
 
-### 2.2. Web Server & Editor
+### 2.2. Data Loading and Initialization
 
-*   **Basic Web Server:** The existing lightweight web server in `main.go` will be expanded. It will serve static HTML/CSS/JS files for the editor interface.
-*   **HTTP API Endpoints:** The web server will expose a set of RESTful API endpoints for managing lore. These endpoints will use the Data Access Layer to interact with the lore storage.
-    *   `GET /api/lore`: Returns all lore entries.
-    *   `GET /api/lore/:id`: Returns a single lore entry.
-    *   `POST /api/lore`: Creates a new lore entry.
-    *   `PUT /api/lore/:id`: Updates an existing lore entry.
-    *   `DELETE /api/lore/:id`: Deletes a lore entry.
-*   **Editor Front-End:** A simple, single-page web application will be created.
-    *   It will be built using standard HTML, CSS, and vanilla JavaScript to keep it lightweight.
-    *   The interface will provide a form for creating and editing lore entries, including fields for `ID`, `Type`, `AssociatedID`, and `Content`.
-    *   It will display a list of all existing lore entries, with buttons to edit or delete them.
-    *   All interactions with the server will happen via asynchronous JavaScript calls (e.g., using `fetch`) to the API endpoints.
+*   The server startup sequence will be refined to ensure all necessary game data (rooms, items, NPCs, Owners, Lore) is loaded from the database into memory (or the DAL's cache) upon application launch.
+*   Error handling for database connection and initial data loading will be robust.
 
 ## 3. Acceptance Criteria
 
-1.  The server can successfully read from and write to the `world_lore.json` file (or other chosen file structure).
-2.  The in-memory lore cache is successfully populated on startup and invalidated on any change.
-3.  A user can navigate to the web editor in a browser.
-4.  The web editor correctly lists all lore entries.
-5.  A user can successfully create, update, and delete lore entries through the web interface, and the changes are persisted in the storage file.
-6.  The MUD server's core logic can successfully query the Lore module to retrieve specific lore entries (though it will not yet use them in prompts).
+1.  All game entities can be efficiently queried from the database using the new advanced query methods in the DAL.
+2.  The DAL's in-memory caching demonstrably reduces database load for frequently accessed data.
+3.  The server successfully loads all initial game content from the database on startup, making it immediately available to the game engine.
+4.  The web editor (from Phase 1) continues to function correctly with the enhanced DAL, and changes made through the editor correctly invalidate and update the DAL's cache.
+5.  Unit tests are in place for the DAL's query and caching mechanisms.
