@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MUD Editor</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        textarea { width: 80%; height: 400px; }
+        button { padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>MUD Web Editor</h1>
+    <textarea id="editorContent">
+This is some editable content for the MUD.
+You can imagine editing rooms, items, or quests here.
+    </textarea><br>
+    <button onclick="saveContent()">Save Content</button>
+    <p id="saveStatus"></p>
+
+    <script>
+        function saveContent() {
+            const content = document.getElementById('editorContent').value;
+            const saveStatus = document.getElementById('saveStatus');
+            saveStatus.innerText = 'Saving content...';
+
+            fetch('/save-editor-content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `content=${encodeURIComponent(content)}`,
+            })
+            .then(response => response.text())
+            .then(data => {
+                saveStatus.innerText = `Server response: ${data}`;
+            })
+            .catch(error => {
+                console.error('Error saving content:', error);
+                saveStatus.innerText = 'Error saving content.';
+            });
+        }
+    </script>
+</body>
+</html>
