@@ -3,7 +3,7 @@
 ## Introduction
 This document outlines a proposal for significantly enhancing the existing GoMUD project by integrating concepts from the provided development log of another MUD project. The core idea is to introduce LLM-driven sentient entities (NPCs and "Owners"), a robust tool-calling mechanism, and advanced game mechanics like skills, reputation, and a dynamic world.
 
-The primary focus will be on backend implementation in Go. The architecture will feature a decoupled presentation layer, where the server generates a semantic JSON output, which is then interpreted by different clients (e.g., a Telnet client for ANSI text, a web client for HTML).
+The primary focus will be on backend implementation in Go. The architecture will feature a decoupled presentation layer, where the server's core logic generates a semantic JSON output. This JSON is then processed by a client-specific presentation layer on the server before being sent to the client.
 
 ## 1. Core Data Model Enhancements
 
@@ -51,99 +51,170 @@ To support the new features, the existing Go data structures will need significa
     *   `AssociatedID string`: The specific ID this lore is associated with (e.g., "elf", "warrior", "the_dark_forest"). For "global" lore, this can be empty.
     *   `Content string`: The text of the lore itself.
 
-## 2. Unified Presentation Layer (Semantic JSON)
+## 2. Server-Side Presentation Layer
 
-To ensure maximum flexibility for future clients (e.g., web, graphical), the server's output will be decoupled from its presentation. The server will not send raw text; instead, it will send a structured JSON object that describes the content semantically.
+To support various client types (some "dumb," like Telnet), the server will handle the final presentation rendering. The flow is: **Core Logic -> Semantic JSON -> Client-Specific Renderer -> Formatted Output**.
 
-*   **Structure:** All messages to the client will be a JSON object with a `type` and a `payload`.
-*   **Example 1: Narrative Text**
-    ```json
-    {
-      "type": "narrative",
-      "payload": {
-        "segments": [
-          {"text": "The elven guard narrows his eyes. 'State your business,' he says, his hand resting on the hilt of his sword. You can feel the "},
-          {"text": "ancient magic", "style": ["italic", "color:cyan"]},
-          {"text": " humming in the air around him."}
-        ]
-      }
-    }
-    ```
-*   **Example 2: Room Description**
-    ```json
-    {
-      "type": "room_update",
-      "payload": {
-        "name": "The Whispering Glade",
-        "description": "Sunlight filters through the dense canopy above, illuminating a small, peaceful clearing.",
-        "exits": ["north", "west"],
-        "items": [{"name": "a shimmering potion", "style": ["bold"]}],
-        "npcs": [{"name": "An elven guard", "style": ["color:green"]}]
-      }
-    }
-    ```
-*   **Client Responsibility:**
-    *   **Telnet Client:** Will parse this JSON and translate it into text with the appropriate ANSI escape codes for color and style.
-    *   **Web Client:** Will parse this JSON and render it as styled HTML elements.
+*   **Core Principle:** The server's main game logic produces a "pure" semantic JSON object, describing *what* happened. This JSON is then passed to a specific rendering pipeline on the server based on the connected client's type.
+
+*   **Semantic JSON (Internal Representation):** This is the intermediate, universal format produced by the game engine.
+    *   **Example: Narrative Text**
+        ```json
+        {
+          "type": "narrative",
+          "payload": {
+            "segments": [
+              {"text": "The elven guard narrows his eyes. 'State your business,' he says..."},
+              {"text": "ancient magic", "semantic_type": "magic_keyword"},
+              {"text": " humming in the air."}
+            ]
+          }
+        }
+        ```
+    *   **Example: Room Description**
+        ```json
+        {
+          "type": "room_update",
+          "payload": {
+            "name": "The Whispering Glade",
+            "description": "Sunlight filters through the dense canopy...",
+            "items": [{"name": "a shimmering potion", "semantic_type": "magical_item"}],
+            "npcs": [{"name": "An elven guard", "semantic_type": "neutral_npc"}]
+          }
+        }
+        ```
+
+*   **Server-Side Renderers:** For each client type, there will be a corresponding renderer module on the server.
+    *   **Telnet Renderer:** This module receives the semantic JSON. It has a ruleset (e.g., a map or config file) that translates `semantic_type` into ANSI escape codes. It would convert the above `narrative` JSON into a raw string like: `The elven guard... \x1b[36m\x1b[3mancient magic\x1b[0m humming...` before sending it over the wire.
+    *   **Websocket/API Renderer:** This module would receive the semantic JSON and could either forward it directly to a smart web client or transform it into HTML on the server before sending it. For example, it could turn the JSON into: `<p>The elven guard... <span class="magic-keyword">ancient magic</span> humming...</p>`.
+
+This architecture keeps the core game logic clean and independent of any client's presentation needs, while still supporting dumb clients by handling the rendering for them.
 
 ## 3. World-Building and Lore Integration
 
-A comprehensive and dynamic lore system will serve as the foundational knowledge base for all sentient entities. All lore will be configurable via the web editor.
+To ensure a cohesive and immersive world, we will implement a comprehensive and dynamic lore system. This system will serve as the foundational knowledge base for all sentient entities, shaping their understanding of the world, their place in it, and their interactions with players. All lore will be configurable via the web editor.
 
-*   **The "Lore Book":** A central repository for all `Lore` objects.
-*   **Global Lore:** Core truths and history known to all (creation myths, major wars, etc.).
-*   **Scoped Lore:** Specialized knowledge for races, professions, zones, factions, creatures, and items.
-*   **Lore Integration with LLMs:** When an NPC or Owner is prompted, the system will dynamically fetch and prepend the Global Lore and all relevant Scoped Lore to the prompt, ensuring all responses are deeply rooted in the game's established world.
+*   **The "Lore Book":** We will create a central repository for all lore, structured as a collection of `Lore` objects. This allows for modular and easily editable world-building.
+
+*   **Global Lore:** A set of core truths and historical facts about the world that are known to all sentient beings. This includes:
+    *   **Cosmology and Creation Myths:** The story of how the world came to be, the major deities, and the fundamental forces that govern reality.
+    *   **Major Historical Events:** The timeline of pivotal moments, such as ancient wars, the rise and fall of empires, and cataclysmic events that have shaped the current landscape.
+    *   **The "Total Lore":** A concise, high-level summary of the world's state, providing a common foundation for all NPC and Owner knowledge.
+
+*   **Scoped Lore:** To give entities specialized knowledge, lore will be scoped to specific aspects of the game world. When an LLM is prompted, it will receive the Global Lore plus all relevant Scoped Lore.
+    *   **Race Lore:** Details the history, culture, traditions, and social norms of each race.
+    *   **Profession Lore:** Provides knowledge specific to a character's profession.
+    *   **Zone Lore:** Contains detailed information about specific geographical areas, cities, or dungeons.
+
+*   **Creative Lore Categories (for deeper immersion):**
+    *   **Faction Lore:** Knowledge related to specific guilds, secret societies, or political movements.
+    *   **Bestiary (Creature) Lore:** Information about the world's flora and fauna.
+    *   **Item Lore:** Legendary tales and histories associated with specific powerful artifacts.
+
+*   **Lore Integration with LLMs:** The lore system is not just static text. It will be dynamically injected into the context of LLM prompts. When an NPC or Owner is about to generate a response, the system will:
+    1.  Fetch the **Global Lore**.
+    2.  Fetch the relevant **Scoped Lore** based on the entity's race, profession, location, and faction affiliations.
+    3.  Prepend this collection of lore to the prompt as foundational knowledge, ensuring the LLM's response is deeply rooted in the game's established world.
 
 ## 4. LLM Integration Strategy (Go-Gemini API & Tool Calling)
 
-*   **Go LLM API Client:** A configurable client for Gemini and OpenAI-compatible endpoints.
-*   **Prompt Engineering:** Prompts will be dynamically constructed with World Knowledge (Lore), Situational Context, Personality, and Capabilities (Tools).
-*   **Tool Dispatcher:** A central function to parse LLM XML responses and map tool names to Go functions that modify game state.
+This is the most critical and complex part. We will need to:
+
+*   **Go LLM API Client:** Implement a Go client to interact directly with the LLM API. This client will be configurable to support both the Gemini API and OpenAI-compatible endpoints. This will involve:
+    *   Making HTTP POST requests to the chosen LLM API endpoint.
+    *   Handling API keys securely (e.g., environment variables).
+    *   Structuring requests with prompts, system instructions, and tool definitions.
+    *   Parsing the LLM's JSON responses.
+*   **Prompt Engineering for Tool Calling:**
+    *   The LLM needs to be instructed to output not just narrative, but also structured tool calls. The log suggests an XML format (`<response><narrative>...</narrative><tools>TOOL_JSON_HERE</tools></response>`). This is a robust approach.
+    *   Prompts sent to the LLM will be dynamically constructed to include:
+        *   **World Knowledge:** The relevant **Global and Scoped Lore** to ground the entity in the game's universe.
+        *   **Situational Context:** The player's action, room description, and relevant NPC/Owner state.
+        *   **Personality:** The NPC's/Owner's `PersonalityPrompt` and `MemoriesAboutPlayers`.
+        *   **Capabilities:** A list of `AvailableTools` with their descriptions and parameter schemas, explicitly instructing the LLM on how to format tool calls within the XML.
+*   **Tool Dispatcher:**
+    *   A central Go function will be responsible for parsing the LLM's XML response.
+    *   If a `tools` section is present, it will parse the JSON within it.
+    *   It will then map the `tool_name` to a corresponding Go function (e.g., `handleGiftItem(player, itemID)`, `handleHealPlayer(player, amount)`).
+    *   These Go functions will directly modify the game state.
 
 ## 5. Sentient NPCs
 
-*   **AI-Driven Behavior:** NPC actions and dialogue will be driven by LLM responses that are informed by lore, memory, and personality.
-*   **Memory System:** Significant player actions can be recorded in an NPC's `MemoriesAboutPlayers` map using a `TOOL_MEMORIZE`.
-*   **Item Interaction Tools:** NPCs will have tools to interact with items in their environment.
+NPCs will become dynamic, AI-driven entities whose behavior is shaped by their knowledge and experiences:
+
+*   **AI-Driven Behavior:**
+    *   When a player interacts with an NPC (e.g., `talk`, `attack`, `say`), or when an NPC needs to react to an event (e.g., player entering room), a prompt will be constructed for the LLM.
+    *   The prompt will include the relevant **Lore**, the NPC's `PersonalityPrompt`, `MemoriesAboutPlayers`, and `AvailableTools`.
+    *   The LLM's response will drive the NPC's narrative and actions (via tool calls), ensuring they are consistent with their background and the world's history.
+*   **Memory System (`MemoriesAboutPlayers`):**
+    *   When a player performs a significant action (e.g., fails a password, attacks an NPC), relevant Owners/NPCs can use a `TOOL_MEMORIZE` to record this information in the NPC's `MemoriesAboutPlayers`.
+    *   These memories will be prepended to future AI prompts for that NPC when interacting with the specific player, influencing the NPC's behavior.
+*   **Item Interaction Tools:**
+    *   Implement Go functions for `TOOL_NPC_EXAMINE_ITEM_IN_ROOM`, `TOOL_NPC_PICK_UP_ITEM_FROM_ROOM`, `TOOL_NPC_DROP_ITEM_TO_ROOM`, `TOOL_GIFT_ITEM`.
+    *   These tools will allow NPCs to dynamically interact with items in their environment and with the player's inventory.
 
 ## 6. Sentient Owners
 
-*   **Role and Scope:** Higher-level entities overseeing locations, races, professions, or factions.
-*   **Tool Invocation:** Owners have powerful tools to influence the world (e.g., `TOOL_GIFT_ITEM`, `TOOL_SMITE_PLAYER`).
-*   **Prayer Mechanism:** The `pray` command prompts relevant Owners, who can respond based on their lore-informed perspective.
+Owners are higher-level, LLM-controlled entities that act as guardians or influencers over their domains:
+
+*   **Role and Scope:**
+    *   Owners will be associated with `MonitoredAspect`s (locations, races, professions, factions).
+    *   When a player enters a room, changes race/profession, or performs an action relevant to an Owner's domain, the relevant Owner(s) will be prompted.
+*   **Tool Invocation:**
+    *   Owners will have their own `AvailableTools` (e.g., `TOOL_GIFT_ITEM`, `TOOL_HEAL_PLAYER`, `TOOL_SMITE_PLAYER`, `TOOL_BLESS_PLAYER`).
+    *   Their LLM responses can include tool calls to affect the player or the world, acting in accordance with their knowledge and personality.
+*   **Prayer Mechanism:**
+    *   Implement a `pray [message]` command.
+    *   This command will identify all relevant Owners (based on player's current room's location owner, player's race owner, player's profession owner).
+    *   Each relevant Owner will receive an AI prompt with the player's prayer and context, allowing them to respond and potentially use tools based on their divine or authoritative perspective, shaped by the lore.
 
 ## 7. Reputation System
 
-*   **Owner-to-NPC Communication:** When an Owner observes a significant player action, it can use `TOOL_MEMORIZE` to update the memories of its associated NPCs.
+*   **Owner-to-NPC Communication:** When an Owner "observes" a significant player action, it can use `TOOL_MEMORIZE` to update the memories of its associated NPCs. This creates a top-down reputation flow.
 *   **Directives and Impressions:** Furthermore, Owners can actively send directives about a player to their subordinate NPCs, especially for players who have gained significant favor or disfavor. This can be achieved via a new tool, `TOOL_IMPRINT_MEMORY_ON_NPC(npc_id, player_id, memory_string)`, allowing an Owner's opinion to directly and immediately influence an NPC's behavior.
-*   **NPC Reaction:** An NPC's behavior will be influenced by its own memories and the impressions passed down from its Owners.
+*   **NPC Reaction:** An NPC's behavior will be influenced by its own memories and the impressions passed down from its Owners. An NPC might treat a player well based on personal interaction, only to turn hostile after receiving a negative directive from its Owner.
 
 ## 8. Skills as Tools
 
-*   **Active Skills:** Defined as `OwnerTool` or `NPCTool` types, callable by the LLM.
-*   **Passive Skills:** Act as modifiers or provide additional context to the LLM.
+*   **Active Skills:**
+    *   These will be defined as `OwnerTool` or `NPCTool` types.
+    *   When a player uses an active skill (e.g., "use minor heal"), this command will be routed to the appropriate handler.
+    *   For LLM-driven skills, the LLM will be prompted to "use" the skill, and its tool call will trigger the actual effect.
+*   **Passive Skills:**
+    *   These will not be explicit tool calls but rather modifiers to player stats or contextual information provided to the LLM.
+    *   For example, a "City Lore" passive skill might mean the LLM receives additional context about city events when the player is in a city, leading to more informed NPC/Owner responses.
 
 ## 9. Game Mechanics Enhancements
 
-*   **Locking Mechanism:** Exits can be locked and require specific keys.
-*   **Map Feature:** `Player.VisitedRoomIDs` will be tracked for map generation.
-*   **Conditional AI Delivery:** AI responses can be held and delivered only when specific conditions are met.
+*   **Locking Mechanism:**
+    *   Exits can be `IsLocked` and require a `KeyID`.
+    *   `movePlayer` will check `IsLocked` and prevent movement.
+    *   A `use <item> on <exit>` command (or an LLM tool call like `unlock_exit`) will check for the correct `KeyID` and set `IsLocked` to `false`.
+*   **Map Feature:**
+    *   The `Player.VisitedRoomIDs` map will track explored rooms.
+    *   The backend will maintain this `VisitedRoomIDs` state.
+    *   For Telnet clients, a simple ASCII art map could be rendered based on this data.
+*   **Conditional AI Delivery:**
+    *   AI responses (narrative and tool effects) can be conditional based on player ID or room ID.
+    *   This means the server will hold onto AI responses and only deliver them to the client (or apply effects) if the conditions are met (e.g., player is in the correct room for an NPC's reaction). This will be crucial for managing concurrent AI responses.
 
 ## 10. Concurrency Considerations
 
-*   Use Go routines for concurrent LLM API calls.
-*   Protect all shared game state with mutexes.
+*   **Go Routines for AI Calls:** When multiple AI interactions are triggered (e.g., a player's prayer prompts multiple Owners, or a `say` command prompts multiple NPCs), use Go routines (`go func()`) and `sync.WaitGroup` or channels to dispatch these LLM API calls concurrently.
+*   **State Management:** Ensure all shared game state (players, rooms, NPCs, items) is protected by mutexes (`sync.Mutex` or `sync.RWMutex`) to prevent race conditions during concurrent updates from AI tool calls or player actions.
 
 ## 11. Web Server (Admin & Editor)
 
-*   The web server will provide an editor for all core game content: **Lore**, rooms, items, NPCs, Owners, and their associations.
+*   The existing lightweight web server will be maintained.
+*   It will primarily serve administrative functions, including:
+    *   Displaying server statistics.
+    *   Providing a web-based editor for game content (rooms, items, NPCs, Owners, and **Lore**). This editor will allow for easy modification and creation of game entities and their foundational knowledge without direct file manipulation.
 
 ## 12. High-Level Implementation Phases
 
 1.  **Phase 1: Core Architecture & Data Structures:**
     *   Implement all new and expanded data structures (`Lore`, `NPCTool`, `OwnerTool`, etc.).
-    *   Implement the **Unified Presentation Layer**, ensuring all server output is in the semantic JSON format.
+    *   Implement the **Server-Side Presentation Layer**, including the internal semantic JSON format and the initial **Telnet Renderer**.
 2.  **Phase 2: Lore System & Editor:**
     *   Build the backend logic to store and retrieve lore entries.
     *   Update the web editor to allow for creating and editing lore.
@@ -162,7 +233,7 @@ A comprehensive and dynamic lore system will serve as the foundational knowledge
     *   Implement locking, mapping, and conditional AI delivery.
     *   Refactor LLM calls for concurrency and review mutex usage.
 7.  **Phase 7: Client Implementation & Final Polish:**
-    *   Build the **Telnet client** to interpret the semantic JSON.
+    *   Build out any additional client renderers (e.g., for a web client).
     *   Finalize the web editor and polish the overall experience.
 
 This proposal outlines a comprehensive path to evolve the GoMUD into a more dynamic and intelligent multi-user dungeon experience.

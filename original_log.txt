@@ -1,0 +1,211 @@
+
+Mud project (Multi user dungeon)
+1) Idea. We have a mud - rooms(with exits), objects (in rooms and in npcs/players inventories), npcs, players.
+2) We have sentient entities - npcs. They are controlled by LLM. We send them user actions and the results of user actions, also other npcs actions and their results and LLM reacts somehow. NPCs have descriptions which allow LLM to assume the correct behaviour.
+3) We have sentient beings - Owners. Every group of locations (city, forest, road) has an owner. Every race of beings - has an owner. Every profession - has an owner.
+They are also controlled by LLM.
+4) We have skills. Active and passive. Skills are always given by owners. Passive skills result in better understanding/better stats when being in some location, being good at something or being in the correct way of living as some species. ( In the cities you feel something happening further than your location, In profession you can predict the outcome of some actions, in races your stats grow and/or you are liked by the species more)
+Active skills are just actions on world. They are also given by location, species and profession. To be determined (try to imagine some)
+5) Actually, skills are "tools" called by LLM. When user does a skill, or when an owner does a skill on user (grants something, tells something, gives some feeling, gives an object etc) the tool is called. All actions of users are called as owner actions. So when user says "attack goblin", Swordmaster owner receives his intention, analyzes the history of the user and calls the tool to perform an action with proper modifiers.
+When goblin npc atacks, he does the same. (call owner, onwer calls tool)
+6) Owners may send to their npcs (in their territory, race or profession) messages about player when they see them (when npc see them) therefore reputation. Reputation works in the way that every owner you contacted with send to their npcs info about you - and npc reacts appropriately
+
+Start with this. ELaborate implementation strategies. Try to implement most logic in python piodide. Only gui in typeScript.
+
+---
+**Development Log:**
+
+**Update 1: Pyodide Integration & Initial Content Expansion**
+*   **Pyodide Foundation:** Integrated Pyodide to run Python game logic in the browser.
+    *   `python/main.py` created to handle core command processing (e.g., "look", "pyecho", simulated "pytalk").
+    *   Python environment initialized with game data (player, rooms, NPCs, items, skills, owners) from JavaScript.
+    *   Python-side Gemini API client setup is placeholder, awaiting `google-generativeai` package installation via `micropip`.
+*   **Content Expansion:**
+    *   Added a new "Mountain" area with several rooms: `mountainFoothills`, `treacherousTrail`, `hiddenCaveEntrance`, `eaglePeak`.
+    *   Introduced a new Owner: `MountainGuardian` for the mountain area.
+    *   Added new NPCs: `grumpyMountaineer` (sentient), `soaringEagle`.
+    *   Added new items: `sturdyRope`, `eagleFeather`, `wornMapPiece`.
+*   **In-App Editor (Phase 1 - Rooms):**
+    *   Added an "Editor Panel" accessible via a toggle button in the UI.
+    *   Implemented a `RoomEditorForm` allowing users to:
+        *   View a list of existing rooms.
+        *   Create new rooms (with a generated ID, name, description, ambient details, and owner selection).
+        *   Edit existing rooms' basic properties (name, description, ambient details, owner).
+    *   Changes made in the Room Editor are reflected in the JavaScript game state (`App.tsx`).
+    *   A Python function `update_game_entity_py` in `python/main.py` is called (placeholder/basic implementation) to inform the Python environment of room data changes made through the editor. This allows Python's `look` command, for example, to see the updated room descriptions.
+*   **General Logic:**
+    *   JavaScript fallback logic in `gameLogicSimulator.ts` handles Owner interactions (e.g., `ForestSpirit`, `MountainGuardian` reacting to player entering their domain) if Python processing isn't fully active or for specific events not yet migrated to Python.
+    *   Python's `process_command_py` also includes logic for Owner reactions upon player movement, demonstrating Python's access to Owner data.
+
+**Update 2: Python SDK Removal, JS Bridge for AI, Import Fixes, Partial Matching, and `say` command**
+*   **Python Gemini SDK Removal:** Removed the `google-generativeai` package from Python/Pyodide. All Gemini API calls are now exclusively handled by JavaScript (`GeminiService.ts`).
+*   **Python-to-JS AI Bridge:**
+    *   Python functions (e.g., in `ai_interface.py.txt`, `commands_interactive.py.txt`) that require AI responses now generate a structured "ai_request" object.
+    *   This object (containing prompt, system instructions, sender ID) is passed to JavaScript.
+    *   `GameLogicSimulator.ts` intercepts these `ai_request` messages, uses `GeminiService.ts` to make the actual API call, and then incorporates the AI-generated text into the game messages.
+*   **Python Import Resolution:**
+    *   Addressed persistent `ImportError` for `_parse_command_py` from `utils.py`.
+    *   Moved Python module imports to the top level in `main.py.txt`, `commands_base.py.txt`, and `commands_interactive.py.txt`.
+    *   Added diagnostic logging to `python/main.py.txt` to trace import issues.
+    *   Modified `python/main.py.txt` to use direct attribute access for functions from the `utils` module (e.g., `utils._parse_command_py`) as a robust workaround for "cannot import name" issues.
+    *   Corrected a `SyntaxError` in `python/utils.py.txt` (incomplete `if` statement).
+*   **Partial Name Matching:**
+    *   Updated `_find_item_in_list` and `_find_npc_in_room` in `python/utils.py.txt` to support partial name matching (prefix matching) after attempting an exact match. This makes targeting items and NPCs more user-friendly.
+*   **`say` Command:**
+    *   Added the `say [message]` command to `COMMON_COMMANDS` in `constants.ts`.
+    *   Implemented `_handle_py_say` in `python/commands_interactive.py.txt`.
+        *   Player's "say" message is broadcast to the room.
+        *   Sentient NPCs in the room receive an AI request to react to the overheard statement.
+    *   Updated `python/main.py.txt` to route the `say` command to the new handler.
+*   **General Stability:** Improved error handling and feedback messages for Python-side operations and AI interactions.
+
+**Update 3: NPC Ownership and Allegiances**
+*   **Data Structures:**
+    *   `types.ts`: Added `ownerIds?: string[]` to the `NPC` interface to store IDs of location, race, or profession owners.
+*   **Content - Owners & NPCs:**
+    *   `constants.ts`:
+        *   Defined new Race Owners: `AnimalKinSpirit`, `AvianLord`, `GoblinUnderchief`.
+        *   Defined new Profession Owners: `SageCouncil`, `ExplorersGuild`.
+        *   Updated existing NPCs (`oldHermit`, `growlingWolf`, `grumpyMountaineer`, `soaringEagle`) with `ownerIds` linking them to these new owners and their existing location owners.
+*   **Displaying Allegiances:**
+    *   `python/commands_base.py.txt`: The `_handle_py_examine` function for NPCs now checks for `ownerIds`. If present, it looks up owner names from the global `OWNERS_PY` dictionary (populated by `main.py.txt`) and lists the NPC's allegiances.
+    *   `services/gameLogicSimulator.ts`: The JavaScript fallback `handleExamine` function for NPCs now also displays allegiances by looking up owner names from `this.allOwners` using the `ownerIds` on the NPC object.
+*   **Impact:** Examining an NPC will now show their affiliations (e.g., "Allegiances: The Whispering Heart of the Verdant, Sage Council"). This lays groundwork for more complex interactions based on these ownerships.
+
+**Update 4: Interactive Log & UI Overhaul**
+*   **Room Pane Removal:** The dedicated "Room Display" pane has been removed from the UI. Room information (description, objects, NPCs, exits) is now primarily conveyed through the message log via the "look" command.
+*   **Clickable Entities in Log:**
+    *   The `MessageLog` component now parses messages from Python's "look" command.
+    *   Objects and NPCs mentioned in the log are rendered as clickable, underlined text.
+    *   Python's `_handle_py_look` in `commands_base.py.txt` was updated to embed special markers (`[[type:id:displayName]]`) to enable this.
+*   **Action Menu:**
+    *   Clicking an interactive entity in the message log now opens a context-sensitive `ActionMenu` near the click position.
+    *   The menu provides relevant actions based on the entity type (e.g., "Examine," "Take" for items; "Examine," "Talk," "Attack" for NPCs).
+    *   Selecting an action from the menu automatically submits the corresponding command.
+*   **Layout Adjustments:**
+    *   `App.tsx` layout has been restructured. The `MessageLog` and `CommandInput` now form the main interaction area.
+    *   `PlayerStatus`, `InventoryDisplay`, and `SkillsDisplay` are grouped into a sidebar.
+*   **Skill Command Fix:** The "Use" button for active skills in `SkillsDisplay.tsx` now correctly prepends "use " to the skill's command, ensuring Python's `use` handler processes it correctly (e.g., "use minor heal").
+*   **JS Fallback Minimization:** JavaScript fallback logic in `GameLogicSimulator.ts` has been significantly reduced for commands now robustly handled by Python. JS fallbacks now primarily serve as minimal error indicators if Python fails.
+*   **Enhanced Name Recognition:** Updated `python/utils.py.txt` so that item and NPC names can be recognized by matching *any part* of their name (substring match), not just the beginning, after an exact match fails. Error messages in command handlers were updated to reflect this.
+*   **'observe' Command Routing:** Added a direct handler in `python/main.py.txt` for the `observe` command to route it to `_handle_py_use_skill`, treating `observe` typed by the user as an invocation of the "Observe" skill.
+
+**Update 5: Pray Command and Owner Tools**
+*   **Data Model Expansion:**
+    *   `types.ts`: `Player` now includes `race` and `profession`. `Owner` now has a singular `monitoredAspect` (locations, races, or professions), `associatedRace`/`associatedProfession` fields, and `availableTools: OwnerTool[]`. The `OwnerTool` interface defines structure for name, description, and JSON parameters for tools.
+*   **Content - "Pray" and Owner Powers:**
+    *   `constants.ts`:
+        *   Added `"pray [optional message]"` to `COMMON_COMMANDS`.
+        *   `INITIAL_PLAYER` defaults to "Human" "Adventurer".
+        *   New Owners (`HumanityPatron`, `AdventurersGuildPrime`) created for player defaults. Existing Owners updated to reflect new `monitoredAspect` structure.
+        *   Defined several `OwnerTool` constants (e.g., `TOOL_GIFT_ITEM`, `TOOL_HEAL_PLAYER`, `TOOL_SMITE_PLAYER`, `TOOL_BLESS_PLAYER`) specifying their names, descriptions for the LLM, and parameter schemas.
+        *   Assigned `availableTools` to relevant `OWNERS`, granting them specific powers.
+*   **Python "Pray" Logic:**
+    *   `python/commands_interactive.py.txt`: Implemented `_handle_py_pray`. This function identifies relevant Owners based on player's location, race, and profession.
+    *   For each Owner, it constructs an AI prompt detailing the prayer, player context, and crucially, lists the Owner's `availableTools` and instructs the AI to use a specific JSON format (`{"tool_to_use": "tool_name", "parameters": {...}}`) if it wishes to invoke a tool.
+    *   `python/main.py.txt`: Added routing for the "pray" command to `_handle_py_pray` and ensured player's race/profession are initialized.
+*   **JavaScript Tool Processing:**
+    *   `services/gameLogicSimulator.ts`:
+        *   When processing an 'owner' AI response (from a prayer), a new helper `_extractToolCallFromAIResponse` parses the AI's text for the tool invocation JSON.
+        *   If a tool call is found, it's validated against the Owner's `availableTools`.
+        *   Effects for tools like `gift_item` (adds item to player inventory), `heal_player` (modifies health), `smite_player` (reduces health), `bless_player` (narrative message), and `curse_enemy` (narrative message) are executed directly in JavaScript by modifying player state or adding messages.
+        *   The narrative portion of the AI's response is still displayed.
+*   **Impact:** Players can now pray to Owners, who can respond with AI-generated text and optionally use "tools" to directly affect the game state (e.g., give items, heal/harm player), making Owner interactions much more dynamic and impactful.
+
+**Update 6: New Items & Concurrent AI Requests**
+*   **Content Expansion:**
+    *   `constants.ts`: Added several new items to the game: `ancientTome`, `glowingMushroom`, `wolfPelt`, `mountaineersPick`, `oldCompass`, `foldedMap`.
+    *   The `TOOL_GIFT_ITEM` definition was updated so Owners are aware they can gift these new items.
+    *   Items were also distributed into some initial room and NPC inventories. The `oldCompass` is in `mountainFoothills`, and `foldedMap` is with the `grumpyMountaineer`.
+*   **Performance Optimization:**
+    *   `services/gameLogicSimulator.ts`: Refactored the processing of AI requests from Python. Multiple AI calls (e.g., for multiple NPCs reacting, or multiple Owners responding to a prayer) are now dispatched concurrently using `Promise.all()`.
+    *   Non-AI messages from Python are processed first, then all AI calls are made in parallel. Their responses are then processed sequentially to maintain a logical flow in the message log. This significantly improves responsiveness when multiple AI interactions are triggered.
+*   **Robustness:** Improved error messaging in the `gift_item` tool logic if an Owner attempts to gift an item ID not defined in the game constants, now referencing the valid item IDs that were provided to the LLM.
+
+**Update 7: XML-Based AI Responses & Inventory UI Overhaul**
+*   **AI Response Format:** Changed AI response processing to expect an XML structure: `<response><narrative>...</narrative><tools>TOOL_JSON_HERE</tools></response>`.
+    *   Python AI prompts in `python/commands_interactive.py.txt` updated to instruct the LLM to use this XML format.
+    *   JavaScript's `_extractToolCallFromAIResponse` in `services/gameLogicSimulator.ts` updated to parse this XML, improving robustness of tool call and narrative extraction.
+*   **Inventory UI Overhaul:**
+    *   Removed the dedicated `InventoryDisplay` pane.
+    *   The Python `inventory` command (`_handle_py_inventory` in `python/commands_base.py.txt`) now formats item names with special markers (`[[inventory_item:id:displayName]]`).
+    *   `MessageLog.tsx` updated to recognize these `inventory_item` markers, making them clickable.
+    *   `ActionMenu.tsx` updated to handle `inventory_item` type, offering "Examine", "Drop", and conditional "Use" actions (based on item attributes like `healAmount`).
+    *   `App.tsx` updated to remove the `InventoryDisplay` component and pass the master `items` list to `ActionMenu` for conditional "Use" logic.
+*   **Impact:** This streamlines the UI by removing a separate pane and integrating inventory interaction directly into the message log, consistent with how room objects and NPCs are handled. XML for AI responses makes tool usage more reliable.
+
+**Update 8: Gifted Item Highlighting & Interaction (Actual Implementation)**
+*   Items gifted by Owners (via `tool_gift_item`) are now visually highlighted (e.g., golden color, bold) in the message log.
+*   These highlighted gifted items are clickable and trigger the same actions as regular inventory items (Examine, Drop, Use - if applicable) via the Action Menu.
+    *   `services/gameLogicSimulator.ts`: The system-generated message for a successful gift now correctly includes the `[[gifted_item:id:name]]` marker for styling.
+    *   `components/MessageLog.tsx`: Correctly updated to recognize `gifted_item` type, apply distinct styling, and map clicks to `inventory_item` type for action handling.
+
+**Update 9: Map Feature Implementation**
+*   **Data Model:** Added `visitedRoomIds: string[]` to `Player` type to track explored areas. `INITIAL_PLAYER` updated.
+*   **Python Logic:** `_handle_py_move` in `python/commands_interactive.py.txt` now updates `player_py['visitedRoomIds']`. Python initialization in `main.py.txt` handles this field.
+*   **Core Map Component (`MapView.tsx`):** New SVG-based component for rendering rooms and exits.
+    *   Uses a basic dynamic layout algorithm (BFS-based relative positioning).
+    *   Supports `isEditorView` (shows all rooms) and game view (shows only `visitedRoomIds` - fog of war).
+    *   Highlights the player's current room.
+*   **In-Game Map Panel (`GameMapPanel.tsx`):** New sliding panel component.
+    *   Toggled by a button in `App.tsx`.
+    *   Displays `MapView` in game mode, showing only discovered areas.
+*   **Editor Map View:**
+    *   `EditorPanel.tsx` now has a "Map View" mode that displays `MapView` with all rooms.
+    *   Rooms on the editor map are clickable to jump to their edit form.
+    *   `types.ts` updated `EditorMode` to include `'map'`.
+*   **Application Integration (`App.tsx`):**
+    *   Added state and a "Toggle Map" button to control the `GameMapPanel`.
+    *   `GameMapPanel` is conditionally rendered and receives necessary props.
+
+**Update 10: Room Editor - Exits Implemented (Actual Implementation - Final)**
+*   **`components/forms/RoomEditorForm.tsx`**: Fully enhanced to allow creating, editing (direction, target room, description, locked status, key ID), and removing room exits. Uses dropdowns for target rooms and checkboxes for locked status.
+*   **`components/EditorPanel.tsx`**: Correctly passes `allRooms` (for target room selection in exits) and `allItems` (for potential future key selection) to the `RoomEditorForm`.
+*   This makes the Room Editor significantly more powerful for defining the game world's structure.
+
+**Update 11: Conditional AI Delivery & Full Locking Mechanism (Stern Guard Scenario)**
+*   **Conditional AI Responses:**
+    *   `types.ts`: Updated `AIRequestMessage`, `CommandResult`, `ConditionalNarrativeMessage`, `ConditionalToolEffect` to support conditional delivery based on player ID and, for NPCs, room ID. `originalExpectedResponseType` added.
+    *   `services/gameLogicSimulator.ts`: Refactored `processPlayerCommand`. AI narratives and tool calls are packaged into `ConditionalNarrativeMessage` and `ConditionalToolEffect` arrays, not processed immediately. These are returned in `CommandResult`.
+    *   `App.tsx`: `handleCommandSubmit` now processes conditional narratives and tool effects *after* the player's primary action. It checks player ID and, for NPC responses, room ID against the player's current state. Owner responses (prayers) ignore the room check and "follow" the player. Tool effects (health, inventory, room state changes for `unlock_exit`) and their success messages are applied here.
+*   **Locking Mechanism & Stern Guard:**
+    *   `constants.ts`: Defined `treasuryKey`, `TOOL_UNLOCK_EXIT`, `sternGuard` NPC (with tool, key, "valor" password personality), `gatehouse` & `treasury` rooms, `CityGuardians` Owner. Modified `mountainFoothills` exit.
+    *   Python (`commands_base.py.txt`, `commands_interactive.py.txt`):
+        *   `_handle_py_move`: Generic "locked" message.
+        *   `_handle_py_use_skill`: Logic to use `treasuryKey` to unlock the specific exit by modifying Python's room data.
+        *   AI prompts for `sternGuard` guide it to use `unlock_exit` tool on password.
+    *   `services/gameLogicSimulator.ts`: `unlock_exit` tool calls from NPCs are packaged as `ConditionalToolEffect`.
+    *   `App.tsx`: Handles `unlock_exit` `ConditionalToolEffect` by modifying `rooms` state (setting `isLocked = false`).
+*   **Impact:** AI responses are more contextually relevant. The Stern Guard scenario provides a complete puzzle loop (password, combat/key, item use) for unlocking an area.
+
+**Update 12: Three-Tiered AI Response Blocking**
+*   Implemented a nuanced AI response blocking system in `App.tsx` and `CommandInput.tsx`:
+    *   **'hard' block:** Disables all input. Used for player attacks (NPC reaction) and critical AI tool usage.
+    *   **'soft_allow_non_move' block:** Disables movement commands only. Used for "talk" to important NPCs (those with tools).
+    *   **'none' block:** No input blocking. Used for greetings, prayers, "say" reactions, and "talk" to common NPCs.
+*   This system replaces the global spinner/simple console messages for AI waits, providing more granular control over player actions during AI processing and improving game flow. "Pondering" messages are still displayed contextually for all active AI states.
+*   Removed global `isLoading` state and `LoadingSpinner` component related to AI processing.
+
+**Update 13: NPC Item Interaction and Memory Tools**
+*   **Data Model & Constants:**
+    *   `types.ts`: Added `memoriesAboutPlayers: Record<string, string[]>` to `NPC` interface.
+    *   `constants.ts`:
+        *   Defined new `OwnerTool` constants for NPCs: `TOOL_NPC_EXAMINE_ITEM_IN_ROOM`, `TOOL_NPC_PICK_UP_ITEM_FROM_ROOM`, `TOOL_NPC_DROP_ITEM_TO_ROOM`, `TOOL_MEMORIZE`.
+        *   Added these (and `TOOL_GIFT_ITEM`) to a `STANDARD_NPC_TOOLS` array.
+        *   Updated all `INITIAL_NPCS` to include these `availableTools` and appended a generic `NPC_TOOL_USAGE_PROMPT_SUFFIX` to their `personalityPrompt`.
+        *   `sternGuard`'s prompt specifically updated to use `TOOL_MEMORIZE` for incorrect password attempts, with an example tool call.
+*   **Python Enhancements:**
+    *   `python/commands_interactive.py.txt`:
+        *   AI prompts for NPCs (greetings, talk, attack reactions, say reactions) now retrieve and prepend any existing `memoriesAboutPlayers` for the current player.
+        *   The NPC's full `personalityPrompt` (now including tool usage instructions) is passed as the `system_instruction_text`.
+        *   Player ID is passed in context to assist the `TOOL_MEMORIZE`.
+*   **JavaScript Tool Implementation (`App.tsx`):**
+    *   Added logic to handle the new NPC tool effects when processing `ConditionalToolEffect`:
+        *   `examine_item_in_room`: Primarily narrative, JS logs the action.
+        *   `pickup_item_from_room`: NPC takes item from room, updates room and NPC inventories.
+        *   `drop_item_to_room`: NPC drops item to room, updates NPC and room inventories.
+        *   `gift_item` (by NPC): NPC gives item from their inventory to player.
+        *   `memorize`: Adds the `memoryText` to the NPC's `memoriesAboutPlayers` state for the specified player.
+    *   Item lookups for these tools are done by name from the tool parameters.
+*   **Impact:** NPCs can now interact with items in the room (examine, pick up, drop), gift items to the player, and "memorize" information about player interactions, leading to more dynamic and stateful NPC behavior. The Stern Guard will now remember failed password attempts.
+
