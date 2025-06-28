@@ -204,9 +204,10 @@ To create a complex social dynamic, memory and reputation will operate on three 
     *   These will be defined as `OwnerTool` or `NPCTool` types.
     *   When a player uses an active skill (e.g., "use minor heal"), this command will be routed to the appropriate handler.
     *   For LLM-driven skills, the LLM will be prompted to "use" the skill, and its tool call will trigger the actual effect.
-*   **Passive Skills:**
-    *   These will not be explicit tool calls but rather modifiers to player stats or contextual information provided to the LLM.
-    *   For example, a "City Lore" passive skill might mean the LLM receives additional context about city events when the player is in a city, leading to more informed NPC/Owner responses.
+*   **Passive Skills: A Two-Way Street**
+    *   Passive skills are not explicit tool calls but rather modifiers that affect both how the world perceives the player and how the player perceives the world.
+    *   **Effect on NPCs/Owners:** A player with a "Stealth" skill might have information about their presence omitted from the context provided to an NPC's LLM, making them less likely to be noticed. A player with a "Noble Bearing" skill might have this fact appended to the context, causing NPCs to react more favorably.
+    *   **Effect on the Player:** A player with the "Arcane Sight" skill might receive extra detail in the semantic JSON describing magical auras on items or NPCs that other players wouldn't see. A player with "Keen Eyes" might get a higher chance to notice a hidden lever in a room, with the server adding that detail to the room description JSON just for them. This is handled by the server's core logic before the semantic JSON is even generated.
 
 ## 10. Game Mechanics Enhancements
 
@@ -250,7 +251,7 @@ To create a complex social dynamic, memory and reputation will operate on three 
     *   Implement the full `Owner` logic and prayer mechanism.
 5.  **Phase 5: Advanced Mechanics & Skills:**
     *   Implement locking, mapping, and conditional AI delivery.
-    *   Integrate active and passive skills.
+    *   Integrate active and passive skills, including the two-way perception modifications.
 6.  **Phase 6: Concurrency & Final Polish:**
     *   Refactor LLM calls for concurrency and review mutex usage.
     *   Build out any additional client renderers.
