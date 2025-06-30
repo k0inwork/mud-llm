@@ -10,6 +10,7 @@ The architecture is designed to be modular, scalable, and maintainable, with a c
 
 *   **Single Source of Truth (Database-Centric):** All game data, including lore, entities, and their states, is stored persistently in a local database (e.g., SQLite). This ensures data consistency and simplifies persistence logic.
 *   **Decoupled Presentation:** The server's core logic is completely decoupled from client presentation. The game engine produces a semantic JSON representation of events, which is then translated into client-specific formats by a dedicated server-side rendering layer. This allows for supporting various clients (Telnet, Web, etc.) without altering the core game logic.
+*   **API-Driven Content Management:** The web-based administrative editor is a fully decoupled front-end application that interacts with the server via a versioned REST API. This enforces a clean separation between the game server and its management tools, allowing for independent development and deployment of the admin interface.
 *   **Sentient, Lore-Driven AI:** All AI entities (NPCs and Owners) are driven by a Large Language Model (LLM). Their behavior, knowledge, and decisions are grounded in the comprehensive lore system stored in the database.
 *   **Efficient AI Interaction (Action Significance):** An "Action Significance" model is used to filter and batch player actions, ensuring that the LLM is only triggered for meaningful events. This prevents unnecessary API calls, improves performance, and reduces operational costs.
 *   **Clear Command Separation:** Player-initiated commands (e.g., `move`, `unlock`, `use skill`) are handled directly by the Core Game Engine based on game rules. LLM-driven tools are exclusively for AI entities to invoke, allowing them to interact with the game world.
@@ -25,14 +26,14 @@ The architecture is designed to be modular, scalable, and maintainable, with a c
     *   **LLM Integration Client:** Constructs prompts (using cached data for performance) and handles communication with the LLM API.
     *   **Tool Dispatcher:** Executes Go functions based on tool calls *received from the LLM*.
 5.  **Server-Side Presentation Layer:** Contains client-specific renderers (e.g., `TelnetRenderer`) that translate semantic JSON from the core engine into the final format for the client.
-6.  **Web Server (Admin & Editor):** A lightweight web server providing an administrative interface and a content editor that interacts directly with the DAL to manage game data.
+6.  **Web Server & Admin API:** A lightweight web server running within the main Go application. It serves the static files for the admin front-end and exposes a versioned **REST API** for all content management operations. The API handlers call the DAL to interact with the database.
 
 ## 4. Phased Design Documents
 
 The detailed design for each implementation phase is located in its respective subdirectory.
 
 *   **[Phase 1: Foundation & Content Tools](./phase-1-foundation-and-content-tools/README.md)**
-    *   Focuses on establishing the database, core data structures, server-side presentation layer, and the web editor for initial content creation.
+    *   Focuses on establishing the database, core data structures, server-side presentation layer, and the **API-driven web editor**.
 
 *   **[Phase 2: Lore & Data Logic](./phase-2-lore-and-data-logic/README.md)**
     *   Focuses on enhancing the Data Access Layer (DAL) with advanced query methods and in-memory caching for all game data.
