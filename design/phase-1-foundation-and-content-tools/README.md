@@ -2,7 +2,7 @@
 
 ## 1. Objectives
 
-This foundational phase establishes the core persistence layer, essential data structures, the server-side presentation mechanism, and the initial content creation tools. The primary goal is to have a functional backend capable of storing all game data in a local database and allowing administrators to create initial world content via a web editor.
+This foundational phase establishes the core persistence layer, essential data structures, the server-side presentation mechanism, and the initial content creation tools. The primary goal is to have a functional backend capable of storing all game data in a local database and allowing administrators to create initial world content via a decoupled, API-driven web editor.
 
 ## 2. Key Components to be Implemented
 
@@ -34,14 +34,20 @@ This foundational phase establishes the core persistence layer, essential data s
     *   Constructing the final, raw string with embedded ANSI codes to be sent to the Telnet client.
 *   **Main Server Loop Integration:** The main server loop will be structured to pass game events through the presentation layer (Core Logic -> Semantic JSON -> Telnet Renderer -> Client).
 
-### 2.4. Web Server & Content Editor
+### 2.4. Web Server & Admin REST API
 
-*   **Web Server:** A lightweight Go web server will be set up to serve the administrative interface and the content editor.
-*   **Direct DAL Interaction:** The web editor's backend will interact directly with the Data Access Layer (DAL) to perform CRUD operations on all game entities (Lore, Rooms, Items, NPCs, Owners, Tools). There will be no separate REST API endpoints for lore or other data; the editor will use the DAL directly.
-*   **Editor Front-End:** A simple, single-page web application (HTML, CSS, vanilla JavaScript) will be created. This editor will allow administrators to:
-    *   Create, read, update, and delete `Rooms`, `Exits`, `Items`, `NPCs`, and `Owners` directly via the DAL.
-    *   Create initial `Lore` entries (Global, Race, Profession, Zone, Faction, Creature, Item Lore).
-*   **Initial Test Content:** Basic starting rooms, a few NPCs, and some lore entries will be created using this editor to provide a minimal, runnable world for early testing.
+*   **Web Server:** A lightweight Go web server will be set up, running in the same process as the MUD server but on a different port. It will serve the static HTML/CSS/JS files for the editor.
+*   **Admin REST API:** The web server will expose a versioned RESTful API (e.g., `/api/v1/`) for all content management. This API will be the *only* way the web editor interacts with the server for data operations.
+    *   **Authentication:** A simple, token-based authentication middleware will protect all API endpoints to prevent unauthorized access.
+    *   **Endpoints:** The API will provide standard CRUD endpoints for all major game entities. Examples include:
+        *   `GET /api/v1/lore`, `POST /api/v1/lore`, `GET /api/v1/lore/:id`, `PUT /api/v1/lore/:id`, `DELETE /api/v1/lore/:id`
+        *   Similar endpoints for `/rooms`, `/items`, `/npcs`, `/owners`, `/players`, `/tools` (for `OwnerTool` and `NPCTool` definitions).
+    *   **API Handlers:** The Go functions that handle these API requests will call the appropriate DAL functions to interact with the database.
+*   **Editor Front-End:** A simple, single-page web application (HTML, CSS, vanilla JavaScript) will be created. It will communicate exclusively through the REST API to create, read, update, and delete all game entities.
+
+### 2.5. Initial Test Content
+
+*   Using the newly developed web editor, a minimal set of test content (rooms, items, NPCs, lore) will be created and stored in the database to validate the entire system.
 
 ## 3. Acceptance Criteria
 
@@ -49,10 +55,9 @@ This foundational phase establishes the core persistence layer, essential data s
 2.  A local database is successfully initialized and can store data for all core entities.
 3.  The DAL provides functional CRUD operations for all core entities.
 4.  A player can connect to the MUD using a standard Telnet client.
-5.  The server can generate a semantic JSON object (e.g., a hardcoded room description) and have it correctly rendered by the Telnet Renderer and displayed to the client with appropriate ANSI codes.
-6.  The web editor is accessible via a browser.
-7.  Administrators can use the web editor to successfully create, modify, and delete all game entities (Lore, Rooms, Items, NPCs, Owners, Tools) through its interface, with changes persisted in the database.
-8.  A minimal set of initial game content (rooms, NPCs, lore) is created and loadable by the server.
+5.  The server can display data from the database to the Telnet client, rendered through the semantic JSON -> Telnet Renderer pipeline.
+6.  The web editor is accessible via a browser and can successfully perform all CRUD operations on game entities by making authenticated calls to the REST API.
+7.  The initial test content is successfully created and persisted in the database via the web editor.
 
 ## 4. Test Data Requirements
 
@@ -160,27 +165,5 @@ To test the functionality implemented in Phase 1, the following data structures 
   "Type": "zone",
   "AssociatedID": "starting_room",
   "Content": "This cellar was once part of an ancient wizard's tower, long since crumbled to dust. Whispers say the wizard's spirit still lingers, protecting forgotten secrets."
-}
-```
-
-#### 4.5.3. Race Lore
-
-```json
-{
-  "ID": "human_traits",
-  "Type": "race",
-  "AssociatedID": "human",
-  "Content": "Humans are known for their adaptability and ambition, spreading across Aerthos faster than any other race. They are often seen as resourceful but sometimes impulsive."
-}
-```
-
-#### 4.5.4. Profession Lore
-
-```json
-{
-  "ID": "adventurer_code",
-  "Type": "profession",
-  "AssociatedID": "adventurer",
-  "Content": "Adventurers are driven by curiosity and the thrill of discovery. They often seek ancient ruins, forgotten treasures, and new challenges. They are expected to uphold a basic code of conduct, respecting ancient sites and aiding those in need."
 }
 ```
