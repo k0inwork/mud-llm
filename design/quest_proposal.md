@@ -182,6 +182,27 @@ Questmakers utilize a set of conceptual tools to influence the game world. These
         }
         ```
 
+*   **`grant_passive_skill`**
+    *   **Purpose:** To directly grant a passive skill to a player, potentially influencing its initial percentage or cap based on the Questmaker's attitude.
+    *   **Parameters:**
+        *   `player_id`: The ID of the target player.
+        *   `skill_id`: The ID of the passive skill to grant.
+        *   `initial_percentage`: (Optional) The initial percentage for the skill (0-100). If omitted, defaults to 0 or a base value.
+    *   **Conceptual Cost:** Medium to High (e.g., 20-70), depending on the power of the skill.
+    *   **Example LLM Output:**
+        ```json
+        {
+          "tool_name": "grant_passive_skill",
+          "parameters": {
+            "player_id": "player_123",
+            "skill_id": "quest_sense",
+            "initial_percentage": 10
+          },
+          "cost": 25,
+          "reason": "Player showed keen interest in the quest, granting a subtle aid."
+        }
+        ```
+
 *   **`QUESTMAKER_memorize`**
     *   **Purpose:** Records a private memory about a player's actions or progress related to this specific quest. This memory influences the Questmaker's future decisions and interactions with that player regarding the quest.
     *   **Parameters:**

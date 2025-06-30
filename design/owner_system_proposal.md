@@ -194,6 +194,27 @@ Owners utilize a set of conceptual tools to influence their domain. These tools 
     *   **Parameters:** `resource_id`, `change_amount` (positive or negative value).
     *   **Conceptual Cost:** Medium (e.g., 10-30).
 
+*   **`grant_passive_skill`**
+    *   **Purpose:** To directly grant a passive skill to a player, potentially influencing its initial percentage or cap based on the Owner's attitude.
+    *   **Parameters:**
+        *   `player_id`: The ID of the target player.
+        *   `skill_id`: The ID of the passive skill to grant.
+        *   `initial_percentage`: (Optional) The initial percentage for the skill (0-100). If omitted, defaults to 0 or a base value.
+    *   **Conceptual Cost:** Medium to High (e.g., 20-70), depending on the power of the skill and the Owner's generosity/goals.
+    *   **Example LLM Output:**
+        ```json
+        {
+          "tool_name": "grant_passive_skill",
+          "parameters": {
+            "player_id": "player_123",
+            "skill_id": "town_favor",
+            "initial_percentage": 15
+          },
+          "cost": 30,
+          "reason": "Player contributed significantly to town defense, earning the council's favor."
+        }
+        ```
+
 ### 5.4. Note on Tool Exclusivity
 
 While some tools are shared between Owners and Questmakers (e.g., `send_message`, `change_npc_behavior`), it is important to note that the `grant_player_reward` tool is **exclusive to Questmakers**, as it directly relates to player progression within a specific quest narrative. Conversely, the `modify_resource` tool is **exclusive to Owners**, as it pertains to the management of domain-level resources.

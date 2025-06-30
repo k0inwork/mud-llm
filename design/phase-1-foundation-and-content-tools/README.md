@@ -18,7 +18,8 @@ This foundational phase establishes the core persistence layer, essential data s
     *   `Items`
     *   `Lore`
     *   Tables for `OwnerTools`, `NPCTools`, and `Memories` (linking to Players, NPCs, and Owners).
-*   **Go Structs:** Implement the corresponding Go structs for all entities, mirroring the database schema. This includes the `MemoriesAboutPlayers` map on both `NPC` and `Owner` structs.
+*   **Go Structs:** Implement the corresponding Go structs for all entities, mirroring the database schema.
+*   **Player State Persistence:** The player's dynamic state (current health, inventory, location, etc.) will be loaded from the database upon login and saved periodically (e.g., every few minutes) or upon logout via the DAL. This ensures continuity of player experience.
 
 ### 2.2. Data Access Layer (DAL) - Initial Implementation
 
@@ -61,7 +62,7 @@ This foundational phase establishes the core persistence layer, essential data s
 
 ## 4. Test Data Requirements
 
-To test the functionality implemented in Phase 1, the following data structures (represented here in a JSON-like format for clarity, but stored in the database) should be creatable and manageable via the web editor:
+To test the functionality implemented in Phase 1, the following data structures (represented here in a JSON-like format for clarity) should be creatable and manageable via the web editor. This initial test data will be stored in a seed file (e.g., `seed.sql` or `seed.json`) that the application can use to populate a fresh database for testing.
 
 ### 4.1. Example Room
 

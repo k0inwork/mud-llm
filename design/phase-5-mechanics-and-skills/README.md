@@ -29,23 +29,10 @@ This phase focuses on enriching the gameplay by implementing key interactive mec
 
 ### 2.2. Skills System
 
-*   **Active Skills (Player Commands):**
-    *   Player commands for active skills (e.g., `use minor heal`) are handled directly by the **Core Game Engine**.
-    *   The engine will:
-        1.  Check player prerequisites (e.g., mana, cooldowns, skill level - retrieved via DAL).
-        2.  Directly apply game effects (e.g., restore health, deal damage) and update player/entity states in the database via DAL.
-        3.  Send a semantic JSON message to the player and relevant observers (e.g., "You feel a surge of warmth as your wounds close.") via the Server-Side Presentation Layer.
-    *   These actions *may* trigger an Action Significance event for relevant NPCs/Owners (e.g., "Player used a healing spell").
-*   **Passive Skills: A Two-Way Street**
-    *   Passive skills are not explicit commands but rather modifiers that affect both how the world perceives the player and how the player perceives the world. Their effects are integrated into the core game logic and prompt construction.
-    *   **Effect on NPCs/Owners (via Prompt Assembler):**
-        *   The Prompt Assembler (from Phase 3) will be enhanced.
-        *   Before constructing a prompt for an NPC/Owner about a player, it will query the player's passive skills from the DAL.
-        *   Skills like "Stealth" might cause information about the player's presence or specific actions to be omitted from the context provided to an NPC's LLM, making them less likely to be noticed or reacted to.
-        *   Skills like "Noble Bearing" will cause descriptive context (e.g., "The player carries themselves with a noble air.") to be appended to the prompt, influencing the LLM's perception and subsequent narrative/tool usage.
-    *   **Effect on the Player's Perception (via Core Game Engine/Semantic JSON):**
-        *   The **Core Game Engine** will be responsible for filtering or adding information to the semantic JSON based on the player's passive skills *before* it is passed to the Server-Side Presentation Layer.
-        *   Example: A player with the "Arcane Sight" skill might receive extra `semantic_type` data (e.g., `"semantic_type": "magical_aura"`) on items or NPCs in room descriptions, indicating magical properties that other players wouldn't see. A player with "Keen Eyes" might get a higher chance to notice a hidden lever in a room, with the server adding that detail to the room description JSON just for them.
+The detailed design for the Skills and Classes system, including data models, acquisition logic, progression, and effect evaluation, is now covered in the dedicated **[Skills and Classes System Proposal](../../skills_and_classes_proposal.md)** document. This phase will focus on implementing the core mechanics described in that proposal, specifically:
+
+*   **Active Skills (Player Commands):** Implementation of player commands for active skills, ensuring they are handled directly by the Core Game Engine, including prerequisite checks (mana, cooldowns) and direct application of game effects based on skill percentage.
+*   **Passive Skills: A Two-Way Street:** Implementation of how passive skills influence both NPC/Owner perception (via the Prompt Assembler) and player perception (via the Core Game Engine/Semantic JSON), as detailed in the proposal.
 
 ### 2.3. Mapping
 

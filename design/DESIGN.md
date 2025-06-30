@@ -65,3 +65,9 @@ The Owner system introduces LLM-driven entities that act as persistent guardians
 Owners receive comprehensive prompts about their domain's state and respond with conceptual tool calls that are executed by the game engine. Their influence budget allows them to dynamically respond to the evolving world, creating emergent narratives and consequences within their sphere of control.
 
 For a detailed proposal of the Owner system, including data models, decision logic, and conceptual tools, please refer to the **[Owner System Proposal](./owner_system_proposal.md)** document.
+
+## 7. Skills and Classes System
+
+This system introduces a robust framework for player progression, where classes act as skill trees and skill acquisition is tied to class leveling. Skills have a percentage-based mastery, capped by the player's current class level, allowing for nuanced character development and dynamic effect calculation.
+
+For a detailed proposal of the Skills and Classes system, including data models, acquisition logic, and effect evaluation, please refer to the **[Skills and Classes System Proposal](./skills_and_classes_proposal.md)** document.

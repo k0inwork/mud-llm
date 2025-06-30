@@ -17,6 +17,8 @@ This phase focuses on solidifying the Data Access Layer (DAL) and ensuring effic
     *   `GetItemsInRoom(roomID string) ([]*Item, error)`
     *   `GetPlayerInventory(playerID string) ([]*Item, error)`
 *   **In-Memory Caching within DAL:** A caching layer will be implemented directly within the DAL for frequently accessed, relatively static data (e.g., lore entries, tool definitions, static entity properties). This will minimize direct database hits during gameplay.
+    *   **Caching Strategy:** A simple, global, in-memory cache (e.g., a `map[string]interface{}` where keys are entity IDs or composite keys for specific queries) will be used. The eviction policy will be a basic time-to-live (TTL) or a simple least-recently-used (LRU) for more complex scenarios, but initially, a simple invalidation on update/delete will suffice.
+    *   **Cache Scope:** The cache will be global, accessible by all parts of the DAL. It will primarily store static or slowly changing data.
     *   The cache will be populated on server startup by loading all relevant data from the database.
     *   Cache invalidation mechanisms will be implemented. These will be triggered by update or delete operations performed through the DAL (e.g., by the web editor from Phase 1), ensuring the cache remains consistent with the database.
 

@@ -10,18 +10,25 @@ With the core AI infrastructure in place, this phase focuses on enabling dynamic
 
 This new module will sit between the Core Game Engine and the LLM Integration Module. Its purpose is to filter and batch player actions, ensuring that LLM calls are only triggered for events deemed significant by the game design.
 
-*   **Action Logging:** The Core Game Engine will be modified to log all player actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player, per-entity (NPC/Owner) action buffer. Each logged action will include its type, relevant parameters, and a timestamp.
-*   **Significance Scoring:** Each player action type will have a predefined "significance score." This score will be configurable (e.g., in the database via the web editor from Phase 1). For example:
-    *   `move`: Low significance (e.g., 1 point)
-    *   `look`: Low significance (e.g., 0 points)
-    *   `talk`: Medium significance (e.g., 5 points)
-    *   `attack`: High significance (e.g., 10 points)
-    *   `pray`: High significance (e.g., 10 points)
+*   **Action Logging:** The Core Game Engine will be modified to log all player actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player, per-entity (NPC/Owner/Questmaker) action buffer. Each logged action will include its type, relevant parameters, and a timestamp.
+    *   **Action Buffer Location & Garbage Collection:** The action buffer will be an in-memory map, likely attached to the active player's session object. When a player logs out, their session and the associated action buffer will be destroyed, ensuring proper garbage collection.
+*   **Significance Scoring:** Each player action type will have a predefined "significance score." This score will be configurable (e.g., in the database via the web editor from Phase 1). The relevance of an action to a specific LLM entity (NPC, Owner, Questmaker) will also be determined by its target and context.
+    *   For **NPCs**: Actions directly involving the NPC (e.g., `talk to NPC_X`, `attack NPC_X`) or actions within the NPC's immediate vicinity.
+    *   For **Owners**: Actions targeting entities or resources within the Owner's monitored domain (e.g., `attack town_guard`, `steal from market_stall` for a `town_council_owner`), or actions within rooms/zones associated with the Owner.
+    *   For **Questmakers**: Actions directly targeting quest objectives (e.g., `recover item_X`, `defeat NPC_Y`), or actions moving towards quest-relevant locations, or actions involving quest-related NPCs.
+    *   Example Scores:
+        *   `move`: Low significance (e.g., 1 point)
+        *   `look`: Low significance (e.g., 0 points)
+        *   `say`: Medium significance (e.g., 2 points)
+        *   `talk`: Medium significance (e.g., 5 points)
+        *   `attack`: High significance (e.g., 10 points)
+        *   `use_item`: Medium significance (e.g., 3 points)
+        *   `pray`: High significance (e.g., 8 points)
 *   **Threshold-Based Triggering:**
-    *   For each NPC and Owner, a "reaction threshold" will be defined (also configurable via the web editor).
-    *   The Action Significance Monitor will continuously sum the significance scores of actions in a player's buffer that are relevant to a specific NPC/Owner (e.g., actions in the same room for an NPC, or actions related to a monitored aspect for an Owner).
-    *   When the cumulative score for an NPC/Owner exceeds its threshold, an LLM prompt is triggered for that entity.
-*   **Action Batching:** When an LLM prompt is triggered, all relevant batched actions from the player's buffer (since the last reaction for that specific NPC/Owner) will be included in the prompt context. This allows the LLM to react to a sequence of events rather than just the last one. The buffer for that NPC/Owner will then be cleared.
+    *   For each NPC, Owner, and Questmaker, a "reaction threshold" will be defined (also configurable via the web editor).
+    *   The Action Significance Monitor will continuously sum the significance scores of actions in a player's buffer that are relevant to a specific entity (as determined by the targeting/context rules above).
+    *   **Trigger Rule:** An LLM prompt is triggered the moment an entity's cumulative score for a player meets or exceeds its threshold. If a single action has a score higher than the threshold, it triggers immediately. After triggering, the cumulative score for that entity is reset to zero.
+*   **Action Batching:** When an LLM prompt is triggered, all relevant batched actions from the player's buffer (since the last reaction for that specific entity) will be included in the prompt context. This allows the LLM to react to a sequence of events rather than just the last one. The buffer for that entity will then be cleared.
 
 ### 2.2. Sentient Entity Manager (Enhanced)
 

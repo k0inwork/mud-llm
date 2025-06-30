@@ -18,9 +18,21 @@ This final phase focuses on stability, performance, and the overall user experie
 
 ### 2.2. Conditional AI Delivery
 
-*   A queueing system for AI responses will be implemented.
-*   When an LLM response is generated for a player, instead of being sent immediately, it will be placed in a queue for that player.
-*   The system will check for conditions before delivering the message. For example, an NPC's reaction to a player entering a room should only be delivered if the player is still in that room. This prevents messages from "following" players who have already moved on.
+*   **AI Response Event Queue:** Instead of immediate delivery, when an LLM response (narrative or tool calls) is generated for a player, it will be encapsulated within an `AIResponseEvent` struct.
+    ```go
+    type AIResponseEvent struct {
+        PlayerID    string
+        ResponseData interface{} // Can be semantic JSON for narrative or a tool call struct
+        Conditions  map[string]string // e.g., {"player_must_be_in_room": "room_id", "player_must_be_alive": "true"}
+        Timestamp   time.Time
+    }
+    ```
+*   **Central EventQueue:** A central, concurrent `EventQueue` (e.g., a Go channel or a mutex-protected slice) will store these `AIResponseEvent`s.
+*   **Delivery Mechanism:** On each game tick (or a dedicated AI delivery tick), a `ResponseDispatcher` will iterate through the `EventQueue`.
+    *   For each `AIResponseEvent`, it will check if all specified `Conditions` are met (e.g., `player_must_be_in_room` matches the player's current location, `player_must_be_alive` is true).
+    *   If conditions are met, the `ResponseData` is dispatched (narrative to presentation layer, tool calls to Tool Dispatcher).
+    *   If conditions are not met, the event remains in the queue (or is re-queued with a delay) for a later check. Events with unmet conditions for too long (e.g., player logs out permanently) will be garbage collected.
+    *   This prevents messages from "following" players who have already moved on or reacting to outdated contexts.
 
 ### 2.3. Final Polish and Content Expansion
 
