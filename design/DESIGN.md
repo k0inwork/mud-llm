@@ -38,8 +38,8 @@ The detailed design for each implementation phase is located in its respective s
 *   **[Phase 2: Lore & Data Logic](./phase-2-lore-and-data-logic/README.md)**
     *   Focuses on enhancing the Data Access Layer (DAL) with advanced query methods and in-memory caching for all game data.
 
-*   **[Phase 3: LLM Integration & Memory](./phase-3-llm-integration-and-memory/README.md)**
-    *   Focuses on integrating the LLM, implementing prompt caching, and building the multi-layered memory system, clarifying the role of LLM-callable tools.
+*   **[Phase 3: LLM Integration, Memory & Foundational Questmakers](./phase-3-llm-integration-and-memory/README.md)**
+    *   Focuses on integrating the LLM, implementing prompt caching, building the multi-layered memory system, and establishing the foundational elements of the Questmaker system, including their data models, LLM prompting mechanisms, and the initial set of conceptual tools.
 
 *   **[Phase 4: Sentient Entities & Action Significance](./phase-4-sentient-entities-and-action-significance/README.md)**
     *   Focuses on bringing NPCs and Owners to life by integrating their AI-driven behavior via the Action Significance model.
@@ -49,3 +49,11 @@ The detailed design for each implementation phase is located in its respective s
 
 *   **[Phase 6: Concurrency & Final Polish](./phase-6-finalization/README.md)**
     *   Focuses on performance, stability, and the final user experience.
+
+## 5. Questmaker System (LLM-Driven Quests)
+
+To address the need for a dynamic and sentient quest system, the Questmaker system introduces LLM-driven entities that actively influence the game world based on player actions and quest progress. Each quest is associated with a Questmaker, which possesses a unique personality, goals, and an "Influence Budget" to enact changes.
+
+Questmakers receive contextual prompts about player status and world state, and respond with conceptual tool calls (e.g., granting rewards, changing NPC behavior, modifying rooms, triggering world events) that are executed by the game engine. Their influence budget is accumulated through positive player actions and spent on these LLM-generated interventions.
+
+For a detailed proposal of the Questmaker system, including data models, decision logic, and conceptual tools, please refer to the **[Questmaker System Proposal](./quest_proposal.md)** document.
