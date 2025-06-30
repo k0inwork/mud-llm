@@ -57,3 +57,11 @@ To address the need for a dynamic and sentient quest system, the Questmaker syst
 Questmakers receive contextual prompts about player status and world state, and respond with conceptual tool calls (e.g., granting rewards, changing NPC behavior, modifying rooms, triggering world events) that are executed by the game engine. Their influence budget is accumulated through positive player actions and spent on these LLM-generated interventions.
 
 For a detailed proposal of the Questmaker system, including data models, decision logic, and conceptual tools, please refer to the **[Questmaker System Proposal](./quest_proposal.md)** document.
+
+## 6. Owner System (Sentient World Guardians)
+
+The Owner system introduces LLM-driven entities that act as persistent guardians or overseers of specific game world aspects (e.g., a town, a dungeon, a faction). Owners monitor events and player actions within their domain and utilize an "Influence Budget" to enact changes, such as modifying NPC behaviors, managing resources, or triggering localized world events.
+
+Owners receive comprehensive prompts about their domain's state and respond with conceptual tool calls that are executed by the game engine. Their influence budget allows them to dynamically respond to the evolving world, creating emergent narratives and consequences within their sphere of control.
+
+For a detailed proposal of the Owner system, including data models, decision logic, and conceptual tools, please refer to the **[Owner System Proposal](./owner_system_proposal.md)** document.
