@@ -194,6 +194,10 @@ Owners utilize a set of conceptual tools to influence their domain. These tools 
     *   **Parameters:** `resource_id`, `change_amount` (positive or negative value).
     *   **Conceptual Cost:** Medium (e.g., 10-30).
 
+### 5.4. Note on Tool Exclusivity
+
+While some tools are shared between Owners and Questmakers (e.g., `send_message`, `change_npc_behavior`), it is important to note that the `grant_player_reward` tool is **exclusive to Questmakers**, as it directly relates to player progression within a specific quest narrative. Conversely, the `modify_resource` tool is **exclusive to Owners**, as it pertains to the management of domain-level resources.
+
 ## 6. Implementation Considerations
 
 *   **`OwnerMonitor`:** A background service responsible for monitoring events within an Owner's domain, compiling prompts, and sending them to the LLM. This will likely leverage the `Action Significance Monitor` for event filtering.

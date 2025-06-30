@@ -182,6 +182,25 @@ Questmakers utilize a set of conceptual tools to influence the game world. These
         }
         ```
 
+*   **`QUESTMAKER_memorize`**
+    *   **Purpose:** Records a private memory about a player's actions or progress related to this specific quest. This memory influences the Questmaker's future decisions and interactions with that player regarding the quest.
+    *   **Parameters:**
+        *   `player_id`: The ID of the player about whom the memory is being recorded.
+        *   `memory_string`: A string describing the specific memory (e.g., "Player 'player_123' abandoned the quest for 2 hours to fish.").
+    *   **Conceptual Cost:** Low (e.g., 5).
+    *   **Example LLM Output:**
+        ```json
+        {
+          "tool_name": "QUESTMAKER_memorize",
+          "parameters": {
+            "player_id": "player_123",
+            "memory_string": "Player 'player_123' recovered the first spice crate efficiently."
+          },
+          "cost": 5,
+          "reason": "Player demonstrated efficiency in quest progress."
+        }
+        ```
+
 ### 6.2. NPC Interaction Tools
 
 *   **`send_message`**
