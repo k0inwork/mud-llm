@@ -1,37 +1,68 @@
-# Questmaker System Proposal: Event-Driven with Influence Budget
+# Quest System Proposal: Event-Driven with Layered Influence
 
-This proposal outlines a dynamic Questmaker system where sentient LLM entities influence the game world based on player actions and quest progress. This system addresses the "Undefined Quest System" and "LLM Integration" criticisms from `critics.md` by providing a structured approach to quest management and LLM interaction.
+This proposal outlines a dynamic quest system with a clear separation of responsibilities for quest initiation, thematic ownership, and execution control. It addresses the "Undefined Quest System" and "LLM Integration" criticisms from `critics.md` by providing a structured approach to quest management and LLM interaction, with a refined influence budget model.
 
-## 1. Core Concept: Sentient Questmakers
+## 1. Core Concepts: Owners, Quest Owners, and Questmakers
 
-Each quest will be associated with a unique "Questmaker" – an LLM-driven entity with its own personality, goals, and a quantifiable "Influence Budget." The Questmaker's primary role is to react to player actions (or inactions) related to its quest by spending its budget to trigger specific, LLM-generated world events, modify NPC behaviors, or send messages.
+The system introduces three distinct types of entities involved in the quest lifecycle:
+
+*   **Owners:** (Existing concept) These entities monitor specific aspects of the world (locations, races, professions) and can **initiate** quests by making them available to players. Their influence budget is primarily for their general world-monitoring and initiation activities.
+*   **Quest Owners:** (NEW Concept) These are high-level, sentient LLM entities representing thematic ownership or overarching narrative arcs for quests. They **supervise** a series or group of related quests, providing narrative cohesion and driving global world changes. Their influence budget regenerates over time, allowing them to enact broad, strategic impacts.
+*   **Questmakers:** (Refined Concept) These are sentient LLM entities responsible for controlling the **execution and progression** of a *single, specific* quest. There is a 1-to-1 relationship between a quest and its questmaker. Their influence budget primarily accumulates from player actions directly relevant to their quest, enabling them to react dynamically to player progress (or lack thereof).
 
 ## 2. Data Models
 
-### 2.1. `Questmaker` Struct
+### 2.1. `Owner` Struct (Additions)
 
 ```go
-type Questmaker struct {
-    ID                  string           // Unique identifier (e.g., "the_spice_lord")
-    Name                string           // Display name
-    LLMPromptContext    string           // Defines personality, goals, and core directives for the LLM
-    CurrentInfluenceBudget float64        // Current points available for actions
-    MaxInfluenceBudget  float64        // Maximum capacity of influence points
-    BudgetRegenRate     float64        // Points regenerated per game tick/significant player action
+type Owner struct {
+    // ... existing owner fields ...
+    InitiatedQuests      []string         // List of quest IDs this owner can initiate/offer
 }
 ```
 
-### 2.2. `Quest` Struct (Additions)
+### 2.2. `QuestOwner` Struct (NEW)
+
+```go
+type QuestOwner struct {
+    ID                   string           // Unique identifier (e.g., "gandalf_grand_plan")
+    Name                 string           // Display name
+    Description          string           // A brief description of the Quest Owner's role/theme
+    LLMPromptContext     string           // Defines custom personality, goals, and core directives for the LLM (this is appended to a static system prompt)
+    CurrentInfluenceBudget float64        // Current points available for global actions (time-based regeneration)
+    MaxInfluenceBudget   float64        // Maximum capacity of influence points
+    BudgetRegenRate      float64        // Points regenerated per game tick/significant time interval
+    AssociatedQuestmakerIDs []string      // JSON array of Questmaker IDs under this Quest Owner's thematic umbrella
+}
+```
+
+### 2.3. `Questmaker` Struct (Refined)
+
+```go
+type Questmaker struct {
+    ID                  string           // Unique identifier (e.g., "urgent_message_questmaker")
+    Name                string           // Display name
+    LLMPromptContext    string           // Defines custom personality, goals, and core directives for the LLM (this is appended to a static system prompt)
+    CurrentInfluenceBudget float64        // Current points available for quest-specific actions (player-action-based regeneration)
+    MaxInfluenceBudget  float64        // Maximum capacity of influence points
+    BudgetRegenRate     float64        // Points regenerated per game tick/significant player action (will be 0 or very low)
+    MemoriesAboutPlayers map[string]string // Specific memories about players related to this quest
+    AvailableTools      []string         // List of conceptual tools this Questmaker can use
+}
+```
+
+### 2.4. `Quest` Struct (Additions)
 
 ```go
 type Quest struct {
     // ... existing quest fields ...
-    QuestmakerID        string           // ID of the associated Questmaker
-    InfluencePointsMap  map[string]float64 // Map of player actions to influence points granted (e.g., {"recovered_crate": 20})
+    QuestOwnerID        string           // ID of the thematic Quest Owner
+    QuestmakerID        string           // ID of the associated Questmaker (1-to-1)
+    InfluencePointsMap  map[string]float64 // Map of player actions to influence points granted to the Questmaker
 }
 ```
 
-### 2.3. `PlayerQuestState` Struct (Additions)
+### 2.5. `PlayerQuestState` Struct (Additions)
 
 ```go
 type PlayerQuestState struct {
@@ -43,322 +74,206 @@ type PlayerQuestState struct {
 }
 ```
 
-## 3. Questmaker Decision Logic & LLM Integration
+## 3. Decision Logic & LLM Integration
 
-The Questmaker's decision-making is entirely driven by its LLM, which acts as its "brain."
+The system employs two layers of LLM-driven decision-making: Quest Owners for strategic, global influence, and Questmakers for tactical, quest-specific control.
 
 ### 3.1. LLM Prompt Generation
 
-A dedicated `QuestmakerMonitor` service will periodically (or reactively) compile a comprehensive prompt for the Questmaker's LLM. This prompt provides all necessary context for the LLM to make informed decisions:
+Dedicated monitor services will compile comprehensive prompts for both Quest Owners and Questmakers. Each prompt will consist of a static, system-defined prefix followed by dynamic context and the entity's custom `LLMPromptContext` from the database.
 
-*   **Questmaker's Core Identity:** `LLMPromptContext` (personality, goals, current disposition).
-*   **Player Status:** Current location, recent actions (both quest-related and unrelated), time since last relevant quest action, current quest progress, inventory (especially quest items).
-*   **Relevant World State:** Summary of the game world relevant to the quest (e.g., market conditions, NPC locations, environmental factors).
-*   **Quest-Specific Entities:** Status and location of key NPCs and items related to the quest.
-*   **Questmaker's Resources:** `CurrentInfluenceBudget` and `MaxInfluenceBudget`.
+*   **Static Quest Owner Prompt Prefix:**
+    ```
+    "You are a Quest Owner, a high-level entity responsible for supervising overarching narrative arcs and driving global world changes. You have a time-based influence budget to enact broad, strategic impacts. You can use the following tools: `trigger_world_event`, `spawn_entity` (for major entities), `change_room_info` (for significant global changes)."
+    ```
 
-**Example Prompt Snippet (Conceptual):**
+*   **`QuestOwnerMonitor`:** Periodically (or reactively to major world events/quest completions) compiles a prompt for Quest Owners. This prompt includes:
+    1.  The **Static Quest Owner Prompt Prefix**.
+    2.  Global Lore: Core truths, history, and cosmology.
+    3.  Relevant World State: Summary of major events, faction standings, overall player progress in related quest lines.
+    4.  Quest Owner's custom `LLMPromptContext` (overarching goals, disposition).
+    5.  Quest Owner's Resources: `CurrentInfluenceBudget`.
+    6.  Status of Associated Quests/Questmakers: High-level summaries of quests under their thematic ownership.
+
+*   **Static Questmaker Prompt Prefix:**
+    ```
+    "You are a Questmaker, responsible for controlling the execution and progression of a single, specific quest. Your influence budget primarily accumulates from player actions directly relevant to your quest, enabling you to react dynamically to player progress (or lack thereof). You can use the following tools: `send_message`, `change_npc_behavior_to_player`, `change_npc_stats`, `grant_player_reward`, `grant_passive_skill`, `QUESTMAKER_memorize`."
+    ```
+
+*   **`QuestmakerMonitor`:** Reactively (triggered by player actions related to its specific quest) compiles a prompt for its associated Questmaker. This prompt includes:
+    1.  The **Static Questmaker Prompt Prefix**.
+    2.  Quest-Specific Lore: Relevant lore entries for the quest's context.
+    3.  Questmaker's custom `LLMPromptContext` (personality, goals for *this specific quest*).
+    4.  Player Status: Current location, recent actions (both quest-related and unrelated), time since last relevant quest action, current quest progress, and inventory (especially quest items).
+    5.  Quest-Specific Entity Status: The current state and location of key NPCs and items directly related to *this quest*.
+    6.  Questmaker's Resources: `CurrentInfluenceBudget`.
+
+**Example Quest Owner Prompt Snippet (Conceptual - Full Prompt):**
 
 ```
-"You are The Spice Lord, a benevolent spirit of trade. Your goal is to ensure the safe delivery of goods. You are pleased by efficiency and direct action, but angered by delays, theft, and players who wander off-task. Your current influence budget is 25/100.
+"You are a Quest Owner, a high-level entity responsible for supervising overarching narrative arcs and driving global world changes. You have a time-based influence budget to enact broad, strategic impacts. You can use the following tools: `trigger_world_event`, `spawn_entity` (for major entities), `change_room_info` (for significant global changes).
 
-The player 'player_123' is currently in 'Forest Path'. They last made progress on your quest (tracking goblins to the cave) 60 minutes ago. Since then, they have been 'killed_boar' and 'talked_to_farmer', showing a clear deviation from your objective. You have 0/3 spice crates recovered.
+[Global Lore and World State here...]
 
-Considering this, what actions should you take to guide or pressure the player, or to influence the world, using your available influence budget? Respond with a list of tool calls."
+You are the strategic mind behind Gandalf's efforts, focused on the larger picture of Middle-earth's fate. You orchestrate events and guide key individuals. The 'Urgent Message' quest is active, and the player 'player_123' has just delivered the message to Strider. The 'Road to Rivendell' quest is now available. Your current influence budget is 150/200. What strategic world changes or new quest initiations should occur?"
+```
+
+**Example Questmaker Prompt Snippet (Conceptual - Full Prompt):**
+
+```
+"You are a Questmaker, responsible for controlling the execution and progression of a single, specific quest. Your influence budget primarily accumulates from player actions directly relevant to your quest, enabling you to react dynamically to player progress (or lack thereof). You can use the following tools: `send_message`, `change_npc_behavior_to_player`, `change_npc_stats`, `grant_player_reward`, `grant_passive_skill`, `QUESTMAKER_memorize`.
+
+[Quest-Specific Lore and Entity Status here...]
+
+You are the direct overseer of 'The Urgent Message' quest. Your focus is solely on ensuring the message is delivered to Strider swiftly and safely. Player 'player_123' is currently in 'Prancing Pony Private Room' and has just spoken to Strider, completing your primary objective. Your current influence budget is 40/50. What immediate rewards or follow-up actions are appropriate for this player?"
 ```
 
 ### 3.2. LLM Output: Conceptual Tool Calls
 
-The LLM's output will be a structured JSON object representing a list of "conceptual tool calls." These are not direct API calls but rather a structured instruction set that the game engine's `QuestmakerActionProcessor` will interpret and execute. Each proposed action will have an associated `cost` that the LLM must consider against the Questmaker's `CurrentInfluenceBudget`.
-
-**Example LLM Output (Structured JSON):**
-
-```json
-{
-  "questmaker_id": "the_spice_lord",
-  "proposed_actions": [
-    {
-      "tool_name": "send_message",
-      "parameters": {
-        "target_player_id": "player_123",
-        "message": "Captain Elias grows impatient. The market awaits its spices. Do not dally, adventurer!",
-        "via_npc_id": "captain_elias"
-      },
-      "cost": 10,
-      "reason": "Player inactivity and deviation from quest line."
-    },
-    {
-      "tool_name": "change_npc_behavior",
-      "parameters": {
-        "npc_id": "goblin_scout_1",
-        "behavior": "more_alert_and_aggressive"
-      },
-      "cost": 15,
-      "reason": "Player approaching cave but not engaging, allowing goblins to fortify."
-    },
-    {
-      "tool_name": "trigger_world_event",
-      "parameters": {
-        "event_type": "minor_market_fluctuation",
-        "details": "Prices for common goods in Port Town increase slightly due to perceived scarcity."
-      },
-      "cost": 20,
-      "reason": "Initial warning for prolonged delay."
-    }
-  ]
-}
-```
+The LLM's output will be a structured JSON object representing a list of "conceptual tool calls." These are interpreted and executed by dedicated processors. Each proposed action has an associated `cost`.
 
 ## 4. Influence Budget Management
 
 ### 4.1. Accumulation
 
-The Questmaker's `CurrentInfluenceBudget` increases based on player actions:
-
-*   **Positive Quest Actions:** When a player performs an action directly contributing to the quest (e.g., accepting the quest, defeating a quest enemy, recovering a quest item), the `QuestManager` grants `InfluencePoints` to the associated Questmaker as defined in the `Quest.InfluencePointsMap`.
-    *   Example: `Quest.InfluencePointsMap = {"recovered_crate": 20, "defeated_chieftain": 15}`.
-*   **Time-Based Regeneration:** A small amount of `InfluencePoints` can be regenerated over time (e.g., `BudgetRegenRate` per game tick or per significant player action), representing the Questmaker's inherent drive.
+*   **Quest Owners:** `CurrentInfluenceBudget` increases primarily through **time-based regeneration** (`BudgetRegenRate` per game tick/interval), representing their continuous, overarching influence. They may also gain budget upon major quest line completions or significant world events.
+*   **Questmakers:** `CurrentInfluenceBudget` increases primarily based on **player actions** directly contributing to their specific quest (as defined in `Quest.InfluencePointsMap`). This allows them to react directly to player engagement. Their `BudgetRegenRate` will be very low or zero, emphasizing player-driven influence.
 
 ### 4.2. Spending
 
-A `QuestmakerActionProcessor` component is responsible for executing the LLM's `proposed_actions`:
+*   **`QuestOwnerActionProcessor`:** Executes LLM-proposed actions for Quest Owners. Checks `CurrentInfluenceBudget` against `action.cost`. If sufficient, executes global impact tools.
+*   **`QuestmakerActionProcessor`:** Executes LLM-proposed actions for Questmakers. Checks `CurrentInfluenceBudget` against `action.cost`. If sufficient, executes local, quest-specific impact tools.
 
-1.  It receives the LLM's output.
-2.  For each `proposed_action`, it checks if the Questmaker's `CurrentInfluenceBudget` is greater than or equal to the `action.cost`.
-3.  If sufficient, the action is executed by calling the corresponding game engine system (e.g., `CommunicationSystem.SendMessage()`, `NPCManager.ChangeBehavior()`, `WorldEventManager.TriggerEvent()`).
-4.  The `action.cost` is then deducted from `CurrentInfluenceBudget`.
-5.  If insufficient, the action is skipped, and the Questmaker's LLM might be prompted again with the updated (lower) budget, potentially leading to less costly actions or no actions.
+## 5. Player Action Influence & Layered Reaction
 
-## 5. Player Action Influence & Questmaker Reaction
+Player actions feed into both Quest Owners and Questmakers, triggering different layers of reaction.
 
-The core of the system is how player actions directly feed into the Questmaker's decision-making process.
+*   **Player Action -> Questmaker Reaction:** Direct player actions (e.g., completing an objective, failing a task) immediately influence the associated Questmaker's budget and prompt its LLM to react with local, quest-specific changes (messages, NPC behavior, minor rewards/penalties).
+*   **Quest Progress -> Quest Owner Reaction:** When a Questmaker reports significant progress or completion of its quest, this information is relayed to its `QuestOwner`. The `QuestOwner`'s LLM is then prompted to consider broader implications and enact global changes (major world events, new quest lines becoming available).
 
-### 5.1. Player Progress & Positive Reinforcement
+## 6. Conceptual Tools
 
-*   **Mechanism:** The `QuestmakerMonitor` detects positive quest-related actions (e.g., recovering an item, completing a stage).
-*   **Influence:** These actions grant `InfluencePoints` to the Questmaker.
-*   **LLM Reaction:** The LLM is prompted with the positive progress and increased budget. It might then decide to spend budget on "positive" actions:
-    *   **Example:** `send_message` (via an NPC) congratulating the player, `trigger_world_event` (e.g., a minor boon or favorable market condition in a relevant town).
+Tools are now explicitly categorized by the entity type that can wield them, reflecting their scope of influence.
 
-### 5.2. Player Inactivity & Negative Reinforcement
+### 6.1. Owner Tools (Initiation)
 
-*   **Mechanism:** The `QuestmakerMonitor` tracks `time_since_last_action_minutes` in `PlayerQuestState`. If this exceeds a threshold, or if the player deviates significantly from the quest path, the Questmaker is prompted.
-*   **Influence:** While no direct "negative points" are accumulated, the *context* of inactivity/deviation in the prompt, combined with the Questmaker's personality, drives the LLM's decision.
-*   **LLM Reaction:** The LLM, seeing the player's lack of progress and its own goals, will decide to spend budget on "negative" or "pressure" actions:
-    *   **Example:** `send_message` (via an NPC) expressing impatience or subtle threats, `change_npc_behavior` (e.g., making quest enemies more aggressive or patrols more frequent), `trigger_world_event` (e.g., minor market disruptions, increased danger in relevant areas).
-
-### 5.3. Quest Failure & Major Consequences
-
-*   **Mechanism:** If a quest is explicitly failed (abandoned, critical item destroyed, time limit expired), the `QuestmakerMonitor` provides this critical context to the LLM.
-*   **Influence:** This is a high-impact event that will likely trigger the Questmaker to spend a significant portion of its budget on severe consequences.
-*   **LLM Reaction:** The LLM, given the failure and its personality (e.g., "angered by delays"), will decide on impactful, high-cost actions:
-    *   **Example:** `trigger_world_event` (e.g., major market crash, widespread negative reputation for the player), `spawn_entity` (e.g., a powerful, persistent enemy tied to the failure), `change_npc_behavior` (e.g., quest-givers or related NPCs become hostile or refuse interaction).
-
-## 6. Conceptual Tools for Questmakers
-
-Questmakers utilize a set of conceptual tools to influence the game world. These tools are represented as structured JSON outputs from the LLM, which are then interpreted and executed by the `QuestmakerActionProcessor`. Each tool has an associated conceptual `cost` that the LLM must consider against its `CurrentInfluenceBudget`.
-
-### 6.1. Player-Centric Tools
-
-*   **`grant_player_reward`**
-    *   **Purpose:** To grant the player skills, spells, or items as a reward or consequence.
-    *   **Parameters:**
-        *   `player_id`: The ID of the target player.
-        *   `reward_type`: Enum (e.g., "skill", "spell", "item").
-        *   `reward_id`: The ID of the specific skill, spell, or item to grant.
-        *   `quantity`: (Optional) For items, the quantity to grant.
-    *   **Conceptual Cost:** Low to High (e.g., 5-50), depending on the power/rarity of the reward.
-    *   **Example LLM Output:**
+*   **`initiate_quest`**
+    *   **Purpose:** To make a specific quest available to a player or the world.
+    *   **Parameters:** `quest_id`, `target_player_id` (optional), `trigger_condition` (e.g., "on_talk_to_npc", "on_enter_room").
+    *   **Conceptual Cost:** Low (e.g., 0-10), representing the cost of offering a quest.
+    *   **Example LLM Output (from an Owner):**
         ```json
         {
-          "tool_name": "grant_player_reward",
+          "tool_name": "initiate_quest",
           "parameters": {
-            "player_id": "player_123",
-            "reward_type": "skill",
-            "reward_id": "tracking_proficiency"
-          },
-          "cost": 15,
-          "reason": "Player successfully tracked goblins, rewarding their diligence."
-        }
-        ```
-
-*   **`grant_passive_skill`**
-    *   **Purpose:** To directly grant a passive skill to a player, potentially influencing its initial percentage or cap based on the Questmaker's attitude.
-    *   **Parameters:**
-        *   `player_id`: The ID of the target player.
-        *   `skill_id`: The ID of the passive skill to grant.
-        *   `initial_percentage`: (Optional) The initial percentage for the skill (0-100). If omitted, defaults to 0 or a base value.
-    *   **Conceptual Cost:** Medium to High (e.g., 20-70), depending on the power of the skill.
-    *   **Example LLM Output:**
-        ```json
-        {
-          "tool_name": "grant_passive_skill",
-          "parameters": {
-            "player_id": "player_123",
-            "skill_id": "quest_sense",
-            "initial_percentage": 10
-          },
-          "cost": 25,
-          "reason": "Player showed keen interest in the quest, granting a subtle aid."
-        }
-        ```
-
-*   **`QUESTMAKER_memorize`**
-    *   **Purpose:** Records a private memory about a player's actions or progress related to this specific quest. This memory influences the Questmaker's future decisions and interactions with that player regarding the quest.
-    *   **Parameters:**
-        *   `player_id`: The ID of the player about whom the memory is being recorded.
-        *   `memory_string`: A string describing the specific memory (e.g., "Player 'player_123' abandoned the quest for 2 hours to fish.").
-    *   **Conceptual Cost:** Low (e.g., 5).
-    *   **Example LLM Output:**
-        ```json
-        {
-          "tool_name": "QUESTMAKER_memorize",
-          "parameters": {
-            "player_id": "player_123",
-            "memory_string": "Player 'player_123' recovered the first spice crate efficiently."
+            "quest_id": "missing_pony_quest",
+            "trigger_condition": "on_talk_to_npc",
+            "target_npc_id": "barliman_butterbur"
           },
           "cost": 5,
-          "reason": "Player demonstrated efficiency in quest progress."
+          "reason": "Barliman is distressed about his pony, making the quest available."
         }
         ```
 
-### 6.2. NPC Interaction Tools
+### 6.2. Quest Owner Tools (Global Impact)
 
-*   **`send_message`**
-    *   **Purpose:** To deliver a message to a player, potentially via a specific NPC.
-    *   **Parameters:**
-        *   `target_player_id`: The ID of the player to receive the message.
-        *   `message`: The content of the message.
-        *   `via_npc_id`: (Optional) The ID of an NPC through whom the message should be delivered.
-    *   **Conceptual Cost:** Low (e.g., 5-15).
-    *   **Example LLM Output:** (Already in document, kept for consistency)
-        ```json
-        {
-          "tool_name": "send_message",
-          "parameters": {
-            "target_player_id": "player_123",
-            "message": "Captain Elias grows impatient. The market awaits its spices. Do not dally, adventurer!",
-            "via_npc_id": "captain_elias"
-          },
-          "cost": 10,
-          "reason": "Player inactivity and deviation from quest line."
-        }
-        ```
+These tools are used by Quest Owners to enact broad, strategic changes in the world.
 
-*   **`change_npc_behavior_to_player`**
-    *   **Purpose:** To modify an NPC's disposition or behavior specifically towards a player, including adding a memory about that player.
-    *   **Parameters:**
-        *   `npc_id`: The ID of the target NPC.
-        *   `player_id`: The ID of the player whose relationship with the NPC is being modified.
-        *   `behavior_type`: Enum (e.g., "friendly", "hostile", "neutral", "fearful", "helpful").
-        *   `memory_entry`: (Optional) A string describing the specific memory the NPC gains about the player (e.g., "Player failed to recover spices, causing market disruption.").
-    *   **Conceptual Cost:** Medium (e.g., 10-30), depending on the severity of the behavior change.
+*   **`trigger_world_event`**
+    *   **Purpose:** To initiate a broader world event that affects multiple players or areas.
+    *   **Parameters:** `event_type`, `details` (Optional).
+    *   **Conceptual Cost:** Medium to High (e.g., 20-50), reflecting significant impact.
     *   **Example LLM Output:**
         ```json
         {
-          "tool_name": "change_npc_behavior_to_player",
+          "tool_name": "trigger_world_event",
           "parameters": {
-            "npc_id": "merchant_guild_rep",
-            "player_id": "player_123",
-            "behavior_type": "hostile",
-            "memory_entry": "Player 'player_123' failed to recover the spice shipment, causing significant losses for the guild."
+            "event_type": "nazgul_patrol_increase",
+            "details": "The Nazgûl's presence intensifies along the East Road, making travel more perilous."
           },
-          "cost": 25,
-          "reason": "Quest failure, leading to negative reputation with merchants."
+          "cost": 40,
+          "reason": "The One Ring's journey progresses, increasing Sauron's awareness."
         }
         ```
 
-*   **`change_npc_stats`**
-    *   **Purpose:** To modify an NPC's core combat or non-combat statistics.
-    *   **Parameters:**
-        *   `npc_id`: The ID of the target NPC.
-        *   `stat_changes`: A map of stat names to their new values or modifiers (e.g., `{"strength": "+5", "health": "100", "aggression_level": "high"}`).
-    *   **Conceptual Cost:** Medium to High (e.g., 15-40), depending on the impact of the stat changes.
+*   **`spawn_entity`** (for significant, non-quest-specific entities)
+    *   **Purpose:** To dynamically spawn a major NPC or item into the world as a strategic development.
+    *   **Parameters:** `entity_type`, `location`, `quantity` (Optional).
+    *   **Conceptual Cost:** Medium to High (e.g., 25-60), depending on the power/significance.
     *   **Example LLM Output:**
         ```json
         {
-          "tool_name": "change_npc_stats",
+          "tool_name": "spawn_entity",
           "parameters": {
-            "npc_id": "goblin_chieftain",
-            "stat_changes": {
-              "health": "+50",
-              "damage_modifier": "1.2"
-            }
+            "entity_type": "wandering_merchant_caravan",
+            "location": "bree_road",
+            "details": "A merchant caravan appears on the road, offering rare goods, but also attracting unwanted attention."
           },
           "cost": 35,
-          "reason": "Player's prolonged inactivity allowed goblins to fortify their leader."
+          "reason": "The Shire's peace has been maintained, allowing trade to flourish."
         }
         ```
 
-### 6.3. World Manipulation Tools
-
-*   **`change_room_info`**
-    *   **Purpose:** To modify properties of a specific room, such as locking/unlocking doors, changing descriptions, or adding/removing environmental effects.
-    *   **Parameters:**
-        *   `room_id`: The ID of the target room.
-        *   `property_changes`: A map of room properties to their new values (e.g., `{"door_exit_north_locked": true, "description_add": "A foul stench now fills the air."}`).
+*   **`change_room_info`** (for significant, non-quest-specific changes)
+    *   **Purpose:** To modify properties of a room as a result of broader world events.
+    *   **Parameters:** `room_id`, `property_changes`.
     *   **Conceptual Cost:** Medium (e.g., 10-30).
     *   **Example LLM Output:**
         ```json
         {
           "tool_name": "change_room_info",
           "parameters": {
-            "room_id": "whispering_caves_entrance",
+            "room_id": "moria_west_gate",
             "property_changes": {
-              "door_exit_north_locked": true,
-              "description_add": "A newly erected, crude wooden barricade blocks the path."
+              "description_add": "A faint, chilling whisper now emanates from within the gate."
             }
           },
-          "cost": 20,
-          "reason": "Goblins fortified their position due to player's slow progress."
+          "cost": 25,
+          "reason": "The delving into darkness quest has stirred ancient evils within Moria."
         }
         ```
 
-*   **`trigger_world_event`**
-    *   **Purpose:** To initiate a broader world event that affects multiple players or areas.
-    *   **Parameters:**
-        *   `event_type`: A predefined event type (e.g., "minor_market_fluctuation", "weather_storm", "bandit_raid").
-        *   `details`: (Optional) Specific details or parameters for the event.
-    *   **Conceptual Cost:** Medium to High (e.g., 20-50), depending on the event's impact.
-    *   **Example LLM Output:** (Already in document, kept for consistency)
-        ```json
-        {
-          "tool_name": "trigger_world_event",
-          "parameters": {
-            "event_type": "minor_market_fluctuation",
-            "details": "Prices for common goods in Port Town increase slightly due to perceived scarcity."
-          },
-          "cost": 20,
-          "reason": "Initial warning for prolonged delay."
-        }
-        ```
+### 6.3. Questmaker Tools (Local Impact)
 
-*   **`spawn_entity`**
-    *   **Purpose:** To dynamically spawn an NPC or item into the world.
-    *   **Parameters:**
-        *   `entity_type`: The type of entity to spawn (e.g., "goblin_patrol", "cursed_relic").
-        *   `location`: The room ID or coordinates where the entity should spawn.
-        *   `quantity`: (Optional) For items or groups of NPCs, the quantity to spawn.
-    *   **Conceptual Cost:** Medium to High (e.g., 25-60), depending on the power/significance of the spawned entity.
-    *   **Example LLM Output:**
-        ```json
-        {
-          "tool_name": "spawn_entity",
-          "parameters": {
-            "entity_type": "goblin_patrol",
-            "location": "forest_path_01",
-            "quantity": 3
-          },
-          "cost": 30,
-          "reason": "Increased goblin activity due to player's failure to address the threat."
-        }
-        ```
+These tools are used by Questmakers to control the immediate progression and player experience of their single, associated quest.
+
+*   **`send_message`**
+    *   **Purpose:** To deliver a message to a player, potentially via a specific NPC.
+    *   **Parameters:** `target_player_id`, `message`, `via_npc_id` (Optional).
+    *   **Conceptual Cost:** Low (e.g., 5-15).
+
+*   **`change_npc_behavior_to_player`**
+    *   **Purpose:** To modify an NPC's disposition or behavior specifically towards a player, including adding a memory about that player.
+    *   **Parameters:** `npc_id`, `player_id`, `behavior_type`, `memory_entry` (Optional).
+    *   **Conceptual Cost:** Medium (e.g., 10-30).
+
+*   **`change_npc_stats`**
+    *   **Purpose:** To modify an NPC's core combat or non-combat statistics relevant to the quest.
+    *   **Parameters:** `npc_id`, `stat_changes`.
+    *   **Conceptual Cost:** Medium to High (e.g., 15-40).
+
+*   **`grant_player_reward`**
+    *   **Purpose:** To grant the player skills, spells, or items as a reward or consequence for quest progress.
+    *   **Parameters:** `player_id`, `reward_type`, `reward_id`, `quantity` (Optional).
+    *   **Conceptual Cost:** Low to High (e.g., 5-50).
+
+*   **`grant_passive_skill`**
+    *   **Purpose:** To directly grant a passive skill to a player, potentially influencing its initial percentage or cap based on quest performance.
+    *   **Parameters:** `player_id`, `skill_id`, `initial_percentage` (Optional).
+    *   **Conceptual Cost:** Medium to High (e.g., 20-70).
+
+*   **`QUESTMAKER_memorize`**
+    *   **Purpose:** Records a private memory about a player's actions or progress related to this specific quest.
+    *   **Parameters:** `player_id`, `memory_string`.
+    *   **Conceptual Cost:** Low (e.g., 5).
 
 ## 7. Implementation Considerations
 
-*   **`QuestmakerMonitor`:** A background service that manages prompting the LLMs based on game state changes and time.
-*   **`QuestmakerActionProcessor`:** Interprets LLM output and interfaces with core game systems (NPC AI, World Event Manager, Communication System, Player Inventory/Skills, Room Manager).
-*   **Tool Definitions:** Clear internal definitions for each "conceptual tool" (e.g., `send_message`, `change_npc_behavior`, `trigger_world_event`, `spawn_entity`) that the LLM can "call," including their parameters and associated `cost` ranges.
-*   **Persistence:** Questmaker states and player quest states must be persisted in the database.
+*   **`QuestOwnerMonitor`:** A background service that periodically prompts Quest Owners' LLMs based on time and major world/quest line changes.
+*   **`QuestOwnerActionProcessor`:** Interprets Quest Owner LLM output and interfaces with core game systems for global world changes.
+*   **`QuestmakerMonitor`:** A background service that reactively prompts Questmakers' LLMs based on player actions within their specific quest.
+*   **`QuestmakerActionProcessor`:** Interprets Questmaker LLM output and interfaces with core game systems for local, quest-specific changes.
+*   **Tool Definitions:** Clear internal definitions for each "conceptual tool" with their parameters and associated `cost` ranges.
+*   **Persistence:** All Quest Owner, Questmaker, and player quest states must be persisted in the database.
 
-This system provides a robust framework for dynamic, LLM-driven quest experiences, directly addressing the design criticisms and adding a unique layer of interactivity to the MUD.
+This revised system provides a robust and layered framework for dynamic, LLM-driven quest experiences, directly addressing the design criticisms and adding a unique layer of interactivity to the MUD.

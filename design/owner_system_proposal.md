@@ -1,30 +1,30 @@
 # Owner System Proposal: Sentient World Guardians
 
-This proposal details the design for the Owner system, where sentient LLM entities act as guardians or overseers of specific game world aspects (e.g., a town, a dungeon, a faction). Owners influence their associated areas and entities based on events and player actions within their domain. This system builds upon the LLM integration principles established in Phase 3.
+This proposal details the design for the Owner system, where sentient LLM entities act as guardians or overseers of specific game world aspects (e.g., a town, a dungeon, a faction). Owners influence their associated areas and entities based on events and player actions within their domain. This system builds upon the LLM integration principles established in Phase 3, and clarifies the Owner's role in relation to the new Quest Owner and Questmaker entities.
 
 ## 1. Core Concept: Sentient World Guardians
 
-Owners are LLM-driven entities responsible for monitoring and influencing specific aspects or areas of the game world. Unlike Questmakers, whose focus is on a single quest line, Owners have a broader, persistent oversight of their domain. They react to significant events and player actions within their sphere of influence by spending an "Influence Budget" to trigger world events, modify NPC behaviors, or manage resources within their domain.
+Owners are LLM-driven entities responsible for monitoring and influencing specific aspects or areas of the game world. They have a broader, persistent oversight of their domain. They react to significant events and player actions within their sphere of influence by spending an "Influence Budget" to trigger world events, modify NPC behaviors, manage resources within their domain, and **initiate quests**.
 
 ## 2. Data Models
 
 ### 2.1. `Owner` Struct
 
-The existing `Owner` struct will be enhanced to include LLM-specific attributes and an influence budget.
+The existing `Owner` struct will be enhanced to include LLM-specific attributes, an influence budget, and the ability to initiate quests.
 
 ```go
 type Owner struct {
     ID                  string           // Unique identifier (e.g., "town_council_owner", "goblin_king_owner")
     Name                string           // Display name
     Description         string           // A brief description of the Owner
-    MonitoredAspect     string           // Defines what the Owner primarily monitors (e.g., "location", "faction_reputation", "resource_supply")
-    AssociatedID        string           // The ID of the entity/area/faction this Owner is associated with (e.g., "town_square", "goblin_faction")
+    MonitoredAspect     string           // Defines what the Owner primarily monitors (e.g., "location", "faction_reputation", "resource_supply", "race", "profession")
+    AssociatedID        string           // The ID of the entity/area/faction/race/profession this Owner is associated with
     LLMPromptContext    string           // Defines personality, goals, and core directives for the LLM
     MemoriesAboutPlayers map[string][]string // Private memories about players (from Phase 3)
     CurrentInfluenceBudget float64        // Current points available for actions
     MaxInfluenceBudget  float64        // Maximum capacity of influence points
     BudgetRegenRate     float64        // Points regenerated per game tick/significant event
-    // ... other existing Owner fields ...
+    InitiatedQuests     []string         // List of quest IDs this owner can initiate/offer
 }
 ```
 
@@ -68,6 +68,7 @@ A dedicated `OwnerMonitor` service (potentially integrated with the `Action Sign
     *   Environmental conditions.
 *   **Owner's Resources:** `CurrentInfluenceBudget` and `MaxInfluenceBudget`.
 *   **Owner's Memories:** Relevant `MemoriesAboutPlayers` or other entities.
+*   **Available Quests:** Information about quests this Owner can `initiate_quest`.
 
 **Example Prompt Snippet (Conceptual for "The Town Council" Owner):**
 
@@ -78,6 +79,8 @@ Recent events in your domain (Port Town):
 - Player 'player_alice' was observed stealing from the market stall (minor crime).
 - A minor market fluctuation occurred (reason unknown, but impacts town prosperity).
 - Innkeeper Bob reported a suspicious character loitering near the docks.
+
+Available quests to initiate: ["local_delivery_quest", "missing_cat_quest"]
 
 Considering these events and your goals, what actions should you take to maintain order, address threats, or influence the town, using your available influence budget? Respond with a list of tool calls."
 ```
@@ -121,6 +124,16 @@ The LLM's output will be a structured JSON object representing a list of "concep
       },
       "cost": 10,
       "reason": "Direct warning to the player for disruptive behavior."
+    },
+    {
+      "tool_name": "initiate_quest",
+      "parameters": {
+        "quest_id": "missing_cat_quest",
+        "trigger_type": "on_talk_to_npc",
+        "trigger_id": "innkeeper_bob"
+      },
+      "cost": 5,
+      "reason": "Innkeeper Bob's report of a suspicious character leads to a new local quest."
     }
   ]
 }
@@ -219,10 +232,34 @@ Owners utilize a set of conceptual tools to influence their domain. These tools 
 
 While some tools are shared between Owners and Questmakers (e.g., `send_message`, `change_npc_behavior`), it is important to note that the `grant_player_reward` tool is **exclusive to Questmakers**, as it directly relates to player progression within a specific quest narrative. Conversely, the `modify_resource` tool is **exclusive to Owners**, as it pertains to the management of domain-level resources.
 
+### 5.5. Quest Initiation Tool (Exclusive to Owners)
+
+*   **`initiate_quest`**
+    *   **Purpose:** To make a specific quest available to a player or the world, typically by linking it to an NPC dialogue option or a room interaction.
+    *   **Parameters:**
+        *   `quest_id`: The ID of the quest to initiate.
+        *   `trigger_type`: Enum (e.g., "on_talk_to_npc", "on_enter_room", "on_interact_item").
+        *   `trigger_id`: The ID of the NPC, room, or item that will trigger the quest initiation.
+        *   `target_player_id`: (Optional) The ID of a specific player for whom the quest should be initiated. If omitted, it's available to any player meeting conditions.
+    *   **Conceptual Cost:** Low (e.g., 5-15), representing the effort to set up the quest initiation point.
+    *   **Example LLM Output:**
+        ```json
+        {
+          "tool_name": "initiate_quest",
+          "parameters": {
+            "quest_id": "missing_pony_quest",
+            "trigger_type": "on_talk_to_npc",
+            "trigger_id": "barliman_butterbur"
+          },
+          "cost": 10,
+          "reason": "Barliman's distress over his missing pony makes the quest available through him."
+        }
+        ```
+
 ## 6. Implementation Considerations
 
 *   **`OwnerMonitor`:** A background service responsible for monitoring events within an Owner's domain, compiling prompts, and sending them to the LLM. This will likely leverage the `Action Significance Monitor` for event filtering.
-*   **`OwnerActionProcessor`:** Interprets LLM output and interfaces with core game systems (NPC AI, World Event Manager, Communication System, Room Manager, Resource Manager).
+*   **`OwnerActionProcessor`:** Interprets LLM output and interfaces with core game systems (NPC AI, World Event Manager, Communication System, Room Manager, Resource Manager, **Quest Initiation System**).
 *   **Persistence:** Owner states (including `CurrentInfluenceBudget` and `MemoriesAboutPlayers`) must be persisted in the database.
 
 This system provides a robust framework for dynamic, LLM-driven world management, allowing for emergent narratives and consequences within specific game domains.

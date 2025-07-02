@@ -12,6 +12,7 @@ This new module will sit between the Core Game Engine and the LLM Integration Mo
 
 *   **Action Logging:** The Core Game Engine will be modified to log all player actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player, per-entity (NPC/Owner/Questmaker) action buffer. Each logged action will include its type, relevant parameters, and a timestamp.
     *   **Action Buffer Location & Garbage Collection:** The action buffer will be an in-memory map, likely attached to the active player's session object. When a player logs out, their session and the associated action buffer will be destroyed, ensuring proper garbage collection.
+*   **Hardcoded Prompt Prefixes:** The fundamental role and identity of Owners, Quest Owners, and Questmakers will be defined by hardcoded, static prompt prefixes. These prefixes will be prepended to the dynamic `LLMPromptContext` retrieved from the database, ensuring consistent and unalterable core instructions for the LLM. The `LLMPromptContext` field in the database will *only* contain customizable personality traits, goals, or specific instructions that can change dynamically, not their core identity or function.
 *   **Significance Scoring:** Each player action type will have a predefined "significance score." This score will be configurable (e.g., in the database via the web editor from Phase 1). The relevance of an action to a specific LLM entity (NPC, Owner, Questmaker) will also be determined by its target and context.
     *   For **NPCs**: Actions directly involving the NPC (e.g., `talk to NPC_X`, `attack NPC_X`) or actions within the NPC's immediate vicinity.
     *   For **Owners**: Actions targeting entities or resources within the Owner's monitored domain (e.g., `attack town_guard`, `steal from market_stall` for a `town_council_owner`), or actions within rooms/zones associated with the Owner.
@@ -178,3 +179,17 @@ This Owner will react to actions within its monitored domain.
 
 *   **Scenario 4: No Reaction for Irrelevant Actions:**
     *   Have `player_alice` perform actions in a room not monitored by `guard_captain_thomas` or `city_watch_owner`. Verify no LLM calls are triggered for these entities.
+
+*   **Scenario 5: "The Missing Pipe-Weed" Quest Integration Test:**
+    *   **Objective:** Verify the end-to-end flow of the example quest, including Owner/Quest Owner/Questmaker interactions, player progression, and LLM prompting at key stages.
+    *   **Setup:** Ensure the database is seeded with all entities for "The Missing Pipe-Weed" quest (Owner: `shire_spirit`, Quest Owner: `hobbit_elder_council`, Questmaker: `questmaker_pipe_weed_1`, Quest: `missing_pipe_weed_quest`, relevant NPCs, items, and rooms).
+    *   **Steps:**
+        1.  Player `player_alice` enters a room monitored by `shire_spirit` and performs an action that triggers `shire_spirit`'s reaction threshold (e.g., `pray`).
+        2.  Verify `shire_spirit` (Owner) initiates the quest or provides a hint, and an LLM call is made to `shire_spirit`.
+        3.  Player `player_alice` interacts with the quest-giving NPC (e.g., `talk to farmer_maggot`).
+        4.  Verify `questmaker_pipe_weed_1` (Questmaker) is prompted and guides the player, and the player's quest state updates (e.g., `player_quest_state.CurrentObjective` changes).
+        5.  Player `player_alice` performs actions to progress the quest (e.g., `find pipe_weed_bundle`, `return pipe_weed_bundle to farmer_maggot`).
+        6.  Verify `questmaker_pipe_weed_1` is prompted at each significant step, and the player's quest state updates correctly.
+        7.  Verify `hobbit_elder_council` (Quest Owner) is prompted and reacts to major quest milestones (e.g., quest completion), potentially influencing global narrative or unlocking new quests.
+        8.  Verify the quest is marked as complete in `player_quest_state` upon successful completion.
+        9.  Verify all LLM interactions are logged and contextually relevant to the quest progression.
