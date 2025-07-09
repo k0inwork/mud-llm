@@ -1,181 +1,190 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"os"
 	"sync"
 
+	"github.com/sirupsen/logrus"
 	"mud/internal/dal"
+	
 	"mud/internal/server"
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
 
 func main() {
+	// Configure Logrus for structured logging
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetOutput(os.Stdout)
+	logrus.SetLevel(logrus.InfoLevel)
+
 	// Initialize database
 	db, err := dal.InitDB("./mud.db")
 	if err != nil {
-		log.Fatalf("Failed to initialize database: %v", err)
+		logrus.Fatalf("Failed to initialize database: %v", err)
 	}
 	defer db.Close()
 
 	dals := dal.NewDAL(db)
 	dal.SeedData(db)
 
-	fmt.Println("Successfully connected to SQLite database and ensured tables exist.")
+	logrus.Info("Successfully connected to SQLite database and ensured tables exist.")
 
 	// Pre-warm the room cache
 	rooms, err := dals.RoomDAL.GetAllRooms()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm room cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm room cache: %v", err)
 	}
 	roomMap := make(map[string]interface{})
 	for _, room := range rooms {
 		roomMap[room.ID] = room
 	}
-	dals.RoomDAL.cache.SetMany(roomMap, 300) // Cache for 5 minutes
+	dals.RoomDAL.Cache.SetMany(roomMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the item cache
 	items, err := dals.ItemDAL.GetAllItems()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm item cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm item cache: %v", err)
 	}
 	itemMap := make(map[string]interface{})
 	for _, item := range items {
 		itemMap[item.ID] = item
 	}
-	dals.ItemDAL.cache.SetMany(itemMap, 300) // Cache for 5 minutes
+	dals.ItemDAL.Cache.SetMany(itemMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the NPC cache
 	npcs, err := dals.NpcDAL.GetAllNPCs()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm NPC cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm NPC cache: %v", err)
 	}
 	npcMap := make(map[string]interface{})
 	for _, npc := range npcs {
 		npcMap[npc.ID] = npc
 	}
-	dals.NpcDAL.cache.SetMany(npcMap, 300) // Cache for 5 minutes
+	dals.NpcDAL.Cache.SetMany(npcMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the owner cache
 	owners, err := dals.OwnerDAL.GetAllOwners()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm owner cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm owner cache: %v", err)
 	}
 	ownerMap := make(map[string]interface{})
 	for _, owner := range owners {
 		ownerMap[owner.ID] = owner
 	}
-	dals.OwnerDAL.cache.SetMany(ownerMap, 300) // Cache for 5 minutes
+	dals.OwnerDAL.Cache.SetMany(ownerMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the lore cache
 	lores, err := dals.LoreDAL.GetAllLore()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm lore cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm lore cache: %v", err)
 	}
 	loreMap := make(map[string]interface{})
 	for _, lore := range lores {
 		loreMap[lore.ID] = lore
 	}
-	dals.LoreDAL.cache.SetMany(loreMap, 300) // Cache for 5 minutes
+	dals.LoreDAL.Cache.SetMany(loreMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the player cache
 	players, err := dals.PlayerDAL.GetAllPlayers()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm player cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm player cache: %v", err)
 	}
 	playerMap := make(map[string]interface{})
 	for _, player := range players {
 		playerMap[player.ID] = player
 	}
-	dals.PlayerDAL.cache.SetMany(playerMap, 300) // Cache for 5 minutes
+	dals.PlayerDAL.Cache.SetMany(playerMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the player quest state cache
 	playerQuestStates, err := dals.PlayerQuestState.GetAllPlayerQuestStates()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm player quest state cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm player quest state cache: %v", err)
 	}
 	playerQuestStateMap := make(map[string]interface{})
 	for _, pqs := range playerQuestStates {
 		playerQuestStateMap[pqs.PlayerID+"-"+pqs.QuestID] = pqs // Composite key for cache
 	}
-	dals.PlayerQuestState.cache.SetMany(playerQuestStateMap, 300) // Cache for 5 minutes
+	dals.PlayerQuestState.Cache.SetMany(playerQuestStateMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the quest cache
 	quests, err := dals.QuestDAL.GetAllQuests()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm quest cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm quest cache: %v", err)
 	}
 	questMap := make(map[string]interface{})
 	for _, quest := range quests {
 		questMap[quest.ID] = quest
 	}
-	dals.QuestDAL.cache.SetMany(questMap, 300) // Cache for 5 minutes
+	dals.QuestDAL.Cache.SetMany(questMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the questmaker cache
 	questmakers, err := dals.QuestmakerDAL.GetAllQuestmakers()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm questmaker cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm questmaker cache: %v", err)
 	}
 	questmakerMap := make(map[string]interface{})
 	for _, qm := range questmakers {
 		questmakerMap[qm.ID] = qm
 	}
-	dals.QuestmakerDAL.cache.SetMany(questmakerMap, 300) // Cache for 5 minutes
+	dals.QuestmakerDAL.Cache.SetMany(questmakerMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the race cache
 	races, err := dals.RaceDAL.GetAllRaces()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm race cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm race cache: %v", err)
 	}
 	raceMap := make(map[string]interface{})
 	for _, race := range races {
 		raceMap[race.ID] = race
 	}
-	dals.RaceDAL.cache.SetMany(raceMap, 300) // Cache for 5 minutes
+	dals.RaceDAL.Cache.SetMany(raceMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the profession cache
 	professions, err := dals.ProfessionDAL.GetAllProfessions()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm profession cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm profession cache: %v", err)
 	}
 	professionMap := make(map[string]interface{})
 	for _, prof := range professions {
 		professionMap[prof.ID] = prof
 	}
-	dals.ProfessionDAL.cache.SetMany(professionMap, 300) // Cache for 5 minutes
+	dals.ProfessionDAL.Cache.SetMany(professionMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the skill cache
 	skills, err := dals.SkillDAL.GetAllSkills()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm skill cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm skill cache: %v", err)
 	}
 	skillMap := make(map[string]interface{})
 	for _, skill := range skills {
 		skillMap[skill.ID] = skill
 	}
-	dals.SkillDAL.cache.SetMany(skillMap, 300) // Cache for 5 minutes
+	dals.SkillDAL.Cache.SetMany(skillMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the class cache
 	classes, err := dals.ClassDAL.GetAllClasses()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm class cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm class cache: %v", err)
 	}
 	classMap := make(map[string]interface{})
 	for _, class := range classes {
 		classMap[class.ID] = class
 	}
-	dals.ClassDAL.cache.SetMany(classMap, 300) // Cache for 5 minutes
+	dals.ClassDAL.Cache.SetMany(classMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the quest owner cache
 	questOwners, err := dals.QuestOwnerDAL.GetAllQuestOwners()
 	if err != nil {
-		log.Fatalf("Failed to pre-warm quest owner cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm quest owner cache: %v", err)
 	}
 	questOwnerMap := make(map[string]interface{})
 	for _, qo := range questOwners {
 		questOwnerMap[qo.ID] = qo
 	}
-	dals.QuestOwnerDAL.cache.SetMany(questOwnerMap, 300) // Cache for 5 minutes
+	dals.QuestOwnerDAL.Cache.SetMany(questOwnerMap, 300) // Cache for 5 minutes
+
+	// Initialize LLM Service
+	// llmService := llm.NewLLMService(dals) // Temporarily commented out as it's not fully integrated yet
 
 	var wg sync.WaitGroup
 
@@ -195,7 +204,7 @@ func main() {
 		adminWebServer.Start()
 	}()
 
-	fmt.Println("GoMUD server starting...")
+	logrus.Info("GoMUD server starting...")
 
 	// Keep the main goroutine alive until all servers are done
 	wg.Wait()

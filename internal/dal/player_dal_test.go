@@ -19,7 +19,6 @@ func TestPlayerDAL_AdvancedQueries(t *testing.T) {
 	itemDAL.CreateItem(item2)
 
 	// Seed player with inventory
-	playerInventory := `[{"item_id": "sword_of_testing", "quantity": 1}, {"item_id": "shield_of_dev", "quantity": 1}]`
 	newPlayer := &models.Player{
 		ID:            "player1",
 		Name:          "TestPlayer",
@@ -28,8 +27,8 @@ func TestPlayerDAL_AdvancedQueries(t *testing.T) {
 		CurrentRoomID: "starting_room",
 		Health:        100,
 		MaxHealth:     100,
-		Inventory:     playerInventory,
-		VisitedRoomIDs: "[]",
+		Inventory:     []string{"sword_of_testing", "shield_of_dev"},
+		VisitedRoomIDs: map[string]bool{"starting_room": true},
 	}
 	playerDAL.CreatePlayer(newPlayer)
 

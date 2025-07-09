@@ -12,9 +12,9 @@ func TestNPCDAL_AdvancedQueries(t *testing.T) {
 	npcDAL := NewNPCDAL(db)
 
 	// Seed with test data
-	npc1 := &models.NPC{ID: "npc1", Name: "NPC 1", CurrentRoomID: "roomA", OwnerIDs: `["owner1"]`}
-	npc2 := &models.NPC{ID: "npc2", Name: "NPC 2", CurrentRoomID: "roomA", OwnerIDs: `["owner2"]`}
-	npc3 := &models.NPC{ID: "npc3", Name: "NPC 3", CurrentRoomID: "roomB", OwnerIDs: `["owner1", "owner2"]`}
+	npc1 := &models.NPC{ID: "npc1", Name: "NPC 1", CurrentRoomID: "roomA", OwnerIDs: []string{"owner1"}}
+	npc2 := &models.NPC{ID: "npc2", Name: "NPC 2", CurrentRoomID: "roomA", OwnerIDs: []string{"owner2"}}
+	npc3 := &models.NPC{ID: "npc3", Name: "NPC 3", CurrentRoomID: "roomB", OwnerIDs: []string{"owner1", "owner2"}}
 
 	npcDAL.CreateNPC(npc1)
 	npcDAL.CreateNPC(npc2)

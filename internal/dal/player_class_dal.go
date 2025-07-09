@@ -9,12 +9,12 @@ import (
 // PlayerClassDAL handles database operations for PlayerClass entities.
 type PlayerClassDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewPlayerClassDAL creates a new PlayerClassDAL.
 func NewPlayerClassDAL(db *sql.DB) *PlayerClassDAL {
-	return &PlayerClassDAL{db: db, cache: NewCache()}
+	return &PlayerClassDAL{db: db, Cache: NewCache()}
 }
 
 // CreatePlayerClass inserts a new player class entry into the database.

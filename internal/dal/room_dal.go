@@ -9,12 +9,12 @@ import (
 // RoomDAL handles database operations for Room entities.
 type RoomDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewRoomDAL creates a new RoomDAL.
 func NewRoomDAL(db *sql.DB) *RoomDAL {
-	return &RoomDAL{db: db, cache: NewCache()}
+	return &RoomDAL{db: db, Cache: NewCache()}
 }
 
 // CreateRoom inserts a new room into the database.
@@ -35,13 +35,13 @@ func (d *RoomDAL) CreateRoom(room *models.Room) error {
 	if err != nil {
 		return fmt.Errorf("failed to create room: %w", err)
 	}
-	d.cache.Set(room.ID, room, 300) // Cache for 5 minutes
+	d.Cache.Set(room.ID, room, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetRoomByID retrieves a room by its ID.
 func (d *RoomDAL) GetRoomByID(id string) (*models.Room, error) {
-	if cachedRoom, found := d.cache.Get(id); found {
+	if cachedRoom, found := d.Cache.Get(id); found {
 		if room, ok := cachedRoom.(*models.Room); ok {
 			return room, nil
 		}
@@ -66,7 +66,7 @@ func (d *RoomDAL) GetRoomByID(id string) (*models.Room, error) {
 		return nil, fmt.Errorf("failed to get room by ID: %w", err)
 	}
 
-	d.cache.Set(room.ID, room, 300) // Cache for 5 minutes
+	d.Cache.Set(room.ID, room, 300) // Cache for 5 minutes
 	return room, nil
 }
 
@@ -130,7 +130,7 @@ func (d *RoomDAL) UpdateRoom(room *models.Room) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("room with ID %s not found for update", room.ID)
 	}
-	d.cache.Delete(room.ID) // Invalidate cache on update
+	d.Cache.Delete(room.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -149,6 +149,6 @@ func (d *RoomDAL) DeleteRoom(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("room with ID %s not found for deletion", id)
 	}
-	d.cache.Delete(id) // Invalidate cache on delete
+	d.Cache.Delete(id) // Invalidate cache on delete
 	return nil
 }

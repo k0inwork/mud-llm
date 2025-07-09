@@ -10,12 +10,12 @@ import (
 // PlayerQuestStateDAL handles database operations for PlayerQuestState entities.
 type PlayerQuestStateDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewPlayerQuestStateDAL creates a new PlayerQuestStateDAL.
 func NewPlayerQuestStateDAL(db *sql.DB) *PlayerQuestStateDAL {
-	return &PlayerQuestStateDAL{db: db, cache: NewCache()}
+	return &PlayerQuestStateDAL{db: db, Cache: NewCache()}
 }
 
 // CreatePlayerQuestState inserts a new player quest state into the database.

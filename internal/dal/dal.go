@@ -2,7 +2,8 @@ package dal
 
 import (
 	"database/sql"
-	"log"
+
+	"github.com/sirupsen/logrus"
 )
 
 // DAL is a struct that holds all the data access layers.
@@ -120,7 +121,8 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		current_influence_budget REAL NOT NULL,
 		max_influence_budget REAL NOT NULL,
 		budget_regen_rate REAL NOT NULL,
-		available_tools JSON NOT NULL
+		available_tools JSON NOT NULL,
+		initiated_quests JSON NOT NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS Quests (
@@ -247,7 +249,7 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 
 	_, err = db.Exec(schema)
 	if err != nil {
-		log.Fatalf("Error creating tables: %v", err)
+		logrus.Fatalf("Error creating tables: %v", err)
 	}
 
 	return db, nil

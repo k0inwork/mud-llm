@@ -9,12 +9,12 @@ import (
 // ClassDAL handles database operations for Class entities.
 type ClassDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewClassDAL creates a new ClassDAL.
 func NewClassDAL(db *sql.DB) *ClassDAL {
-	return &ClassDAL{db: db, cache: NewCache()}
+	return &ClassDAL{db: db, Cache: NewCache()}
 }
 
 // CreateClass inserts a new class into the database.

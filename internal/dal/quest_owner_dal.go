@@ -9,12 +9,12 @@ import (
 // QuestOwnerDAL handles database operations for QuestOwner entities.
 type QuestOwnerDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewQuestOwnerDAL creates a new QuestOwnerDAL.
 func NewQuestOwnerDAL(db *sql.DB) *QuestOwnerDAL {
-	return &QuestOwnerDAL{db: db, cache: NewCache()}
+	return &QuestOwnerDAL{db: db, Cache: NewCache()}
 }
 
 // CreateQuestOwner inserts a new quest owner into the database.
@@ -37,13 +37,13 @@ func (d *QuestOwnerDAL) CreateQuestOwner(qo *models.QuestOwner) error {
 	if err != nil {
 		return fmt.Errorf("failed to create quest owner: %w", err)
 	}
-	d.cache.Set(qo.ID, qo, 300) // Cache for 5 minutes
+	d.Cache.Set(qo.ID, qo, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetQuestOwnerByID retrieves a quest owner by its ID.
 func (d *QuestOwnerDAL) GetQuestOwnerByID(id string) (*models.QuestOwner, error) {
-	if cachedQuestOwner, found := d.cache.Get(id); found {
+	if cachedQuestOwner, found := d.Cache.Get(id); found {
 		if qo, ok := cachedQuestOwner.(*models.QuestOwner); ok {
 			return qo, nil
 		}
@@ -70,7 +70,7 @@ func (d *QuestOwnerDAL) GetQuestOwnerByID(id string) (*models.QuestOwner, error)
 		return nil, fmt.Errorf("failed to get quest owner by ID: %w", err)
 	}
 
-	d.cache.Set(qo.ID, qo, 300) // Cache for 5 minutes
+	d.Cache.Set(qo.ID, qo, 300) // Cache for 5 minutes
 	return qo, nil
 }
 
@@ -103,7 +103,7 @@ func (d *QuestOwnerDAL) UpdateQuestOwner(qo *models.QuestOwner) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("quest owner with ID %s not found for update", qo.ID)
 	}
-	d.cache.Delete(qo.ID) // Invalidate cache on update
+	d.Cache.Delete(qo.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -122,7 +122,7 @@ func (d *QuestOwnerDAL) DeleteQuestOwner(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("quest owner with ID %s not found for deletion", id)
 	}
-	d.cache.Delete(id) // Invalidate cache on delete
+	d.Cache.Delete(id) // Invalidate cache on delete
 	return nil
 }
 

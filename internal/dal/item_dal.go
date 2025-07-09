@@ -9,12 +9,12 @@ import (
 // ItemDAL handles database operations for Item entities.
 type ItemDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewItemDAL creates a new ItemDAL.
 func NewItemDAL(db *sql.DB) *ItemDAL {
-	return &ItemDAL{db: db, cache: NewCache()}
+	return &ItemDAL{db: db, Cache: NewCache()}
 }
 
 // CreateItem inserts a new item into the database.
@@ -34,13 +34,13 @@ func (d *ItemDAL) CreateItem(item *models.Item) error {
 	if err != nil {
 		return fmt.Errorf("failed to create item: %w", err)
 	}
-	d.cache.Set(item.ID, item, 300) // Cache for 5 minutes
+	d.Cache.Set(item.ID, item, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetItemByID retrieves an item by its ID.
 func (d *ItemDAL) GetItemByID(id string) (*models.Item, error) {
-	if cachedItem, found := d.cache.Get(id); found {
+	if cachedItem, found := d.Cache.Get(id); found {
 		if item, ok := cachedItem.(*models.Item); ok {
 			return item, nil
 		}
@@ -64,7 +64,7 @@ func (d *ItemDAL) GetItemByID(id string) (*models.Item, error) {
 		return nil, fmt.Errorf("failed to get item by ID: %w", err)
 	}
 
-	d.cache.Set(item.ID, item, 300) // Cache for 5 minutes
+	d.Cache.Set(item.ID, item, 300) // Cache for 5 minutes
 	return item, nil
 }
 
@@ -94,7 +94,7 @@ func (d *ItemDAL) UpdateItem(item *models.Item) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("item with ID %s not found for update", item.ID)
 	}
-	d.cache.Delete(item.ID) // Invalidate cache on update
+	d.Cache.Delete(item.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -113,7 +113,7 @@ func (d *ItemDAL) DeleteItem(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("item with ID %s not found for deletion", id)
 	}
-	d.cache.Delete(id) // Invalidate cache on delete
+	d.Cache.Delete(id) // Invalidate cache on delete
 	return nil
 }
 

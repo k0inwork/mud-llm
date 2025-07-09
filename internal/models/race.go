@@ -6,5 +6,5 @@ type Race struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	OwnerID     string `json:"owner_id"` // ID of the Owner associated with this race
-	BaseStats   string `json:"base_stats"` // JSON object of base stats for the race
+	BaseStats   map[string]int `json:"base_stats"` // Map of base stats for the race
 }

@@ -13,8 +13,8 @@ type Player struct {
 	CurrentRoomID    string    `json:"current_room_id"`
 	Health           int       `json:"health"`
 	MaxHealth        int       `json:"max_health"`
-	Inventory        string    `json:"inventory"`         // JSON array of item IDs and quantities
-	VisitedRoomIDs   string    `json:"visited_room_ids"`  // JSON array of room IDs
+	Inventory        []string  `json:"inventory"`         // Array of item IDs
+	VisitedRoomIDs   map[string]bool `json:"visited_room_ids"`  // Map of room IDs to boolean (for quick lookup)
 	CreatedAt        time.Time `json:"created_at"`
 	LastLoginAt      time.Time `json:"last_login_at"`
 	LastLogoutAt     time.Time `json:"last_logout_at"`

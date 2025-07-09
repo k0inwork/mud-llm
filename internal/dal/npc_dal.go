@@ -2,6 +2,7 @@ package dal
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"mud/internal/models"
 )
@@ -9,45 +10,62 @@ import (
 // NPCDAL handles database operations for NPC entities.
 type NPCDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewNPCDAL creates a new NPCDAL.
 func NewNPCDAL(db *sql.DB) *NPCDAL {
-	return &NPCDAL{db: db, cache: NewCache()}
+	return &NPCDAL{db: db, Cache: NewCache()}
 }
 
 // CreateNPC inserts a new NPC into the database.
 func (d *NPCDAL) CreateNPC(npc *models.NPC) error {
+	inventoryJSON, err := json.Marshal(npc.Inventory)
+	if err != nil {
+		return fmt.Errorf("failed to marshal inventory: %w", err)
+	}
+	ownerIDsJSON, err := json.Marshal(npc.OwnerIDs)
+	if err != nil {
+		return fmt.Errorf("failed to marshal owner IDs: %w", err)
+	}
+	memoriesJSON, err := json.Marshal(npc.MemoriesAboutPlayers)
+	if err != nil {
+		return fmt.Errorf("failed to marshal memories about players: %w", err)
+	}
+	availableToolsJSON, err := json.Marshal(npc.AvailableTools)
+	if err != nil {
+		return fmt.Errorf("failed to marshal available tools: %w", err)
+	}
+
 	query := `
 	INSERT INTO NPCs (id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state)
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
-	_, err := d.db.Exec(query,
+	_, err = d.db.Exec(query,
 		npc.ID,
 		npc.Name,
 		npc.Description,
 		npc.CurrentRoomID,
 		npc.Health,
 		npc.MaxHealth,
-		npc.Inventory,
-		npc.OwnerIDs,
-		npc.MemoriesAboutPlayers,
+		string(inventoryJSON),
+		string(ownerIDsJSON),
+		string(memoriesJSON),
 		npc.PersonalityPrompt,
-		npc.AvailableTools,
+		string(availableToolsJSON),
 		npc.BehaviorState,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create NPC: %w", err)
 	}
-	d.cache.Set(npc.ID, npc, 300) // Cache for 5 minutes
+	d.Cache.Set(npc.ID, npc, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetNPCByID retrieves an NPC by their ID.
 func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
-	if cachedNPC, found := d.cache.Get(id); found {
+	if cachedNPC, found := d.Cache.Get(id); found {
 		if npc, ok := cachedNPC.(*models.NPC); ok {
 			return npc, nil
 		}
@@ -57,6 +75,7 @@ func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 	row := d.db.QueryRow(query, id)
 
 	npc := &models.NPC{}
+	var inventoryJSON, ownerIDsJSON, memoriesJSON, availableToolsJSON []byte
 	err := row.Scan(
 		&npc.ID,
 		&npc.Name,
@@ -64,11 +83,11 @@ func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 		&npc.CurrentRoomID,
 		&npc.Health,
 		&npc.MaxHealth,
-		&npc.Inventory,
-		&npc.OwnerIDs,
-		&npc.MemoriesAboutPlayers,
+		&inventoryJSON,
+		&ownerIDsJSON,
+		&memoriesJSON,
 		&npc.PersonalityPrompt,
-		&npc.AvailableTools,
+		&availableToolsJSON,
 		&npc.BehaviorState,
 	)
 	if err != nil {
@@ -78,12 +97,42 @@ func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 		return nil, fmt.Errorf("failed to get NPC by ID: %w", err)
 	}
 
-	d.cache.Set(npc.ID, npc, 300) // Cache for 5 minutes
+	if err := json.Unmarshal(inventoryJSON, &npc.Inventory); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal inventory: %w", err)
+	}
+	if err := json.Unmarshal(ownerIDsJSON, &npc.OwnerIDs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal owner IDs: %w", err)
+	}
+	if err := json.Unmarshal(memoriesJSON, &npc.MemoriesAboutPlayers); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal memories about players: %w", err)
+	}
+	if err := json.Unmarshal(availableToolsJSON, &npc.AvailableTools); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal available tools: %w", err)
+	}
+
+	d.Cache.Set(npc.ID, npc, 300) // Cache for 5 minutes
 	return npc, nil
 }
 
 // UpdateNPC updates an existing NPC in the database.
 func (d *NPCDAL) UpdateNPC(npc *models.NPC) error {
+	inventoryJSON, err := json.Marshal(npc.Inventory)
+	if err != nil {
+		return fmt.Errorf("failed to marshal inventory: %w", err)
+	}
+	ownerIDsJSON, err := json.Marshal(npc.OwnerIDs)
+	if err != nil {
+		return fmt.Errorf("failed to marshal owner IDs: %w", err)
+	}
+	memoriesJSON, err := json.Marshal(npc.MemoriesAboutPlayers)
+	if err != nil {
+		return fmt.Errorf("failed to marshal memories about players: %w", err)
+	}
+	availableToolsJSON, err := json.Marshal(npc.AvailableTools)
+	if err != nil {
+		return fmt.Errorf("failed to marshal available tools: %w", err)
+	}
+
 	query := `
 	UPDATE NPCs
 	SET name = ?, description = ?, current_room_id = ?, health = ?, max_health = ?, inventory = ?, owner_ids = ?, memories_about_players = ?, personality_prompt = ?, available_tools = ?, behavior_state = ?
@@ -96,11 +145,11 @@ func (d *NPCDAL) UpdateNPC(npc *models.NPC) error {
 		npc.CurrentRoomID,
 		npc.Health,
 		npc.MaxHealth,
-		npc.Inventory,
-		npc.OwnerIDs,
-		npc.MemoriesAboutPlayers,
+		string(inventoryJSON),
+		string(ownerIDsJSON),
+		string(memoriesJSON),
 		npc.PersonalityPrompt,
-		npc.AvailableTools,
+		string(availableToolsJSON),
 		npc.BehaviorState,
 		npc.ID,
 	)
@@ -115,7 +164,7 @@ func (d *NPCDAL) UpdateNPC(npc *models.NPC) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("NPC with ID %s not found for update", npc.ID)
 	}
-	d.cache.Delete(npc.ID) // Invalidate cache on update
+	d.Cache.Delete(npc.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -134,7 +183,7 @@ func (d *NPCDAL) DeleteNPC(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("NPC with ID %s not found for deletion", id)
 	}
-	d.cache.Delete(id) // Invalidate cache on delete
+	d.Cache.Delete(id) // Invalidate cache on delete
 	return nil
 }
 
@@ -151,6 +200,7 @@ func (d *NPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) {
 	var npcs []*models.NPC
 	for rows.Next() {
 		npc := &models.NPC{}
+		var inventoryJSON, ownerIDsJSON, memoriesJSON, availableToolsJSON []byte
 		err := rows.Scan(
 			&npc.ID,
 			&npc.Name,
@@ -158,16 +208,30 @@ func (d *NPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) {
 			&npc.CurrentRoomID,
 			&npc.Health,
 			&npc.MaxHealth,
-			&npc.Inventory,
-			&npc.OwnerIDs,
-			&npc.MemoriesAboutPlayers,
+			&inventoryJSON,
+			&ownerIDsJSON,
+			&memoriesJSON,
 			&npc.PersonalityPrompt,
-			&npc.AvailableTools,
+			&availableToolsJSON,
 			&npc.BehaviorState,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan NPC row: %w", err)
 		}
+
+		if err := json.Unmarshal(inventoryJSON, &npc.Inventory); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal inventory for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(ownerIDsJSON, &npc.OwnerIDs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal owner IDs for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(memoriesJSON, &npc.MemoriesAboutPlayers); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal memories about players for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(availableToolsJSON, &npc.AvailableTools); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal available tools for NPC %s: %w", npc.ID, err)
+		}
+
 		npcs = append(npcs, npc)
 	}
 
@@ -176,8 +240,8 @@ func (d *NPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) {
 
 // GetNPCsByOwner retrieves all NPCs associated with a given owner.
 func (d *NPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
-	query := `SELECT n.id, n.name, n.description, n.current_room_id, n.health, n.max_health, n.inventory, n.owner_ids, n.memories_about_players, n.personality_prompt, n.available_tools, n.behavior_state FROM NPCs n, json_each(n.owner_ids) WHERE json_each.value = ?`
-	rows, err := d.db.Query(query, ownerID)
+	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state FROM NPCs WHERE INSTR(owner_ids, ?)`
+	rows, err := d.db.Query(query, `"`+ownerID+`"`)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get NPCs by owner: %w", err)
 	}
@@ -186,6 +250,7 @@ func (d *NPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
 	var npcs []*models.NPC
 	for rows.Next() {
 		npc := &models.NPC{}
+		var inventoryJSON, ownerIDsJSON, memoriesJSON, availableToolsJSON []byte
 		err := rows.Scan(
 			&npc.ID,
 			&npc.Name,
@@ -193,16 +258,30 @@ func (d *NPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
 			&npc.CurrentRoomID,
 			&npc.Health,
 			&npc.MaxHealth,
-			&npc.Inventory,
-			&npc.OwnerIDs,
-			&npc.MemoriesAboutPlayers,
+			&inventoryJSON,
+			&ownerIDsJSON,
+			&memoriesJSON,
 			&npc.PersonalityPrompt,
-			&npc.AvailableTools,
+			&availableToolsJSON,
 			&npc.BehaviorState,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan NPC row: %w", err)
 		}
+
+		if err := json.Unmarshal(inventoryJSON, &npc.Inventory); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal inventory for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(ownerIDsJSON, &npc.OwnerIDs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal owner IDs for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(memoriesJSON, &npc.MemoriesAboutPlayers); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal memories about players for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(availableToolsJSON, &npc.AvailableTools); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal available tools for NPC %s: %w", npc.ID, err)
+		}
+
 		npcs = append(npcs, npc)
 	}
 
@@ -221,6 +300,7 @@ func (d *NPCDAL) GetAllNPCs() ([]*models.NPC, error) {
 	var npcs []*models.NPC
 	for rows.Next() {
 		npc := &models.NPC{}
+		var inventoryJSON, ownerIDsJSON, memoriesJSON, availableToolsJSON []byte
 		err := rows.Scan(
 			&npc.ID,
 			&npc.Name,
@@ -228,16 +308,30 @@ func (d *NPCDAL) GetAllNPCs() ([]*models.NPC, error) {
 			&npc.CurrentRoomID,
 			&npc.Health,
 			&npc.MaxHealth,
-			&npc.Inventory,
-			&npc.OwnerIDs,
-			&npc.MemoriesAboutPlayers,
+			&inventoryJSON,
+			&ownerIDsJSON,
+			&memoriesJSON,
 			&npc.PersonalityPrompt,
-			&npc.AvailableTools,
+			&availableToolsJSON,
 			&npc.BehaviorState,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan NPC: %w", err)
 		}
+
+		if err := json.Unmarshal(inventoryJSON, &npc.Inventory); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal inventory for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(ownerIDsJSON, &npc.OwnerIDs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal owner IDs for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(memoriesJSON, &npc.MemoriesAboutPlayers); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal memories about players for NPC %s: %w", npc.ID, err)
+		}
+		if err := json.Unmarshal(availableToolsJSON, &npc.AvailableTools); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal available tools for NPC %s: %w", npc.ID, err)
+		}
+
 		npcs = append(npcs, npc)
 	}
 

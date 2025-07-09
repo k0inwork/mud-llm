@@ -10,25 +10,31 @@ import (
 // PlayerDAL handles database operations for Player entities.
 type PlayerDAL struct {
 	db    *sql.DB
-	cache *Cache
+	Cache *Cache
 }
 
 // NewPlayerDAL creates a new PlayerDAL.
 func NewPlayerDAL(db *sql.DB) *PlayerDAL {
-	return &PlayerDAL{db: db, cache: NewCache()}
+	return &PlayerDAL{db: db, Cache: NewCache()}
 }
 
 // CreatePlayer inserts a new player into the database.
 func (d *PlayerDAL) CreatePlayer(player *models.Player) error {
+	inventoryJSON, err := json.Marshal(player.Inventory)
+	if err != nil {
+		return fmt.Errorf("failed to marshal inventory: %w", err)
+	}
+	visitedRoomsJSON, err := json.Marshal(player.VisitedRoomIDs)
+	if err != nil {
+		return fmt.Errorf("failed to marshal visited rooms: %w", err)
+	}
+
 	query := `
 	INSERT INTO Players (id, name, race_id, profession_id, current_room_id, health, max_health, inventory, visited_room_ids, created_at, last_login_at, last_logout_at)
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
-	inventoryJSON := []byte(player.Inventory)
-	visitedRoomsJSON := []byte(player.VisitedRoomIDs)
-
-	_, err := d.db.Exec(query,
+	_, err = d.db.Exec(query,
 		player.ID,
 		player.Name,
 		player.RaceID,
@@ -36,8 +42,8 @@ func (d *PlayerDAL) CreatePlayer(player *models.Player) error {
 		player.CurrentRoomID,
 		player.Health,
 		player.MaxHealth,
-		inventoryJSON,
-		visitedRoomsJSON,
+		string(inventoryJSON),
+		string(visitedRoomsJSON),
 		player.CreatedAt,
 		player.LastLoginAt,
 		player.LastLogoutAt,
@@ -77,26 +83,32 @@ func (d *PlayerDAL) GetPlayerByID(id string) (*models.Player, error) {
 		return nil, fmt.Errorf("failed to get player by ID: %w", err)
 	}
 
-	// Unmarshal JSON fields
-	// Assuming Inventory and VisitedRoomIDs are []string or similar in the Go struct
-	// For now, keep them as string in struct and handle JSON directly here.
-	// In a real scenario, you'd define specific types for these JSON fields.
-	player.Inventory = string(inventoryJSON)
-	player.VisitedRoomIDs = string(visitedRoomsJSON)
+	if err := json.Unmarshal(inventoryJSON, &player.Inventory); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal player inventory: %w", err)
+	}
+	if err := json.Unmarshal(visitedRoomsJSON, &player.VisitedRoomIDs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal visited rooms: %w", err)
+	}
 
 	return player, nil
 }
 
 // UpdatePlayer updates an existing player in the database.
 func (d *PlayerDAL) UpdatePlayer(player *models.Player) error {
+	inventoryJSON, err := json.Marshal(player.Inventory)
+	if err != nil {
+		return fmt.Errorf("failed to marshal inventory: %w", err)
+	}
+	visitedRoomsJSON, err := json.Marshal(player.VisitedRoomIDs)
+	if err != nil {
+		return fmt.Errorf("failed to marshal visited rooms: %w", err)
+	}
+
 	query := `
 	UPDATE Players
 	SET name = ?, race_id = ?, profession_id = ?, current_room_id = ?, health = ?, max_health = ?, inventory = ?, visited_room_ids = ?, last_login_at = ?, last_logout_at = ?
 	WHERE id = ?
 	`
-
-	inventoryJSON := []byte(player.Inventory)
-	visitedRoomsJSON := []byte(player.VisitedRoomIDs)
 
 	result, err := d.db.Exec(query,
 		player.Name,
@@ -105,8 +117,8 @@ func (d *PlayerDAL) UpdatePlayer(player *models.Player) error {
 		player.CurrentRoomID,
 		player.Health,
 		player.MaxHealth,
-		inventoryJSON,
-		visitedRoomsJSON,
+		string(inventoryJSON),
+		string(visitedRoomsJSON),
 		player.LastLoginAt,
 		player.LastLogoutAt,
 		player.ID,
@@ -145,12 +157,6 @@ func (d *PlayerDAL) DeletePlayer(id string) error {
 	return nil
 }
 
-// inventoryItem represents a single item entry in the player's inventory JSON.
-type inventoryItem struct {
-	ItemID   string `json:"item_id"`
-	Quantity int    `json:"quantity"`
-}
-
 // GetPlayerInventory retrieves all items in a player's inventory.
 func (d *PlayerDAL) GetPlayerInventory(playerID string) ([]*models.Item, error) {
 	player, err := d.GetPlayerByID(playerID)
@@ -161,21 +167,15 @@ func (d *PlayerDAL) GetPlayerInventory(playerID string) ([]*models.Item, error) 
 		return nil, fmt.Errorf("player with ID %s not found", playerID)
 	}
 
-	var playerInventory []inventoryItem
-	if err := json.Unmarshal([]byte(player.Inventory), &playerInventory); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal player inventory JSON: %w", err)
-	}
-
 	var items []*models.Item
 	itemDAL := NewItemDAL(d.db) // Create a new ItemDAL instance
 
-	for _, invItem := range playerInventory {
-		item, err := itemDAL.GetItemByID(invItem.ItemID)
+	for _, itemID := range player.Inventory {
+		item, err := itemDAL.GetItemByID(itemID)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get item %s from inventory: %w", invItem.ItemID, err)
+			return nil, fmt.Errorf("failed to get item %s from inventory: %w", itemID, err)
 		}
 		if item != nil {
-			// For now, we just return the item definition. Quantity can be handled by game logic.
 			items = append(items, item)
 		}
 	}
@@ -213,8 +213,12 @@ func (d *PlayerDAL) GetAllPlayers() ([]*models.Player, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan player: %w", err)
 		}
-		player.Inventory = string(inventoryJSON)
-		player.VisitedRoomIDs = string(visitedRoomsJSON)
+		if err := json.Unmarshal(inventoryJSON, &player.Inventory); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal inventory for player %s: %w", player.ID, err)
+		}
+		if err := json.Unmarshal(visitedRoomsJSON, &player.VisitedRoomIDs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal visited rooms for player %s: %w", player.ID, err)
+		}
 		players = append(players, player)
 	}
 

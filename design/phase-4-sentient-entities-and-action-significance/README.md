@@ -180,16 +180,16 @@ This Owner will react to actions within its monitored domain.
 *   **Scenario 4: No Reaction for Irrelevant Actions:**
     *   Have `player_alice` perform actions in a room not monitored by `guard_captain_thomas` or `city_watch_owner`. Verify no LLM calls are triggered for these entities.
 
-*   **Scenario 5: "The Missing Pipe-Weed" Quest Integration Test:**
+*   **Scenario 5: "The Great Mushroom Hunt" Quest Integration Test:**
     *   **Objective:** Verify the end-to-end flow of the example quest, including Owner/Quest Owner/Questmaker interactions, player progression, and LLM prompting at key stages.
-    *   **Setup:** Ensure the database is seeded with all entities for "The Missing Pipe-Weed" quest (Owner: `shire_spirit`, Quest Owner: `hobbit_elder_council`, Questmaker: `questmaker_pipe_weed_1`, Quest: `missing_pipe_weed_quest`, relevant NPCs, items, and rooms).
+    *   **Setup:** Ensure the database is seeded with all entities for "The Great Mushroom Hunt" quest (Owner: `shire_spirit`, Quest Owner: `shire_local_governance`, Questmaker: `mushroom_hunt_questmaker`, Quest: `the_great_mushroom_hunt`, relevant NPCs, items, and rooms).
     *   **Steps:**
-        1.  Player `player_alice` enters a room monitored by `shire_spirit` and performs an action that triggers `shire_spirit`'s reaction threshold (e.g., `pray`).
+        1.  Player `player_alice` enters a room monitored by `shire_spirit` and performs an action that triggers `shire_spirit`'s reaction threshold (e.g., `talk to farmer_maggot`).
         2.  Verify `shire_spirit` (Owner) initiates the quest or provides a hint, and an LLM call is made to `shire_spirit`.
         3.  Player `player_alice` interacts with the quest-giving NPC (e.g., `talk to farmer_maggot`).
-        4.  Verify `questmaker_pipe_weed_1` (Questmaker) is prompted and guides the player, and the player's quest state updates (e.g., `player_quest_state.CurrentObjective` changes).
-        5.  Player `player_alice` performs actions to progress the quest (e.g., `find pipe_weed_bundle`, `return pipe_weed_bundle to farmer_maggot`).
-        6.  Verify `questmaker_pipe_weed_1` is prompted at each significant step, and the player's quest state updates correctly.
-        7.  Verify `hobbit_elder_council` (Quest Owner) is prompted and reacts to major quest milestones (e.g., quest completion), potentially influencing global narrative or unlocking new quests.
+        4.  Verify `mushroom_hunt_questmaker` (Questmaker) is prompted and guides the player, and the player's quest state updates (e.g., `player_quest_state.CurrentObjective` changes).
+        5.  Player `player_alice` performs actions to progress the quest (e.g., `gather maggots_prize_mushrooms`, `give maggots_prize_mushrooms to farmer_maggot`).
+        6.  Verify `mushroom_hunt_questmaker` is prompted at each significant step, and the player's quest state updates correctly.
+        7.  Verify `shire_local_governance` (Quest Owner) is prompted and reacts to major quest milestones (e.g., quest completion), potentially influencing global narrative or unlocking new quests.
         8.  Verify the quest is marked as complete in `player_quest_state` upon successful completion.
         9.  Verify all LLM interactions are logged and contextually relevant to the quest progression.
