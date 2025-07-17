@@ -7,7 +7,7 @@ type Quest struct {
 	Description        string `json:"description"`
 	QuestOwnerID       string            `json:"quest_owner_id"` // ID of the thematic Quest Owner
 	QuestmakerID       string            `json:"questmaker_id"`
-	InfluencePointsMap map[string]float64 `json:"influence_points_map"` // Map of player actions to influence points granted
+	InfluencePointsMap string `json:"influence_points_map"` // Map of player actions to influence points granted
 	Objectives         string            `json:"objectives"`         // JSON array of quest objectives
 	Rewards            string            `json:"rewards"`            // JSON array of rewards
 }

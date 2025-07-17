@@ -9,4 +9,5 @@ type Questmaker struct {
 	BudgetRegenRate      float64           `json:"budget_regen_rate"`
 	MemoriesAboutPlayers map[string][]string `json:"memories_about_players"`
 	AvailableTools       []Tool            `json:"available_tools"`
+	ReactionThreshold    int               `json:"reaction_threshold"`
 }

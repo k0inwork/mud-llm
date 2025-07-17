@@ -8,16 +8,16 @@ With the core AI infrastructure in place, this phase focuses on enabling dynamic
 
 ### 2.1. Action Significance Monitor
 
-This new module will sit between the Core Game Engine and the LLM Integration Module. Its purpose is to filter and batch player actions, ensuring that LLM calls are only triggered for events deemed significant by the game design.
+This new module (`internal/game/actionsignificance/monitor.go`) has been implemented to sit between the Core Game Engine and the LLM Integration Module. Its purpose is to filter and batch player actions, ensuring that LLM calls are only triggered for events deemed significant by the game design.
 
-*   **Action Logging:** The Core Game Engine will be modified to log all player actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player, per-entity (NPC/Owner/Questmaker) action buffer. Each logged action will include its type, relevant parameters, and a timestamp.
-    *   **Action Buffer Location & Garbage Collection:** The action buffer will be an in-memory map, likely attached to the active player's session object. When a player logs out, their session and the associated action buffer will be destroyed, ensuring proper garbage collection.
+*   **Action Logging:** The Core Game Engine has been modified to log all player actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player, per-entity (NPC/Owner/Questmaker) action buffer. Each logged action includes its type, relevant parameters, and a timestamp.
+    *   **Action Buffer Location & Garbage Collection:** The action buffer is an in-memory map, likely attached to the active player's session object. When a player logs out, their session and the associated action buffer will be destroyed, ensuring proper garbage collection.
 *   **Hardcoded Prompt Prefixes:** The fundamental role and identity of Owners, Quest Owners, and Questmakers will be defined by hardcoded, static prompt prefixes. These prefixes will be prepended to the dynamic `LLMPromptContext` retrieved from the database, ensuring consistent and unalterable core instructions for the LLM. The `LLMPromptContext` field in the database will *only* contain customizable personality traits, goals, or specific instructions that can change dynamically, not their core identity or function.
-*   **Significance Scoring:** Each player action type will have a predefined "significance score." This score will be configurable (e.g., in the database via the web editor from Phase 1). The relevance of an action to a specific LLM entity (NPC, Owner, Questmaker) will also be determined by its target and context.
+*   **Significance Scoring:** Each player action type has a predefined "significance score." This score is configurable (e.g., in the database via the web editor from Phase 1). The relevance of an action to a specific LLM entity (NPC, Owner, Questmaker) is also determined by its target and context.
     *   For **NPCs**: Actions directly involving the NPC (e.g., `talk to NPC_X`, `attack NPC_X`) or actions within the NPC's immediate vicinity.
     *   For **Owners**: Actions targeting entities or resources within the Owner's monitored domain (e.g., `attack town_guard`, `steal from market_stall` for a `town_council_owner`), or actions within rooms/zones associated with the Owner.
     *   For **Questmakers**: Actions directly targeting quest objectives (e.g., `recover item_X`, `defeat NPC_Y`), or actions moving towards quest-relevant locations, or actions involving quest-related NPCs.
-    *   Example Scores:
+    *   Example Scores (configured in `main.go` for now, will be database-driven later):
         *   `move`: Low significance (e.g., 1 point)
         *   `look`: Low significance (e.g., 0 points)
         *   `say`: Medium significance (e.g., 2 points)
@@ -26,8 +26,8 @@ This new module will sit between the Core Game Engine and the LLM Integration Mo
         *   `use_item`: Medium significance (e.g., 3 points)
         *   `pray`: High significance (e.g., 8 points)
 *   **Threshold-Based Triggering:**
-    *   For each NPC, Owner, and Questmaker, a "reaction threshold" will be defined (also configurable via the web editor).
-    *   The Action Significance Monitor will continuously sum the significance scores of actions in a player's buffer that are relevant to a specific entity (as determined by the targeting/context rules above).
+    *   For each NPC, Owner, and Questmaker, a "reaction threshold" has been added to their respective models (`models/npc.go`, `models/owner.go`, `models/questmaker.go`) and DALs (`internal/dal/npc_dal.go`, `internal/dal/owner_dal.go`, `internal/dal/questmaker_dal.go`). This threshold is configurable (e.g., via the web editor).
+    *   The Action Significance Monitor continuously sums the significance scores of actions in a player's buffer that are relevant to a specific entity (as determined by the targeting/context rules above).
     *   **Trigger Rule:** An LLM prompt is triggered the moment an entity's cumulative score for a player meets or exceeds its threshold. If a single action has a score higher than the threshold, it triggers immediately. After triggering, the cumulative score for that entity is reset to zero.
 *   **Action Batching:** When an LLM prompt is triggered, all relevant batched actions from the player's buffer (since the last reaction for that specific entity) will be included in the prompt context. This allows the LLM to react to a sequence of events rather than just the last one. The buffer for that entity will then be cleared.
 
@@ -50,6 +50,8 @@ This manager will orchestrate AI responses based on the Action Significance Moni
 *   The `HandleLLMResponse` function will be refined to ensure seamless integration of LLM-generated narrative and tool calls into the game flow.
 *   Narrative will be converted to semantic JSON and sent to the presentation layer.
 *   Tool calls will be executed by the Tool Dispatcher, potentially modifying game state or triggering further events.
+
+**Temporary Implementation Note:** Currently, a hardcoded check for `guard_captain_thomas` is present in `internal/server/telnet_server.go` to demonstrate basic action logging and threshold triggering. This is a placeholder and will be replaced by a more generic Sentient Entity Manager in future iterations of this phase.
 
 ## 3. Acceptance Criteria
 

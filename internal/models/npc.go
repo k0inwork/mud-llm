@@ -14,4 +14,7 @@ type NPC struct {
 	PersonalityPrompt string `json:"personality_prompt"`
 	AvailableTools   []Tool `json:"available_tools"`   // Array of conceptual tools LLM can call
 	BehaviorState    string `json:"behavior_state"`    // JSON object for dynamic behavior state
+	RaceID            string `json:"race_id"`
+	ProfessionID      string `json:"profession_id"`
+	ReactionThreshold int    `json:"reaction_threshold"`
 }

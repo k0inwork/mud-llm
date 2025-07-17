@@ -29,13 +29,13 @@ func NewCache() *Cache {
 
 // Set adds an item to the cache with a given key and TTL.
 // ttl is in seconds. If ttl is 0, the item never expires.
-func (c *Cache) Set(key string, value interface{}, ttl int) {
+func (c *Cache) Set(key string, value interface{}, ttl time.Duration) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	expiration := int64(0)
 	if ttl > 0 {
-		expiration = time.Now().Add(time.Duration(ttl) * time.Second).Unix()
+		expiration = time.Now().Add(ttl).Unix()
 	}
 
 	c.items[key] = CacheItem{
@@ -94,13 +94,13 @@ func (c *Cache) cleanupLoop() {
 }
 
 // SetMany adds multiple items to the cache.
-func (c *Cache) SetMany(items map[string]interface{}, ttl int) {
+func (c *Cache) SetMany(items map[string]interface{}, ttl time.Duration) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	expiration := int64(0)
 	if ttl > 0 {
-		expiration = time.Now().Add(time.Duration(ttl) * time.Second).Unix()
+		expiration = time.Now().Add(ttl).Unix()
 	}
 
 	for key, value := range items {

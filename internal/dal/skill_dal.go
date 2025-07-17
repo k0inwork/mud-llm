@@ -20,13 +20,14 @@ func NewSkillDAL(db *sql.DB) *SkillDAL {
 // CreateSkill inserts a new skill into the database.
 func (d *SkillDAL) CreateSkill(skill *models.Skill) error {
 	query := `
-	INSERT INTO Skills (id, name, description, type, associated_class_id, granted_by_entity_type, granted_by_entity_id, effects, cost, cooldown, min_class_level)
-	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	INSERT INTO Skills (id, name, category, description, type, associated_class_id, granted_by_entity_type, granted_by_entity_id, effects, cost, cooldown, min_class_level)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	_, err := d.db.Exec(query,
 		skill.ID,
 		skill.Name,
+		skill.Category,
 		skill.Description,
 		skill.Type,
 		skill.AssociatedClassID,
@@ -45,13 +46,14 @@ func (d *SkillDAL) CreateSkill(skill *models.Skill) error {
 
 // GetSkillByID retrieves a skill by its ID.
 func (d *SkillDAL) GetSkillByID(id string) (*models.Skill, error) {
-	query := `SELECT id, name, description, type, associated_class_id, granted_by_entity_type, granted_by_entity_id, effects, cost, cooldown, min_class_level FROM Skills WHERE id = ?`
+	query := `SELECT id, name, category, description, type, associated_class_id, granted_by_entity_type, granted_by_entity_id, effects, cost, cooldown, min_class_level FROM Skills WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	skill := &models.Skill{}
 	err := row.Scan(
 		&skill.ID,
 		&skill.Name,
+		&skill.Category,
 		&skill.Description,
 		&skill.Type,
 		&skill.AssociatedClassID,
@@ -76,12 +78,13 @@ func (d *SkillDAL) GetSkillByID(id string) (*models.Skill, error) {
 func (d *SkillDAL) UpdateSkill(skill *models.Skill) error {
 	query := `
 	UPDATE Skills
-	SET name = ?, description = ?, type = ?, associated_class_id = ?, granted_by_entity_type = ?, granted_by_entity_id = ?, effects = ?, cost = ?, cooldown = ?, min_class_level = ?
+	SET name = ?, category = ?, description = ?, type = ?, associated_class_id = ?, granted_by_entity_type = ?, granted_by_entity_id = ?, effects = ?, cost = ?, cooldown = ?, min_class_level = ?
 	WHERE id = ?
 	`
 
 	result, err := d.db.Exec(query,
 		skill.Name,
+		skill.Category,
 		skill.Description,
 		skill.Type,
 		skill.AssociatedClassID,
@@ -129,7 +132,7 @@ func (d *SkillDAL) DeleteSkill(id string) error {
 
 // GetAllSkills retrieves all skills from the database.
 func (d *SkillDAL) GetAllSkills() ([]*models.Skill, error) {
-	query := `SELECT id, name, description, type, associated_class_id, granted_by_entity_type, granted_by_entity_id, effects, cost, cooldown, min_class_level FROM Skills`
+	query := `SELECT id, name, category, description, type, associated_class_id, granted_by_entity_type, granted_by_entity_id, effects, cost, cooldown, min_class_level FROM Skills`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all skills: %w", err)
@@ -142,6 +145,7 @@ func (d *SkillDAL) GetAllSkills() ([]*models.Skill, error) {
 		err := rows.Scan(
 			&skill.ID,
 			&skill.Name,
+			&skill.Category,
 			&skill.Description,
 			&skill.Type,
 			&skill.AssociatedClassID,

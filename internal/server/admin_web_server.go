@@ -148,18 +148,22 @@ func (s *AdminWebServer) handleDelete(w http.ResponseWriter, r *http.Request, de
 
 // Room Handlers
 func (s *AdminWebServer) handleCreateRoom(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
 	var room models.Room
-	s.handleCreate(w, r, &room, func(m interface{}) error { return dal.NewRoomDAL(s.db).CreateRoom(m.(*models.Room)) })
+	s.handleCreate(w, r, &room, func(m interface{}) error { return dal.NewRoomDAL(s.db, sharedCache).CreateRoom(m.(*models.Room)) })
 }
 func (s *AdminWebServer) handleGetRoom(w http.ResponseWriter, r *http.Request) {
-	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewRoomDAL(s.db).GetRoomByID(id) })
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
+	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewRoomDAL(s.db, sharedCache).GetRoomByID(id) })
 }
 func (s *AdminWebServer) handleUpdateRoom(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
 	var room models.Room
-	s.handleUpdate(w, r, &room, func(m interface{}) error { return dal.NewRoomDAL(s.db).UpdateRoom(m.(*models.Room)) })
+	s.handleUpdate(w, r, &room, func(m interface{}) error { return dal.NewRoomDAL(s.db, sharedCache).UpdateRoom(m.(*models.Room)) })
 }
 func (s *AdminWebServer) handleDeleteRoom(w http.ResponseWriter, r *http.Request) {
-	s.handleDelete(w, r, dal.NewRoomDAL(s.db).DeleteRoom)
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
+	s.handleDelete(w, r, dal.NewRoomDAL(s.db, sharedCache).DeleteRoom)
 }
 
 // Item Handlers
@@ -180,34 +184,42 @@ func (s *AdminWebServer) handleDeleteItem(w http.ResponseWriter, r *http.Request
 
 // NPC Handlers
 func (s *AdminWebServer) handleCreateNPC(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
 	var npc models.NPC
-	s.handleCreate(w, r, &npc, func(m interface{}) error { return dal.NewNPCDAL(s.db).CreateNPC(m.(*models.NPC)) })
+	s.handleCreate(w, r, &npc, func(m interface{}) error { return dal.NewNPCDAL(s.db, sharedCache).CreateNPC(m.(*models.NPC)) })
 }
 func (s *AdminWebServer) handleGetNPC(w http.ResponseWriter, r *http.Request) {
-	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewNPCDAL(s.db).GetNPCByID(id) })
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
+	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewNPCDAL(s.db, sharedCache).GetNPCByID(id) })
 }
 func (s *AdminWebServer) handleUpdateNPC(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
 	var npc models.NPC
-	s.handleUpdate(w, r, &npc, func(m interface{}) error { return dal.NewNPCDAL(s.db).UpdateNPC(m.(*models.NPC)) })
+	s.handleUpdate(w, r, &npc, func(m interface{}) error { return dal.NewNPCDAL(s.db, sharedCache).UpdateNPC(m.(*models.NPC)) })
 }
 func (s *AdminWebServer) handleDeleteNPC(w http.ResponseWriter, r *http.Request) {
-	s.handleDelete(w, r, dal.NewNPCDAL(s.db).DeleteNPC)
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
+	s.handleDelete(w, r, dal.NewNPCDAL(s.db, sharedCache).DeleteNPC)
 }
 
 // Owner Handlers
 func (s *AdminWebServer) handleCreateOwner(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
 	var owner models.Owner
-	s.handleCreate(w, r, &owner, func(m interface{}) error { return dal.NewOwnerDAL(s.db).CreateOwner(m.(*models.Owner)) })
+	s.handleCreate(w, r, &owner, func(m interface{}) error { return dal.NewOwnerDAL(s.db, sharedCache).CreateOwner(m.(*models.Owner)) })
 }
 func (s *AdminWebServer) handleGetOwner(w http.ResponseWriter, r *http.Request) {
-	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewOwnerDAL(s.db).GetOwnerByID(id) })
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
+	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewOwnerDAL(s.db, sharedCache).GetOwnerByID(id) })
 }
 func (s *AdminWebServer) handleUpdateOwner(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
 	var owner models.Owner
-	s.handleUpdate(w, r, &owner, func(m interface{}) error { return dal.NewOwnerDAL(s.db).UpdateOwner(m.(*models.Owner)) })
+	s.handleUpdate(w, r, &owner, func(m interface{}) error { return dal.NewOwnerDAL(s.db, sharedCache).UpdateOwner(m.(*models.Owner)) })
 }
 func (s *AdminWebServer) handleDeleteOwner(w http.ResponseWriter, r *http.Request) {
-	s.handleDelete(w, r, dal.NewOwnerDAL(s.db).DeleteOwner)
+	sharedCache := dal.NewCache() // Create a new cache for this specific handler
+	s.handleDelete(w, r, dal.NewOwnerDAL(s.db, sharedCache).DeleteOwner)
 }
 
 // Lore Handlers

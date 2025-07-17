@@ -3,13 +3,14 @@ package dal
 import (
 	"testing"
 	"mud/internal/models"
+	"mud/internal/testutils"
 )
 
 func TestNPCDAL_AdvancedQueries(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	npcDAL := NewNPCDAL(db)
+	npcDAL := NewNPCDAL(db, testutils.NewMockCache())
 
 	// Seed with test data
 	npc1 := &models.NPC{ID: "npc1", Name: "NPC 1", CurrentRoomID: "roomA", OwnerIDs: []string{"owner1"}}

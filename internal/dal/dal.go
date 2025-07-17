@@ -28,19 +28,20 @@ type DAL struct {
 
 // NewDAL creates a new DAL instance with all its sub-DALs.
 func NewDAL(db *sql.DB) *DAL {
+	newCache := NewCache()
 	return &DAL{
-		RoomDAL:          NewRoomDAL(db),
+		RoomDAL:          NewRoomDAL(db, newCache),
 		ItemDAL:          NewItemDAL(db),
-				NpcDAL:           NewNPCDAL(db),
-		OwnerDAL:         NewOwnerDAL(db),
+		NpcDAL:           NewNPCDAL(db, newCache),
+		OwnerDAL:         NewOwnerDAL(db, newCache),
 		LoreDAL:          NewLoreDAL(db),
 		PlayerDAL:        NewPlayerDAL(db),
 		QuestDAL:         NewQuestDAL(db),
-		QuestmakerDAL:    NewQuestmakerDAL(db),
+		QuestmakerDAL:    NewQuestmakerDAL(db, newCache),
 		QuestOwnerDAL:    NewQuestOwnerDAL(db),
 		PlayerQuestState: NewPlayerQuestStateDAL(db),
-		RaceDAL:          NewRaceDAL(db),
-		ProfessionDAL:    NewProfessionDAL(db),
+		RaceDAL:          NewRaceDAL(db, newCache),
+		ProfessionDAL:    NewProfessionDAL(db, newCache),
 		SkillDAL:         NewSkillDAL(db),
 		PlayerSkillDAL:   NewPlayerSkillDAL(db),
 		ClassDAL:         NewClassDAL(db),
@@ -84,7 +85,9 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		description TEXT NOT NULL,
 		exits JSON NOT NULL,
 		owner_id TEXT,
-		properties JSON
+		territory_id TEXT,
+		properties JSON,
+		perception_biases JSON
 	);
 
 	CREATE TABLE IF NOT EXISTS Items (
@@ -107,7 +110,10 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		memories_about_players JSON NOT NULL,
 		personality_prompt TEXT NOT NULL,
 		available_tools JSON NOT NULL,
-		behavior_state JSON
+		behavior_state JSON,
+		reaction_threshold INTEGER NOT NULL DEFAULT 0,
+		race_id TEXT,
+		profession_id TEXT
 	);
 
 	CREATE TABLE IF NOT EXISTS Owners (
@@ -122,7 +128,8 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		max_influence_budget REAL NOT NULL,
 		budget_regen_rate REAL NOT NULL,
 		available_tools JSON NOT NULL,
-		initiated_quests JSON NOT NULL
+		initiated_quests JSON NOT NULL,
+		reaction_threshold INTEGER NOT NULL DEFAULT 0
 	);
 
 	CREATE TABLE IF NOT EXISTS Quests (
@@ -144,7 +151,8 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		max_influence_budget REAL NOT NULL,
 		budget_regen_rate REAL NOT NULL,
 		memories_about_players JSON NOT NULL,
-		available_tools JSON NOT NULL
+		available_tools JSON NOT NULL,
+		reaction_threshold INTEGER NOT NULL DEFAULT 0
 	);
 
 	CREATE TABLE IF NOT EXISTS QuestOwners (
@@ -172,14 +180,17 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		id TEXT PRIMARY KEY NOT NULL,
 		name TEXT NOT NULL UNIQUE,
 		description TEXT NOT NULL,
-		base_stats JSON NOT NULL
+		owner_id TEXT,
+		base_stats JSON NOT NULL,
+		perception_biases JSON
 	);
 
 	CREATE TABLE IF NOT EXISTS Professions (
 		id TEXT PRIMARY KEY NOT NULL,
 		name TEXT NOT NULL UNIQUE,
 		description TEXT NOT NULL,
-		base_skills JSON NOT NULL
+		base_skills JSON NOT NULL,
+		perception_biases JSON
 	);
 
 	CREATE TABLE IF NOT EXISTS Lore (
@@ -195,6 +206,7 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 		name TEXT NOT NULL UNIQUE,
 		description TEXT NOT NULL,
 		type TEXT NOT NULL,
+		category TEXT,
 		associated_class_id TEXT,
 		granted_by_entity_type TEXT,
 		granted_by_entity_id TEXT,

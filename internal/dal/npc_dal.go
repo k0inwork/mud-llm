@@ -10,12 +10,12 @@ import (
 // NPCDAL handles database operations for NPC entities.
 type NPCDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	Cache CacheInterface
 }
 
 // NewNPCDAL creates a new NPCDAL.
-func NewNPCDAL(db *sql.DB) *NPCDAL {
-	return &NPCDAL{db: db, Cache: NewCache()}
+func NewNPCDAL(db *sql.DB, cache CacheInterface) *NPCDAL {
+	return &NPCDAL{db: db, Cache: cache}
 }
 
 // CreateNPC inserts a new NPC into the database.
@@ -38,8 +38,8 @@ func (d *NPCDAL) CreateNPC(npc *models.NPC) error {
 	}
 
 	query := `
-	INSERT INTO NPCs (id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state)
-	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	INSERT INTO NPCs (id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state, reaction_threshold, race_id, profession_id)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	_, err = d.db.Exec(query,
@@ -55,6 +55,9 @@ func (d *NPCDAL) CreateNPC(npc *models.NPC) error {
 		npc.PersonalityPrompt,
 		string(availableToolsJSON),
 		npc.BehaviorState,
+		npc.ReactionThreshold,
+		npc.RaceID,
+		npc.ProfessionID,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create NPC: %w", err)
@@ -71,7 +74,7 @@ func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 		}
 	}
 
-	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state FROM NPCs WHERE id = ?`
+	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state, reaction_threshold, race_id, profession_id FROM NPCs WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	npc := &models.NPC{}
@@ -89,6 +92,9 @@ func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 		&npc.PersonalityPrompt,
 		&availableToolsJSON,
 		&npc.BehaviorState,
+		&npc.ReactionThreshold,
+		&npc.RaceID,
+		&npc.ProfessionID,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -135,7 +141,7 @@ func (d *NPCDAL) UpdateNPC(npc *models.NPC) error {
 
 	query := `
 	UPDATE NPCs
-	SET name = ?, description = ?, current_room_id = ?, health = ?, max_health = ?, inventory = ?, owner_ids = ?, memories_about_players = ?, personality_prompt = ?, available_tools = ?, behavior_state = ?
+	SET name = ?, description = ?, current_room_id = ?, health = ?, max_health = ?, inventory = ?, owner_ids = ?, memories_about_players = ?, personality_prompt = ?, available_tools = ?, behavior_state = ?, reaction_threshold = ?, race_id = ?, profession_id = ?
 	WHERE id = ?
 	`
 
@@ -151,6 +157,9 @@ func (d *NPCDAL) UpdateNPC(npc *models.NPC) error {
 		npc.PersonalityPrompt,
 		string(availableToolsJSON),
 		npc.BehaviorState,
+		npc.ReactionThreshold,
+		npc.RaceID,
+		npc.ProfessionID,
 		npc.ID,
 	)
 	if err != nil {
@@ -190,7 +199,7 @@ func (d *NPCDAL) DeleteNPC(id string) error {
 // GetNPCsByRoom retrieves all NPCs in a given room.
 func (d *NPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) {
 	// For list queries, caching is more complex. For now, we won't cache list results.
-	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state FROM NPCs WHERE current_room_id = ?`
+	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state, reaction_threshold, race_id, profession_id FROM NPCs WHERE current_room_id = ?`
 	rows, err := d.db.Query(query, roomID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get NPCs by room: %w", err)
@@ -214,6 +223,9 @@ func (d *NPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) {
 			&npc.PersonalityPrompt,
 			&availableToolsJSON,
 			&npc.BehaviorState,
+			&npc.ReactionThreshold,
+			&npc.RaceID,
+			&npc.ProfessionID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan NPC row: %w", err)
@@ -240,7 +252,7 @@ func (d *NPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) {
 
 // GetNPCsByOwner retrieves all NPCs associated with a given owner.
 func (d *NPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
-	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state FROM NPCs WHERE INSTR(owner_ids, ?)`
+	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state, reaction_threshold, race_id, profession_id FROM NPCs WHERE INSTR(owner_ids, ?)`
 	rows, err := d.db.Query(query, `"`+ownerID+`"`)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get NPCs by owner: %w", err)
@@ -264,6 +276,9 @@ func (d *NPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
 			&npc.PersonalityPrompt,
 			&availableToolsJSON,
 			&npc.BehaviorState,
+			&npc.ReactionThreshold,
+			&npc.RaceID,
+			&npc.ProfessionID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan NPC row: %w", err)
@@ -290,7 +305,7 @@ func (d *NPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
 
 // GetAllNPCs retrieves all NPCs from the database.
 func (d *NPCDAL) GetAllNPCs() ([]*models.NPC, error) {
-	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state FROM NPCs`
+	query := `SELECT id, name, description, current_room_id, health, max_health, inventory, owner_ids, memories_about_players, personality_prompt, available_tools, behavior_state, reaction_threshold, race_id, profession_id FROM NPCs`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all NPCs: %w", err)
@@ -314,6 +329,9 @@ func (d *NPCDAL) GetAllNPCs() ([]*models.NPC, error) {
 			&npc.PersonalityPrompt,
 			&availableToolsJSON,
 			&npc.BehaviorState,
+			&npc.ReactionThreshold,
+			&npc.RaceID,
+			&npc.ProfessionID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan NPC: %w", err)

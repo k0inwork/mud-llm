@@ -5,21 +5,32 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"mud/internal/presentation"
 	"strings"
+	"time"
+
+	"mud/internal/dal"
+	"mud/internal/game/events"
+	"mud/internal/models"
+	"mud/internal/presentation"
 )
 
 // TelnetServer represents the Telnet server for the MUD.
 type TelnetServer struct {
-	port    string
+	port     string
 	renderer *presentation.TelnetRenderer
+	eventBus *events.EventBus
+	playerDAL *dal.PlayerDAL
+	roomDAL  *dal.RoomDAL
 }
 
 // NewTelnetServer creates a new TelnetServer.
-func NewTelnetServer(port string) *TelnetServer {
+func NewTelnetServer(port string, eventBus *events.EventBus, dal *dal.DAL) *TelnetServer {
 	return &TelnetServer{
-		port:    port,
+		port:     port,
 		renderer: presentation.NewTelnetRenderer(),
+		eventBus: eventBus,
+		playerDAL: dal.PlayerDAL,
+		roomDAL:  dal.RoomDAL,
 	}
 }
 
@@ -64,8 +75,57 @@ func (s *TelnetServer) handleConnection(conn net.Conn) {
 			return
 		}
 
-		// Process input (for now, just echo it back)
-		processedInput := fmt.Sprintf("You typed: %s", strings.TrimSpace(input))
+		// Process input
+		trimmedInput := strings.TrimSpace(input)
+		parts := strings.Fields(trimmedInput)
+
+		playerID := conn.RemoteAddr().String() // Placeholder for actual player ID
+
+		// Fetch player and room information
+		player, err := s.playerDAL.GetPlayerByID(playerID)
+		if err != nil || player == nil {
+			log.Printf("TelnetServer: Player %s not found or error: %v", playerID, err)
+			// For now, create a dummy player if not found (e.g., for initial connection)
+			player = &models.Player{ID: playerID, Name: "Guest", CurrentRoomID: "bag_end"} // Default to bag_end
+			// In a real game, this would involve character creation/login.
+		}
+
+		room, err := s.roomDAL.GetRoomByID(player.CurrentRoomID)
+		if err != nil || room == nil {
+			log.Printf("TelnetServer: Room %s not found for player %s or error: %v", player.CurrentRoomID, playerID, err)
+			// Fallback to a default room if player's room is not found
+			room, _ = s.roomDAL.GetRoomByID("bag_end")
+			if room == nil {
+				log.Fatalf("TelnetServer: Default room 'bag_end' not found. Database not seeded?")
+			}
+		}
+
+		actionType := ""
+		// targetID is currently unused in ActionEvent, but kept for potential future use
+		// targetID := ""
+
+		if len(parts) > 0 {
+			actionType = parts[0]
+		}
+		// if len(parts) > 1 {
+		// 	targetID = parts[1]
+		// }
+
+		if actionType != "" {
+			// Create and publish ActionEvent
+			actionEvent := &events.ActionEvent{
+				Player:     player,
+				ActionType: actionType,
+				Room:       room,
+				Timestamp:  time.Now(),
+				// SkillUsed and Targets are not parsed from raw input yet.
+				SkillUsed:  nil,
+				Targets:    nil,
+			}
+			s.eventBus.Publish(events.ActionEventType, actionEvent)
+		}
+
+		processedInput := fmt.Sprintf("You typed: %s", trimmedInput)
 		echoMsg := presentation.SemanticMessage{
 			Type:    presentation.SystemMessage,
 			Content: processedInput,

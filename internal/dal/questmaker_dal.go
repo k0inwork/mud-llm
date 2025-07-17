@@ -9,11 +9,11 @@ import (
 
 type QuestmakerDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	Cache CacheInterface
 }
 
-func NewQuestmakerDAL(db *sql.DB) *QuestmakerDAL {
-	return &QuestmakerDAL{db: db, Cache: NewCache()}
+func NewQuestmakerDAL(db *sql.DB, cache CacheInterface) *QuestmakerDAL {
+	return &QuestmakerDAL{db: db, Cache: cache}
 }
 
 func (d *QuestmakerDAL) CreateQuestmaker(qm *models.Questmaker) error {
@@ -27,10 +27,10 @@ func (d *QuestmakerDAL) CreateQuestmaker(qm *models.Questmaker) error {
 	}
 
 	query := `
-	INSERT INTO Questmakers (id, name, llm_prompt_context, current_influence_budget, max_influence_budget, budget_regen_rate, memories_about_players, available_tools)
-	VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	INSERT INTO Questmakers (id, name, llm_prompt_context, current_influence_budget, max_influence_budget, budget_regen_rate, memories_about_players, available_tools, reaction_threshold)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err = d.db.Exec(query, qm.ID, qm.Name, qm.LLMPromptContext, qm.CurrentInfluenceBudget, qm.MaxInfluenceBudget, qm.BudgetRegenRate, string(memoriesJSON), string(toolsJSON))
+	_, err = d.db.Exec(query, qm.ID, qm.Name, qm.LLMPromptContext, qm.CurrentInfluenceBudget, qm.MaxInfluenceBudget, qm.BudgetRegenRate, string(memoriesJSON), string(toolsJSON), qm.ReactionThreshold)
 	if err != nil {
 		return fmt.Errorf("failed to create questmaker: %w", err)
 	}
@@ -45,12 +45,12 @@ func (d *QuestmakerDAL) GetQuestmakerByID(id string) (*models.Questmaker, error)
 		}
 	}
 
-	query := `SELECT id, name, llm_prompt_context, current_influence_budget, max_influence_budget, budget_regen_rate, memories_about_players, available_tools FROM Questmakers WHERE id = ?`
+	query := `SELECT id, name, llm_prompt_context, current_influence_budget, max_influence_budget, budget_regen_rate, memories_about_players, available_tools, reaction_threshold FROM Questmakers WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	qm := &models.Questmaker{}
 	var memoriesJSON, toolsJSON []byte
-	err := row.Scan(&qm.ID, &qm.Name, &qm.LLMPromptContext, &qm.CurrentInfluenceBudget, &qm.MaxInfluenceBudget, &qm.BudgetRegenRate, &memoriesJSON, &toolsJSON)
+	err := row.Scan(&qm.ID, &qm.Name, &qm.LLMPromptContext, &qm.CurrentInfluenceBudget, &qm.MaxInfluenceBudget, &qm.BudgetRegenRate, &memoriesJSON, &toolsJSON, &qm.ReactionThreshold)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -81,10 +81,10 @@ func (d *QuestmakerDAL) UpdateQuestmaker(qm *models.Questmaker) error {
 
 	query := `
 	UPDATE Questmakers
-	SET name = ?, llm_prompt_context = ?, current_influence_budget = ?, max_influence_budget = ?, budget_regen_rate = ?, memories_about_players = ?, available_tools = ?
+	SET name = ?, llm_prompt_context = ?, current_influence_budget = ?, max_influence_budget = ?, budget_regen_rate = ?, memories_about_players = ?, available_tools = ?, reaction_threshold = ?
 	WHERE id = ?
 	`
-	_, err = d.db.Exec(query, qm.Name, qm.LLMPromptContext, qm.CurrentInfluenceBudget, qm.MaxInfluenceBudget, qm.BudgetRegenRate, string(memoriesJSON), string(toolsJSON), qm.ID)
+	_, err = d.db.Exec(query, qm.Name, qm.LLMPromptContext, qm.CurrentInfluenceBudget, qm.MaxInfluenceBudget, qm.BudgetRegenRate, string(memoriesJSON), string(toolsJSON), qm.ReactionThreshold, qm.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update questmaker: %w", err)
 	}
@@ -103,7 +103,7 @@ func (d *QuestmakerDAL) DeleteQuestmaker(id string) error {
 }
 
 func (d *QuestmakerDAL) GetAllQuestmakers() ([]*models.Questmaker, error) {
-	query := `SELECT id, name, llm_prompt_context, current_influence_budget, max_influence_budget, budget_regen_rate, memories_about_players, available_tools FROM Questmakers`
+	query := `SELECT id, name, llm_prompt_context, current_influence_budget, max_influence_budget, budget_regen_rate, memories_about_players, available_tools, reaction_threshold FROM Questmakers`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all questmakers: %w", err)
@@ -114,7 +114,7 @@ func (d *QuestmakerDAL) GetAllQuestmakers() ([]*models.Questmaker, error) {
 	for rows.Next() {
 		qm := &models.Questmaker{}
 		var memoriesJSON, toolsJSON []byte
-		err := rows.Scan(&qm.ID, &qm.Name, &qm.LLMPromptContext, &qm.CurrentInfluenceBudget, &qm.MaxInfluenceBudget, &qm.BudgetRegenRate, &memoriesJSON, &toolsJSON)
+		err := rows.Scan(&qm.ID, &qm.Name, &qm.LLMPromptContext, &qm.CurrentInfluenceBudget, &qm.MaxInfluenceBudget, &qm.BudgetRegenRate, &memoriesJSON, &toolsJSON, &qm.ReactionThreshold)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan questmaker: %w", err)
 		}

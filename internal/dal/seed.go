@@ -26,18 +26,22 @@ func SeedData(db *sql.DB) {
 
 	fmt.Println("Seeding database with initial data...")
 
+	// Create a new cache instance to be shared across DALs
+	sharedCache := NewCache()
+
 	// Create DALs
-	roomDAL := NewRoomDAL(db)
+	roomDAL := NewRoomDAL(db, sharedCache)
 	itemDAL := NewItemDAL(db)
-	npcDAL := NewNPCDAL(db)
-	ownerDAL := NewOwnerDAL(db)
+	npcDAL := NewNPCDAL(db, sharedCache)
+	ownerDAL := NewOwnerDAL(db, sharedCache)
 	loreDAL := NewLoreDAL(db)
 	playerDAL := NewPlayerDAL(db)
 	questDAL := NewQuestDAL(db)
-	questmakerDAL := NewQuestmakerDAL(db)
+	questmakerDAL := NewQuestmakerDAL(db, sharedCache)
 	questOwnerDAL := NewQuestOwnerDAL(db)
-	raceDAL := NewRaceDAL(db)
-	professionDAL := NewProfessionDAL(db)
+	raceDAL := NewRaceDAL(db, sharedCache)
+	professionDAL := NewProfessionDAL(db, sharedCache)
+	skillDAL := NewSkillDAL(db)
 
 	// Seed Rooms
 	// Bag End
@@ -54,6 +58,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Bag End, Hobbiton",
 		Description: "A cozy hobbit-hole, warm and inviting, with a round green door. The smell of pipe-weed and fresh baking lingers in the air. A path leads east.",
 		OwnerID:     "shire_spirit",
+		TerritoryID: "shire",
+		PerceptionBiases: map[string]float64{
+			"magic": -0.1, // Hobbits are wary of overt magic
+		},
 		Properties:  "{}",
 		Exits:       string(bagEndExits),
 	}
@@ -72,6 +80,8 @@ func SeedData(db *sql.DB) {
 		Name:        "Hobbiton Path",
 		Description: "A well-worn path winding through green hills and past other hobbit-holes. The Bywater river glitters nearby. Paths lead west (to Bag End), east (towards Bree), and south (to the Green Dragon Inn).",
 		OwnerID:     "shire_spirit",
+		TerritoryID: "shire",
+		PerceptionBiases: map[string]float64{},
 		Properties:  "{}",
 		Exits:       string(hobbitonPathExits),
 	}
@@ -88,6 +98,10 @@ func SeedData(db *sql.DB) {
 		Name:        "The Green Dragon Inn",
 		Description: "A lively hobbit inn, filled with chatter and the clinking of mugs. A roaring fire warms the common room. Exits lead north back to Hobbiton Path.",
 		OwnerID:     "shire_spirit",
+		TerritoryID: "shire",
+		PerceptionBiases: map[string]float64{
+			"subterfuge": 0.1, // Gossip travels fast here
+		},
 		Properties:  "{}",
 		Exits:       string(greenDragonInnExits),
 	}
@@ -105,6 +119,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Road to Bree",
 		Description: "A dusty road leading towards the walled town of Bree. Farmland stretches on either side. Paths lead west (to Hobbiton) and east (into Bree).",
 		OwnerID:     "bree_guardian",
+		TerritoryID: "bree",
+		PerceptionBiases: map[string]float64{
+			"subterfuge": -0.1, // Guards are watchful
+		},
 		Properties:  "{}",
 		Exits:       string(breeRoadExits),
 	}
@@ -122,7 +140,11 @@ func SeedData(db *sql.DB) {
 		ID:          "prancing_pony",
 		Name:        "The Prancing Pony Inn",
 		Description: "A bustling common room in Bree, filled with travelers, hobbits, and men. A warm fire crackles in the hearth, and the scent of ale and stew fills the air. Exits lead west to the road, south to the stables, and a narrow door leads to a private room.",
-		OwnerID:     "bree_guardian",
+		OwnerID:     "barliman_butterbur",
+		TerritoryID: "bree",
+		PerceptionBiases: map[string]float64{
+			"subterfuge": -0.2, // Strangers are noted
+		},
 		Properties:  "{}",
 		Exits:       string(prancingPonyExits),
 	}
@@ -139,6 +161,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Prancing Pony Stables",
 		Description: "The dusty stables behind the inn, smelling of hay and horses. A few weary ponies are tethered here. An exit leads north back to the inn.",
 		OwnerID:     "bree_guardian",
+		TerritoryID: "bree",
+		PerceptionBiases: map[string]float64{
+			"animal_handling": 0.2, // Good place to observe animals
+		},
 		Properties:  "{}",
 		Exits:       string(prancingPonyStablesExits),
 	}
@@ -155,6 +181,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Prancing Pony Private Room",
 		Description: "A small, dimly lit private room in the inn, suitable for hushed conversations. An exit leads west back to the common room.",
 		OwnerID:     "bree_guardian",
+		TerritoryID: "bree",
+		PerceptionBiases: map[string]float64{
+			"subterfuge": 0.3, // Secrets are often exchanged here
+		},
 		Properties:  "{}",
 		Exits:       string(prancingPonyPrivateRoomExits),
 	}
@@ -172,6 +202,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Lonely Road",
 		Description: "A long, winding road stretching through desolate, rolling hills. The air is quiet, save for the wind. Paths lead east (towards Weathertop) and west (further into the wilderness).",
 		OwnerID:     "watcher_of_weathertop",
+		TerritoryID: "lone_lands",
+		PerceptionBiases: map[string]float64{
+			"stealth": -0.1, // Open road, hard to hide
+		},
 		Properties:  "{}",
 		Exits:       string(lonelyRoadExits),
 	}
@@ -188,6 +222,11 @@ func SeedData(db *sql.DB) {
 		Name:        "Weathertop (Amon Sûl)",
 		Description: "The desolate, windswept summit of Weathertop, with the ruins of an ancient watchtower. The air is cold and carries a sense of ancient dread. A path leads down to the west.",
 		OwnerID:     "watcher_of_weathertop",
+		TerritoryID: "lone_lands",
+		PerceptionBiases: map[string]float64{
+			"magic": 0.2, // Lingering ancient magic
+			"divinity": 0.1, // Sense of ancient power
+		},
 		Properties:  "{}",
 		Exits:       string(weathertopExits),
 	}
@@ -205,6 +244,11 @@ func SeedData(db *sql.DB) {
 		Name:        "Edge of the Wild",
 		Description: "The road gives way to untamed wilderness here, with dense thickets and ancient, gnarled trees. A sense of foreboding hangs heavy. A path leads east back to the Lonely Road.",
 		OwnerID:     "watcher_of_weathertop",
+		TerritoryID: "lone_lands",
+		PerceptionBiases: map[string]float64{
+			"nature": 0.2, // Strong natural presence
+			"stealth": 0.1, // Good for hiding
+		},
 		Properties:  "{}",
 		Exits:       string(wildernessEdgeExits),
 	}
@@ -222,6 +266,11 @@ func SeedData(db *sql.DB) {
 		Name:        "Courtyard of Rivendell",
 		Description: "A serene courtyard within the Last Homely House, surrounded by graceful elven architecture and lush gardens. The sound of a waterfall echoes nearby. Paths lead to the Hall of Fire and the main gate.",
 		OwnerID:     "elrond_council",
+		TerritoryID: "rivendell",
+		PerceptionBiases: map[string]float64{
+			"magic": 0.3, // High magical aura
+			"divinity": 0.2, // Elven grace
+		},
 		Properties:  "{}",
 		Exits:       string(rivendellCourtyardExits),
 	}
@@ -238,6 +287,11 @@ func SeedData(db *sql.DB) {
 		Name:        "Hall of Fire",
 		Description: "A grand hall in Rivendell, filled with the warmth of a great hearth and the soft murmur of elven song. Scholars and travelers gather here. An exit leads south back to the courtyard.",
 		OwnerID:     "elrond_council",
+		TerritoryID: "rivendell",
+		PerceptionBiases: map[string]float64{
+			"knowledge": 0.4, // Center of lore and wisdom
+			"magic": 0.2, // Elven magic
+		},
 		Properties:  "{}",
 		Exits:       string(rivendellHallOfFireExits),
 	}
@@ -254,6 +308,11 @@ func SeedData(db *sql.DB) {
 		Name:        "West-gate of Moria",
 		Description: "The ancient, overgrown West-gate of the Dwarven realm of Moria. The air is heavy and silent, and the lake before it is dark and still. A path leads west to the wilderness.",
 		OwnerID:     "moria_ancient_spirit",
+		TerritoryID: "moria",
+		PerceptionBiases: map[string]float64{
+			"darkness": 0.3, // Sense of foreboding
+			"magic": 0.1, // Lingering ancient magic
+		},
 		Properties:  "{}",
 		Exits:       string(moriaWestGateExits),
 	}
@@ -389,6 +448,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.05,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        watcherOfWeathertopInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(watcherOfWeathertop); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -409,6 +469,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.15,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        elrondCouncilInitiatedQuests,
+		ReactionThreshold:      20,
 	}
 	if err := ownerDAL.CreateOwner(elrondCouncil); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -429,6 +490,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.03,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        moriaAncientSpiritInitiatedQuests,
+		ReactionThreshold:      25,
 	}
 	if err := ownerDAL.CreateOwner(moriaAncientSpirit); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -449,6 +511,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.1,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        lorekeepersGuildInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(lorekeepersGuild); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -469,6 +532,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.07,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        humanElderInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(humanElder); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -489,6 +553,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.12,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        elvenCouncilOwnerInitiatedQuests,
+		ReactionThreshold:      15,
 	}
 	if err := ownerDAL.CreateOwner(elvenCouncilOwner); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -509,6 +574,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.09,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        dwarfClanElderInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(dwarfClanElder); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -529,6 +595,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.1,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        hobbitShireCouncilInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(hobbitShireCouncil); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -549,6 +616,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.11,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        warriorGuildMasterInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(warriorGuildMaster); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -569,6 +637,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.13,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        archmageConclaveInitiatedQuests,
+		ReactionThreshold:      15,
 	}
 	if err := ownerDAL.CreateOwner(archmageConclave); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -589,6 +658,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.09,
 		AvailableTools:         []models.Tool{},
 		InitiatedQuests:        masterOfShadowsInitiatedQuests,
+		ReactionThreshold:      10,
 	}
 	if err := ownerDAL.CreateOwner(masterOfShadows); err != nil {
 		logrus.Fatalf("Failed to seed owner: %v", err)
@@ -609,6 +679,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Frodo Baggins, a kind-hearted hobbit burdened by a great and terrible task. You are secretive about your mission but will seek help from trustworthy individuals.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "hobbit",
+		ProfessionID:         "adventurer", // Assuming a default adventurer profession for now
 	}
 	if err := npcDAL.CreateNPC(frodoBaggins); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -628,6 +700,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Samwise Gamgee, a loyal and steadfast hobbit. You are devoted to your master, Frodo, and are always ready with a kind word or a practical solution.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "hobbit",
+		ProfessionID:         "adventurer",
 	}
 	if err := npcDAL.CreateNPC(samwiseGamgee); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -647,6 +721,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Rosie Cotton, a friendly and popular hobbit from Bywater. You enjoy good company and a pint of ale at the Green Dragon.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "hobbit",
+		ProfessionID:         "commoner", // Assuming a commoner profession
 	}
 	if err := npcDAL.CreateNPC(rosieCotton); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -666,6 +742,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Old Gaffer Gamgee, a traditional hobbit who loves his garden and a good chat. You are wary of outsiders but appreciate politeness.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "hobbit",
+		ProfessionID:         "commoner", // Assuming a commoner profession
 	}
 	if err := npcDAL.CreateNPC(gafferGamgee); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -685,6 +763,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Strider, a Ranger of the North, watchful and cautious. You are a protector of the innocent and a foe of the Shadow. You speak little but observe much.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "human",
+		ProfessionID:         "warrior", // Ranger is a type of warrior
 	}
 	if err := npcDAL.CreateNPC(strider); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -704,6 +784,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Barliman Butterbur, the innkeeper of The Prancing Pony. You are a bit forgetful but generally kind and concerned for your patrons. You know a lot of local gossip.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "human",
+		ProfessionID:         "commoner", // Innkeeper is a type of commoner
 	}
 	if err := npcDAL.CreateNPC(barlimanButterbur); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -723,6 +805,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Bill Ferny, a petty, malicious man from Bree, often seen with unsavory characters. You are easily bribed and quick to betray.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "human",
+		ProfessionID:         "rogue", // He's shifty, so rogue fits
 	}
 	if err := npcDAL.CreateNPC(billFerny); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -742,6 +826,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Elrond, Lord of Rivendell. You are wise, ancient, and deeply concerned with the fate of Middle-earth. You offer counsel and aid to those who fight against the Shadow.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "elf",
+		ProfessionID:         "mage", // He's a powerful magic user
 	}
 	if err := npcDAL.CreateNPC(elrond); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -761,6 +847,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Glorfindel, a powerful Elf-lord of Gondolin, returned from the Halls of Mandos. You are a formidable warrior and a beacon of hope against the darkness.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "elf",
+		ProfessionID:         "warrior",
 	}
 	if err := npcDAL.CreateNPC(glorfindel); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -780,6 +868,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Gimli, a proud Dwarf of the Lonely Mountain. You value honor, loyalty, and the ancient halls of your kin. You are quick to anger but steadfast in friendship.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "dwarf",
+		ProfessionID:         "warrior",
 	}
 	if err := npcDAL.CreateNPC(gimli); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -796,9 +886,12 @@ func SeedData(db *sql.DB) {
 		Inventory:            []string{},
 		OwnerIDs:             []string{"human_elder", "bree_guardian", "warrior_guild_master"},
 		MemoriesAboutPlayers: map[string][]string{},
-		PersonalityPrompt:    "You are a common guard, focused on keeping the peace and protecting travelers. You are practical and a bit cynical, but ultimately good-hearted.",
+		PersonalityPrompt:    "You are Guard Captain Thomas. You uphold the law strictly and observe all activity in your patrol area. You react to significant disturbances or direct interactions.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		ReactionThreshold:    7,
+		RaceID:               "human",
+		ProfessionID:         "warrior",
 	}
 	if err := npcDAL.CreateNPC(humanGuard); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -818,6 +911,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Elara, an elven scholar. You are dedicated to the pursuit of knowledge and the preservation of ancient lore. You are patient and wise, willing to share insights with those who show genuine curiosity.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "elf",
+		ProfessionID:         "scholar",
 	}
 	if err := npcDAL.CreateNPC(elfScholar); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -837,6 +932,8 @@ func SeedData(db *sql.DB) {
 		PersonalityPrompt:    "You are Borin, a dwarf miner. You are gruff but honest, with a deep love for stone and the lost glory of Khazad-dûm. You are suspicious of elves but loyal to your kin.",
 		AvailableTools:       []models.Tool{},
 		BehaviorState:        "{}",
+		RaceID:               "dwarf",
+		ProfessionID:         "warrior", // Assuming miner is a type of warrior for simplicity
 	}
 	if err := npcDAL.CreateNPC(dwarfMiner); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
@@ -998,6 +1095,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0, // Player-action based
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      5,
 	}
 	if err := questmakerDAL.CreateQuestmaker(urgentMessageQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1013,6 +1111,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      5,
 	}
 	if err := questmakerDAL.CreateQuestmaker(missingPonyQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1028,6 +1127,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      10,
 	}
 	if err := questmakerDAL.CreateQuestmaker(investigateWeathertopQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1043,6 +1143,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      15,
 	}
 	if err := questmakerDAL.CreateQuestmaker(roadToRivendellQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1058,6 +1159,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      20,
 	}
 	if err := questmakerDAL.CreateQuestmaker(delvingDarknessQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1073,6 +1175,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      5,
 	}
 	if err := questmakerDAL.CreateQuestmaker(shireCensusQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1088,6 +1191,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      10,
 	}
 	if err := questmakerDAL.CreateQuestmaker(trainingRegimenQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1103,6 +1207,7 @@ func SeedData(db *sql.DB) {
 		BudgetRegenRate:        0.0,
 		MemoriesAboutPlayers:   map[string][]string{},
 		AvailableTools:         []models.Tool{},
+		ReactionThreshold:      5,
 	}
 	if err := questmakerDAL.CreateQuestmaker(missingPipeWeedQuestmaker); err != nil {
 		logrus.Fatalf("Failed to seed questmaker: %v", err)
@@ -1219,13 +1324,14 @@ func SeedData(db *sql.DB) {
 		"experience": 50,
 		"items":      []map[string]interface{}{{"item_id": "gandalf_letter", "quantity": 1}},
 	})
+	urgentMessageInfluencePointsMap, _ := json.Marshal(map[string]float64{"gandalf_will": 10.0})
 	urgentMessageQuest := &models.Quest{
 		ID:                 "urgent_message_quest",
 		Name:               "The Urgent Message",
 		Description:        "Deliver a vital message from Gandalf to Strider at The Prancing Pony. Time is of the essence.",
 		QuestOwnerID:       "gandalf_grand_plan",
 		QuestmakerID:       "urgent_message_questmaker",
-		InfluencePointsMap: map[string]float64{"gandalf_will": 10.0},
+		InfluencePointsMap: string(urgentMessageInfluencePointsMap),
 		Objectives:         string(urgentMessageObjectives),
 		Rewards:            string(urgentMessageRewards),
 	}
@@ -1239,13 +1345,14 @@ func SeedData(db *sql.DB) {
 		{"Type": "return_item_to_npc", "TargetID": "barliman_butterbur", "ItemToReturnID": "bill_pony", "Status": "not_started"},
 	})
 	missingPonyRewards, _ := json.Marshal(map[string]interface{}{"experience": 30, "gold": 10})
+	missingPonyInfluencePointsMap, _ := json.Marshal(map[string]float64{"bree_guardian": 5.0})
 	missingPonyQuest := &models.Quest{
 		ID:                 "missing_pony_quest",
 		Name:               "The Missing Pony",
 		Description:        "One of Barliman's ponies has gone missing from the stables. Find it and return it to the Prancing Pony.",
 		QuestOwnerID:       "bree_local_affairs",
 		QuestmakerID:       "missing_pony_questmaker",
-		InfluencePointsMap: map[string]float64{"bree_guardian": 5.0},
+		InfluencePointsMap: string(missingPonyInfluencePointsMap),
 		Objectives:         string(missingPonyObjectives),
 		Rewards:            string(missingPonyRewards),
 	}
@@ -1260,13 +1367,14 @@ func SeedData(db *sql.DB) {
 		{"Type": "report_to_npc", "TargetID": "strider", "Status": "not_started"},
 	})
 	investigateWeathertopRewards, _ := json.Marshal(map[string]interface{}{"experience": 75, "items": []interface{}{}})
+	investigateWeathertopInfluencePointsMap, _ := json.Marshal(map[string]float64{"council_of_elrond": 15.0, "watcher_of_weathertop": 5.0})
 	investigateWeathertopQuest := &models.Quest{
 		ID:                 "investigate_weathertop_quest",
 		Name:               "Investigate Weathertop",
 		Description:        "Reports of strange activity near Weathertop have reached Rivendell. Investigate the ruins and report back any findings.",
 		QuestOwnerID:       "fellowship_journey",
 		QuestmakerID:       "investigate_weathertop_questmaker",
-		InfluencePointsMap: map[string]float64{"council_of_elrond": 15.0, "watcher_of_weathertop": 5.0},
+		InfluencePointsMap: string(investigateWeathertopInfluencePointsMap),
 		Objectives:         string(investigateWeathertopObjectives),
 		Rewards:            string(investigateWeathertopRewards),
 	}
@@ -1280,13 +1388,14 @@ func SeedData(db *sql.DB) {
 		{"Type": "speak_to_npc", "TargetID": "elrond", "Status": "not_started"},
 	})
 	roadToRivendellRewards, _ := json.Marshal(map[string]interface{}{"experience": 100, "gold": 20})
+	roadToRivendellInfluencePointsMap, _ := json.Marshal(map[string]float64{"gandalf_will": 20.0, "elrond_council": 5.0})
 	roadToRivendellQuest := &models.Quest{
 		ID:                 "road_to_rivendell_quest",
 		Name:               "The Road to Rivendell",
 		Description:        "Seek the wisdom of Elrond in Rivendell regarding the growing shadow.",
 		QuestOwnerID:       "fellowship_journey",
 		QuestmakerID:       "road_to_rivendell_questmaker",
-		InfluencePointsMap: map[string]float64{"gandalf_will": 20.0, "elrond_council": 5.0},
+		InfluencePointsMap: string(roadToRivendellInfluencePointsMap),
 		Objectives:         string(roadToRivendellObjectives),
 		Rewards:            string(roadToRivendellRewards),
 	}
@@ -1301,13 +1410,14 @@ func SeedData(db *sql.DB) {
 		{"Type": "report_to_npc", "TargetID": "gimli", "Status": "not_started"},
 	})
 	delvingDarknessRewards, _ := json.Marshal(map[string]interface{}{"experience": 120, "items": []interface{}{}})
+	delvingDarknessInfluencePointsMap, _ := json.Marshal(map[string]float64{"council_of_elrond": 25.0, "moria_ancient_spirit": 10.0})
 	delvingDarknessQuest := &models.Quest{
 		ID:                 "delving_darkness_quest",
 		Name:               "Delving into Darkness",
 		Description:        "Investigate the western entrance to Moria and report on any signs of lingering evil.",
 		QuestOwnerID:       "fellowship_journey",
 		QuestmakerID:       "delving_darkness_questmaker",
-		InfluencePointsMap: map[string]float64{"council_of_elrond": 25.0, "moria_ancient_spirit": 10.0},
+		InfluencePointsMap: string(delvingDarknessInfluencePointsMap),
 		Objectives:         string(delvingDarknessObjectives),
 		Rewards:            string(delvingDarknessRewards),
 	}
@@ -1321,13 +1431,14 @@ func SeedData(db *sql.DB) {
 		{"Type": "speak_to_npc", "TargetID": "gaffer_gamgee", "Status": "not_started"},
 	})
 	shireCensusRewards, _ := json.Marshal(map[string]interface{}{"experience": 40, "gold": 15, "items": []map[string]interface{}{{"item_id": "hobbit_pipe_weed", "quantity": 1}}})
+	shireCensusInfluencePointsMap, _ := json.Marshal(map[string]float64{"hobbit_shire_council": 8.0, "shire_spirit": 2.0})
 	shireCensusQuest := &models.Quest{
 		ID:                 "shire_census_quest",
 		Name:               "The Shire Census",
 		Description:        "Help the Shire Council by visiting various hobbit-holes and recording their family sizes.",
 		QuestOwnerID:       "shire_local_governance",
 		QuestmakerID:       "shire_census_questmaker",
-		InfluencePointsMap: map[string]float64{"hobbit_shire_council": 8.0, "shire_spirit": 2.0},
+		InfluencePointsMap: string(shireCensusInfluencePointsMap),
 		Objectives:         string(shireCensusObjectives),
 		Rewards:            string(shireCensusRewards),
 	}
@@ -1341,13 +1452,14 @@ func SeedData(db *sql.DB) {
 		{"Type": "report_to_npc", "TargetID": "strider", "Status": "not_started"},
 	})
 	trainingRegimenRewards, _ := json.Marshal(map[string]interface{}{"experience": 60, "skill_points": map[string]interface{}{"sword_mastery": 5}})
+	trainingRegimenInfluencePointsMap, _ := json.Marshal(map[string]float64{"warrior_guild_master": 10.0})
 	trainingRegimenQuest := &models.Quest{
 		ID:                 "training_regimen_quest",
 		Name:               "Training Regimen",
 		Description:        "Prove your martial prowess by completing a series of training exercises.",
 		QuestOwnerID:       "warrior_guild_trials",
 		QuestmakerID:       "training_regimen_questmaker",
-		InfluencePointsMap: map[string]float64{"warrior_guild_master": 10.0},
+		InfluencePointsMap: string(trainingRegimenInfluencePointsMap),
 		Objectives:         string(trainingRegimenObjectives),
 		Rewards:            string(trainingRegimenRewards),
 	}
@@ -1365,13 +1477,14 @@ func SeedData(db *sql.DB) {
 		"gold":       5,
 		"items":      []map[string]interface{}{{"item_id": "hobbit_pipe_weed_bundle", "quantity": 1}},
 	})
+	missingPipeWeedInfluencePointsMap, _ := json.Marshal(map[string]float64{"shire_spirit": 15.0})
 	missingPipeWeedQuest := &models.Quest{
 		ID:                 "missing_pipe_weed_quest",
 		Name:               "The Missing Pipe-Weed",
 		Description:        "Old Gaffer Gamgee has lost his pipe-weed pouch. Find it and return it to him.",
 		QuestOwnerID:       "shire_local_governance",
 		QuestmakerID:       "missing_pipe_weed_questmaker",
-		InfluencePointsMap: map[string]float64{"shire_spirit": 15.0},
+		InfluencePointsMap: string(missingPipeWeedInfluencePointsMap),
 		Objectives:         string(missingPipeWeedObjectives),
 		Rewards:            string(missingPipeWeedRewards),
 	}
@@ -1388,13 +1501,14 @@ func SeedData(db *sql.DB) {
 		"experience": 50,
 		"items":      []map[string]interface{}{{"item_id": "hobbit_pipe_weed_bundle", "quantity": 1}},
 	})
+	greatMushroomHuntInfluencePointsMap, _ := json.Marshal(map[string]float64{"gather_mushroom": 10, "deliver_mushrooms": 20})
 	greatMushroomHuntQuest := &models.Quest{
 		ID:                 "the_great_mushroom_hunt",
 		Name:               "The Great Mushroom Hunt",
 		Description:        "Farmer Maggot needs help gathering his prized mushrooms. Gather five of them from his field and bring them to him.",
 		QuestOwnerID:       "shire_local_governance",
 		QuestmakerID:       "mushroom_hunt_questmaker",
-		InfluencePointsMap: map[string]float64{"gather_mushroom": 10, "deliver_mushrooms": 20},
+		InfluencePointsMap: string(greatMushroomHuntInfluencePointsMap),
 		Objectives:         string(greatMushroomHuntObjectives),
 		Rewards:            string(greatMushroomHuntRewards),
 	}
@@ -1413,6 +1527,11 @@ func SeedData(db *sql.DB) {
 		Description: "A diverse and resilient race, found throughout Middle-earth. Known for their adaptability and courage, but also their mortality.",
 		OwnerID:     "human_elder",
 		BaseStats:   humanBaseStats,
+		PerceptionBiases: map[string]float64{
+			"magic":      0.0,  // Neutral
+			"subterfuge": 0.1,  // Slightly aware
+			"divinity":   0.0,  // Neutral
+		},
 	}
 	if err := raceDAL.CreateRace(humanRace); err != nil {
 		logrus.Fatalf("Failed to seed race: %v", err)
@@ -1429,6 +1548,11 @@ func SeedData(db *sql.DB) {
 		Description: "The Firstborn, immortal and graceful, with keen senses and a deep connection to the natural world and ancient magic.",
 		OwnerID:     "elven_council_owner",
 		BaseStats:   elfBaseStats,
+		PerceptionBiases: map[string]float64{
+			"magic":      0.3,  // Highly attuned
+			"subterfuge": 0.2,  // Perceptive
+			"divinity":   0.1,  // Aware of higher powers
+		},
 	}
 	if err := raceDAL.CreateRace(elfRace); err != nil {
 		logrus.Fatalf("Failed to seed race: %v", err)
@@ -1445,6 +1569,11 @@ func SeedData(db *sql.DB) {
 		Description: "Stout and hardy, masters of stone and craft, with a love for mountains, mining, and treasure. Fiercely loyal and stubborn.",
 		OwnerID:     "dwarf_clan_elder",
 		BaseStats:   dwarfBaseStats,
+		PerceptionBiases: map[string]float64{
+			"magic":      -0.2, // Distrustful
+			"subterfuge": -0.1, // Blunt and straightforward
+			"divinity":   0.0,  // Neutral
+		},
 	}
 	if err := raceDAL.CreateRace(dwarfRace); err != nil {
 		logrus.Fatalf("Failed to seed race: %v", err)
@@ -1461,9 +1590,120 @@ func SeedData(db *sql.DB) {
 		Description: "Small folk, fond of comfort, good food, and simple pleasures. Surprisingly resilient and often underestimated.",
 		OwnerID:     "hobbit_shire_council",
 		BaseStats:   hobbitBaseStats,
+		PerceptionBiases: map[string]float64{
+			"magic":      -0.1, // Wary of the unnatural
+			"subterfuge": 0.2,  // Good at going unnoticed themselves
+			"divinity":   -0.1, // Unconcerned with grand powers
+		},
 	}
 	if err := raceDAL.CreateRace(hobbitRace); err != nil {
 		logrus.Fatalf("Failed to seed race: %v", err)
+	}
+
+	// Seed Professions
+	// Seed Skills
+	swordMastery := &models.Skill{
+		ID:          "sword_mastery",
+		Name:        "Sword Mastery",
+		Category:    "combat",
+		Description: "Increases proficiency with swords.",
+		Type:        "passive",
+		Effects:     "{}",
+	}
+	if err := skillDAL.CreateSkill(swordMastery); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	shieldBlock := &models.Skill{
+		ID:          "shield_block",
+		Name:        "Shield Block",
+		Category:    "combat",
+		Description: "Allows the wielder to block incoming attacks with a shield.",
+		Type:        "active",
+		Effects:     "{}",
+		Cost:        5,
+		Cooldown:    3,
+	}
+	if err := skillDAL.CreateSkill(shieldBlock); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	fireball := &models.Skill{
+		ID:          "fireball",
+		Name:        "Fireball",
+		Category:    "magic",
+		Description: "Hurls a ball of fire at a target.",
+		Type:        "active",
+		Effects:     "{}",
+		Cost:        10,
+		Cooldown:    5,
+	}
+	if err := skillDAL.CreateSkill(fireball); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	arcaneShield := &models.Skill{
+		ID:          "arcane_shield",
+		Name:        "Arcane Shield",
+		Category:    "magic",
+		Description: "Creates a magical barrier to absorb damage.",
+		Type:        "active",
+		Effects:     "{}",
+		Cost:        8,
+		Cooldown:    4,
+	}
+	if err := skillDAL.CreateSkill(arcaneShield); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	stealth := &models.Skill{
+		ID:          "stealth",
+		Name:        "Stealth",
+		Category:    "subterfuge",
+		Description: "Allows the user to move unseen and unheard.",
+		Type:        "passive",
+		Effects:     "{}",
+	}
+	if err := skillDAL.CreateSkill(stealth); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	lockpicking := &models.Skill{
+		ID:          "lockpicking",
+		Name:        "Lockpicking",
+		Category:    "subterfuge",
+		Description: "Enables the user to open locked containers and doors.",
+		Type:        "active",
+		Effects:     "{}",
+		Cost:        2,
+		Cooldown:    1,
+	}
+	if err := skillDAL.CreateSkill(lockpicking); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	ancientLanguages := &models.Skill{
+		ID:          "ancient_languages",
+		Name:        "Ancient Languages",
+		Category:    "knowledge",
+		Description: "Grants understanding of ancient and forgotten tongues.",
+		Type:        "passive",
+		Effects:     "{}",
+	}
+	if err := skillDAL.CreateSkill(ancientLanguages); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
+	}
+
+	historyOfMiddleEarth := &models.Skill{
+		ID:          "history_of_middle_earth",
+		Name:        "History of Middle-earth",
+		Category:    "knowledge",
+		Description: "Provides deep knowledge of the history and lore of Middle-earth.",
+		Type:        "passive",
+		Effects:     "{}",
+	}
+	if err := skillDAL.CreateSkill(historyOfMiddleEarth); err != nil {
+		logrus.Fatalf("Failed to seed skill: %v", err)
 	}
 
 	// Seed Professions
@@ -1476,6 +1716,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Warrior",
 		Description: "A master of arms and armor, skilled in combat and enduring in battle.",
 		BaseSkills:  warriorBaseSkills,
+		PerceptionBiases: map[string]float64{
+			"magic":      -0.1, // Skeptical of things they can't hit
+			"subterfuge": -0.2, // Prefers direct confrontation
+		},
 	}
 	if err := professionDAL.CreateProfession(warriorProf); err != nil {
 		logrus.Fatalf("Failed to seed profession: %v", err)
@@ -1491,6 +1735,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Mage",
 		Description: "A wielder of arcane power, capable of casting spells and manipulating magical energies.",
 		BaseSkills:  mageBaseSkills,
+		PerceptionBiases: map[string]float64{
+			"magic":      0.5, // Expert understanding
+			"subterfuge": 0.1, // Aware of illusions and tricks
+		},
 	}
 	if err := professionDAL.CreateProfession(mageProf); err != nil {
 		logrus.Fatalf("Failed to seed profession: %v", err)
@@ -1506,6 +1754,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Rogue",
 		Description: "A master of stealth, subterfuge, and precision strikes. Agile and cunning.",
 		BaseSkills:  rogueBaseSkills,
+		PerceptionBiases: map[string]float64{
+			"magic":      0.1, // Knows enough to be wary
+			"subterfuge": 0.5, // Expert understanding
+		},
 	}
 	if err := professionDAL.CreateProfession(rogueProf); err != nil {
 		logrus.Fatalf("Failed to seed profession: %v", err)
@@ -1521,6 +1773,10 @@ func SeedData(db *sql.DB) {
 		Name:        "Scholar",
 		Description: "A seeker of knowledge and ancient lore, skilled in languages, history, and deciphering forgotten texts.",
 		BaseSkills:  scholarBaseSkills,
+		PerceptionBiases: map[string]float64{
+			"magic":      0.3, // Well-read on the topic
+			"subterfuge": 0.2, // Can often see through deception
+		},
 	}
 	if err := professionDAL.CreateProfession(scholarProf); err != nil {
 		logrus.Fatalf("Failed to seed profession: %v", err)

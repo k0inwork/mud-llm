@@ -10,12 +10,12 @@ import (
 // OwnerDAL handles database operations for Owner entities.
 type OwnerDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	Cache CacheInterface
 }
 
 // NewOwnerDAL creates a new OwnerDAL.
-func NewOwnerDAL(db *sql.DB) *OwnerDAL {
-	return &OwnerDAL{db: db, Cache: NewCache()}
+func NewOwnerDAL(db *sql.DB, cache CacheInterface) *OwnerDAL {
+	return &OwnerDAL{db: db, Cache: cache}
 }
 
 // CreateOwner inserts a new owner into the database.
@@ -34,8 +34,8 @@ func (d *OwnerDAL) CreateOwner(owner *models.Owner) error {
 	}
 
 	query := `
-	INSERT INTO Owners (id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests)
-	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	INSERT INTO Owners (id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests, reaction_threshold)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	_, err = d.db.Exec(query,
@@ -51,6 +51,7 @@ func (d *OwnerDAL) CreateOwner(owner *models.Owner) error {
 		owner.BudgetRegenRate,
 		string(availableToolsJSON),
 		string(initiatedQuestsJSON),
+		owner.ReactionThreshold,
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create owner: %w", err)
@@ -67,7 +68,7 @@ func (d *OwnerDAL) GetOwnerByID(id string) (*models.Owner, error) {
 		}
 	}
 
-	query := `SELECT id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests FROM Owners WHERE id = ?`
+	query := `SELECT id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests, reaction_threshold FROM Owners WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	owner := &models.Owner{}
@@ -85,6 +86,7 @@ func (d *OwnerDAL) GetOwnerByID(id string) (*models.Owner, error) {
 		&owner.BudgetRegenRate,
 		&availableToolsJSON,
 		&initiatedQuestsJSON,
+		&owner.ReactionThreshold,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -124,7 +126,7 @@ func (d *OwnerDAL) UpdateOwner(owner *models.Owner) error {
 
 	query := `
 	UPDATE Owners
-	SET name = ?, description = ?, monitored_aspect = ?, associated_id = ?, llm_prompt_context = ?, memories_about_players = ?, current_influence_budget = ?, max_influence_budget = ?, budget_regen_rate = ?, available_tools = ?, initiated_quests = ?
+	SET name = ?, description = ?, monitored_aspect = ?, associated_id = ?, llm_prompt_context = ?, memories_about_players = ?, current_influence_budget = ?, max_influence_budget = ?, budget_regen_rate = ?, available_tools = ?, initiated_quests = ?, reaction_threshold = ?
 	WHERE id = ?
 	`
 
@@ -140,6 +142,7 @@ func (d *OwnerDAL) UpdateOwner(owner *models.Owner) error {
 		owner.BudgetRegenRate,
 		string(availableToolsJSON),
 		string(initiatedQuestsJSON),
+		owner.ReactionThreshold,
 		owner.ID,
 	)
 	if err != nil {
@@ -178,7 +181,7 @@ func (d *OwnerDAL) DeleteOwner(id string) error {
 
 // GetOwnersByMonitoredAspect retrieves owners by their monitored aspect and associated ID.
 func (d *OwnerDAL) GetOwnersByMonitoredAspect(aspectType string, associatedID string) ([]*models.Owner, error) {
-	query := `SELECT id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests FROM Owners WHERE monitored_aspect = ? AND associated_id = ?`
+	query := `SELECT id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests, reaction_threshold FROM Owners WHERE monitored_aspect = ? AND associated_id = ?`
 	rows, err := d.db.Query(query, aspectType, associatedID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get owners by monitored aspect: %w", err)
@@ -202,6 +205,7 @@ func (d *OwnerDAL) GetOwnersByMonitoredAspect(aspectType string, associatedID st
 			&owner.BudgetRegenRate,
 			&availableToolsJSON,
 			&initiatedQuestsJSON,
+			&owner.ReactionThreshold,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan owner row: %w", err)
@@ -220,12 +224,16 @@ func (d *OwnerDAL) GetOwnersByMonitoredAspect(aspectType string, associatedID st
 		owners = append(owners, owner)
 	}
 
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error after iterating through owners: %w", err)
+	}
+
 	return owners, nil
 }
 
 // GetAllOwners retrieves all owners from the database.
 func (d *OwnerDAL) GetAllOwners() ([]*models.Owner, error) {
-	query := `SELECT id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests FROM Owners`
+	query := `SELECT id, name, description, monitored_aspect, associated_id, llm_prompt_context, memories_about_players, current_influence_budget, max_influence_budget, budget_regen_rate, available_tools, initiated_quests, reaction_threshold FROM Owners`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all owners: %w", err)
@@ -249,6 +257,7 @@ func (d *OwnerDAL) GetAllOwners() ([]*models.Owner, error) {
 			&owner.BudgetRegenRate,
 			&availableToolsJSON,
 			&initiatedQuestsJSON,
+			&owner.ReactionThreshold,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan owner: %w", err)

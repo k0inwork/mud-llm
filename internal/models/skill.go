@@ -4,6 +4,7 @@ package models
 type Skill struct {
 	ID                 string `json:"id"`
 	Name               string `json:"name"`	
+	Category           string `json:"category"` // e.g., "combat", "magic", "social", "crafting"
 	Description        string `json:"description"`
 	Type               string `json:"type"` // e.g., "active", "passive"
 	AssociatedClassID  string `json:"associated_class_id"`

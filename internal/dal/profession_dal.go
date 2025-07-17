@@ -10,12 +10,12 @@ import (
 // ProfessionDAL handles database operations for Profession entities.
 type ProfessionDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	Cache CacheInterface
 }
 
 // NewProfessionDAL creates a new ProfessionDAL.
-func NewProfessionDAL(db *sql.DB) *ProfessionDAL {
-	return &ProfessionDAL{db: db, Cache: NewCache()}
+func NewProfessionDAL(db *sql.DB, cache CacheInterface) *ProfessionDAL {
+	return &ProfessionDAL{db: db, Cache: cache}
 }
 
 // CreateProfession inserts a new profession into the database.
@@ -25,9 +25,14 @@ func (d *ProfessionDAL) CreateProfession(prof *models.Profession) error {
 		return fmt.Errorf("failed to marshal base skills: %w", err)
 	}
 
+	perceptionBiasesJSON, err := json.Marshal(prof.PerceptionBiases)
+	if err != nil {
+		return fmt.Errorf("failed to marshal perception biases: %w", err)
+	}
+
 	query := `
-	INSERT INTO Professions (id, name, description, base_skills)
-	VALUES (?, ?, ?, ?)
+	INSERT INTO Professions (id, name, description, base_skills, perception_biases)
+	VALUES (?, ?, ?, ?, ?)
 	`
 
 	_, err = d.db.Exec(query,
@@ -35,6 +40,7 @@ func (d *ProfessionDAL) CreateProfession(prof *models.Profession) error {
 		prof.Name,
 		prof.Description,
 		string(baseSkillsJSON),
+		string(perceptionBiasesJSON),
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create profession: %w", err)
@@ -51,16 +57,17 @@ func (d *ProfessionDAL) GetProfessionByID(id string) (*models.Profession, error)
 		}
 	}
 
-	query := `SELECT id, name, description, base_skills FROM Professions WHERE id = ?`
+	query := `SELECT id, name, description, base_skills, perception_biases FROM Professions WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	prof := &models.Profession{}
-	var baseSkillsJSON []byte
+	var baseSkillsJSON, perceptionBiasesJSON []byte
 	err := row.Scan(
 		&prof.ID,
 		&prof.Name,
 		&prof.Description,
 		&baseSkillsJSON,
+		&perceptionBiasesJSON,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -71,6 +78,13 @@ func (d *ProfessionDAL) GetProfessionByID(id string) (*models.Profession, error)
 
 	if err := json.Unmarshal(baseSkillsJSON, &prof.BaseSkills); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal base skills for profession %s: %w", prof.ID, err)
+	}
+
+	if err := json.Unmarshal(perceptionBiasesJSON, &prof.PerceptionBiases); err != nil {
+		if string(perceptionBiasesJSON) != "null" && string(perceptionBiasesJSON) != "" {
+			return nil, fmt.Errorf("failed to unmarshal perception biases for profession %s: %w", prof.ID, err)
+		}
+		prof.PerceptionBiases = make(map[string]float64)
 	}
 
 	d.Cache.Set(prof.ID, prof, 300)
@@ -84,9 +98,14 @@ func (d *ProfessionDAL) UpdateProfession(prof *models.Profession) error {
 		return fmt.Errorf("failed to marshal base skills: %w", err)
 	}
 
+	perceptionBiasesJSON, err := json.Marshal(prof.PerceptionBiases)
+	if err != nil {
+		return fmt.Errorf("failed to marshal perception biases: %w", err)
+	}
+
 	query := `
 	UPDATE Professions
-	SET name = ?, description = ?, base_skills = ?
+	SET name = ?, description = ?, base_skills = ?, perception_biases = ?
 	WHERE id = ?
 	`
 
@@ -94,6 +113,7 @@ func (d *ProfessionDAL) UpdateProfession(prof *models.Profession) error {
 		prof.Name,
 		prof.Description,
 		string(baseSkillsJSON),
+		string(perceptionBiasesJSON),
 		prof.ID,
 	)
 	if err != nil {
@@ -132,7 +152,7 @@ func (d *ProfessionDAL) DeleteProfession(id string) error {
 
 // GetAllProfessions retrieves all professions from the database.
 func (d *ProfessionDAL) GetAllProfessions() ([]*models.Profession, error) {
-	query := `SELECT id, name, description, base_skills FROM Professions`
+	query := `SELECT id, name, description, base_skills, perception_biases FROM Professions`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all professions: %w", err)
@@ -142,18 +162,25 @@ func (d *ProfessionDAL) GetAllProfessions() ([]*models.Profession, error) {
 	var professions []*models.Profession
 	for rows.Next() {
 		prof := &models.Profession{}
-		var baseSkillsJSON []byte
+		var baseSkillsJSON, perceptionBiasesJSON []byte
 		err := rows.Scan(
 			&prof.ID,
 			&prof.Name,
 			&prof.Description,
 			&baseSkillsJSON,
+			&perceptionBiasesJSON,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan profession: %w", err)
 		}
 		if err := json.Unmarshal(baseSkillsJSON, &prof.BaseSkills); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal base skills for profession %s: %w", prof.ID, err)
+		}
+		if err := json.Unmarshal(perceptionBiasesJSON, &prof.PerceptionBiases); err != nil {
+			if string(perceptionBiasesJSON) != "null" && string(perceptionBiasesJSON) != "" {
+				return nil, fmt.Errorf("failed to unmarshal perception biases for profession %s: %w", prof.ID, err)
+			}
+			prof.PerceptionBiases = make(map[string]float64)
 		}
 		professions = append(professions, prof)
 	}

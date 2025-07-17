@@ -4,6 +4,7 @@ package models
 type Profession struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
-	Description string `json:"description"`
-	BaseSkills  []SkillInfo `json:"base_skills"` // Array of SkillInfo (skill ID and percentage)
+	Description      string                 `json:"description"`
+	BaseSkills       []SkillInfo            `json:"base_skills"` // Array of SkillInfo (skill ID and percentage)
+	PerceptionBiases map[string]float64     `json:"perception_biases"`
 }

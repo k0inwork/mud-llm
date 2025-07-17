@@ -10,12 +10,12 @@ import (
 // RaceDAL handles database operations for Race entities.
 type RaceDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	Cache CacheInterface
 }
 
 // NewRaceDAL creates a new RaceDAL.
-func NewRaceDAL(db *sql.DB) *RaceDAL {
-	return &RaceDAL{db: db, Cache: NewCache()}
+func NewRaceDAL(db *sql.DB, cache CacheInterface) *RaceDAL {
+	return &RaceDAL{db: db, Cache: cache}
 }
 
 // CreateRace inserts a new race into the database.
@@ -25,9 +25,14 @@ func (d *RaceDAL) CreateRace(race *models.Race) error {
 		return fmt.Errorf("failed to marshal base stats: %w", err)
 	}
 
+	perceptionBiasesJSON, err := json.Marshal(race.PerceptionBiases)
+	if err != nil {
+		return fmt.Errorf("failed to marshal perception biases: %w", err)
+	}
+
 	query := `
-	INSERT INTO Races (id, name, description, owner_id, base_stats)
-	VALUES (?, ?, ?, ?, ?)
+	INSERT INTO Races (id, name, description, owner_id, base_stats, perception_biases)
+	VALUES (?, ?, ?, ?, ?, ?)
 	`
 
 	_, err = d.db.Exec(query,
@@ -36,6 +41,7 @@ func (d *RaceDAL) CreateRace(race *models.Race) error {
 		race.Description,
 		race.OwnerID,
 		string(baseStatsJSON),
+		string(perceptionBiasesJSON),
 	)
 	if err != nil {
 		return fmt.Errorf("failed to create race: %w", err)
@@ -52,17 +58,18 @@ func (d *RaceDAL) GetRaceByID(id string) (*models.Race, error) {
 		}
 	}
 
-	query := `SELECT id, name, description, owner_id, base_stats FROM Races WHERE id = ?`
+	query := `SELECT id, name, description, owner_id, base_stats, perception_biases FROM Races WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	race := &models.Race{}
-	var baseStatsJSON []byte
+	var baseStatsJSON, perceptionBiasesJSON []byte
 	err := row.Scan(
 		&race.ID,
 		&race.Name,
 		&race.Description,
 		&race.OwnerID,
 		&baseStatsJSON,
+		&perceptionBiasesJSON,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -73,6 +80,14 @@ func (d *RaceDAL) GetRaceByID(id string) (*models.Race, error) {
 
 	if err := json.Unmarshal(baseStatsJSON, &race.BaseStats); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal base stats for race %s: %w", race.ID, err)
+	}
+
+	if err := json.Unmarshal(perceptionBiasesJSON, &race.PerceptionBiases); err != nil {
+		// Handle cases where the column might be NULL for older data
+		if string(perceptionBiasesJSON) != "null" && string(perceptionBiasesJSON) != "" {
+			return nil, fmt.Errorf("failed to unmarshal perception biases for race %s: %w", race.ID, err)
+		}
+		race.PerceptionBiases = make(map[string]float64) // Initialize to empty map
 	}
 
 	d.Cache.Set(race.ID, race, 300) // Cache for 5 minutes
@@ -86,9 +101,14 @@ func (d *RaceDAL) UpdateRace(race *models.Race) error {
 		return fmt.Errorf("failed to marshal base stats: %w", err)
 	}
 
+	perceptionBiasesJSON, err := json.Marshal(race.PerceptionBiases)
+	if err != nil {
+		return fmt.Errorf("failed to marshal perception biases: %w", err)
+	}
+
 	query := `
 	UPDATE Races
-	SET name = ?, description = ?, owner_id = ?, base_stats = ?
+	SET name = ?, description = ?, owner_id = ?, base_stats = ?, perception_biases = ?
 	WHERE id = ?
 	`
 
@@ -97,6 +117,7 @@ func (d *RaceDAL) UpdateRace(race *models.Race) error {
 		race.Description,
 		race.OwnerID,
 		string(baseStatsJSON),
+		string(perceptionBiasesJSON),
 		race.ID,
 	)
 	if err != nil {
@@ -135,7 +156,7 @@ func (d *RaceDAL) DeleteRace(id string) error {
 
 // GetAllRaces retrieves all races from the database.
 func (d *RaceDAL) GetAllRaces() ([]*models.Race, error) {
-	query := `SELECT id, name, description, owner_id, base_stats FROM Races`
+	query := `SELECT id, name, description, owner_id, base_stats, perception_biases FROM Races`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all races: %w", err)
@@ -145,19 +166,26 @@ func (d *RaceDAL) GetAllRaces() ([]*models.Race, error) {
 	var races []*models.Race
 	for rows.Next() {
 		race := &models.Race{}
-		var baseStatsJSON []byte
+		var baseStatsJSON, perceptionBiasesJSON []byte
 		err := rows.Scan(
 			&race.ID,
 			&race.Name,
 			&race.Description,
 			&race.OwnerID,
 			&baseStatsJSON,
+			&perceptionBiasesJSON,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan race: %w", err)
 		}
 		if err := json.Unmarshal(baseStatsJSON, &race.BaseStats); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal base stats for race %s: %w", race.ID, err)
+		}
+		if err := json.Unmarshal(perceptionBiasesJSON, &race.PerceptionBiases); err != nil {
+			if string(perceptionBiasesJSON) != "null" && string(perceptionBiasesJSON) != "" {
+				return nil, fmt.Errorf("failed to unmarshal perception biases for race %s: %w", race.ID, err)
+			}
+			race.PerceptionBiases = make(map[string]float64)
 		}
 		races = append(races, race)
 	}

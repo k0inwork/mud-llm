@@ -14,4 +14,5 @@ type Owner struct {
 	BudgetRegenRate      float64 `json:"budget_regen_rate"`
 	AvailableTools       []Tool  `json:"available_tools"`   // Array of conceptual tools LLM can call
 	InitiatedQuests      []string `json:"initiated_quests"` // Array of quest IDs this owner can initiate/offer
+	ReactionThreshold    int      `json:"reaction_threshold"`
 }

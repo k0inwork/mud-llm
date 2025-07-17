@@ -20,14 +20,15 @@ func NewQuestDAL(db *sql.DB) *QuestDAL {
 // CreateQuest inserts a new quest into the database.
 func (d *QuestDAL) CreateQuest(quest *models.Quest) error {
 	query := `
-	INSERT INTO Quests (id, name, description, questmaker_id, influence_points_map, objectives, rewards)
-	VALUES (?, ?, ?, ?, ?, ?, ?)
+	INSERT INTO Quests (id, name, description, quest_owner_id, questmaker_id, influence_points_map, objectives, rewards)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	_, err := d.db.Exec(query,
 		quest.ID,
 		quest.Name,
 		quest.Description,
+		quest.QuestOwnerID,
 		quest.QuestmakerID,
 		quest.InfluencePointsMap,
 		quest.Objectives,
@@ -41,7 +42,7 @@ func (d *QuestDAL) CreateQuest(quest *models.Quest) error {
 
 // GetQuestByID retrieves a quest by its ID.
 func (d *QuestDAL) GetQuestByID(id string) (*models.Quest, error) {
-	query := `SELECT id, name, description, questmaker_id, influence_points_map, objectives, rewards FROM Quests WHERE id = ?`
+	query := `SELECT id, name, description, quest_owner_id, questmaker_id, influence_points_map, objectives, rewards FROM Quests WHERE id = ?`
 	row := d.db.QueryRow(query, id)
 
 	quest := &models.Quest{}
@@ -49,6 +50,7 @@ func (d *QuestDAL) GetQuestByID(id string) (*models.Quest, error) {
 		&quest.ID,
 		&quest.Name,
 		&quest.Description,
+		&quest.QuestOwnerID,
 		&quest.QuestmakerID,
 		&quest.InfluencePointsMap,
 		&quest.Objectives,
@@ -68,13 +70,14 @@ func (d *QuestDAL) GetQuestByID(id string) (*models.Quest, error) {
 func (d *QuestDAL) UpdateQuest(quest *models.Quest) error {
 	query := `
 	UPDATE Quests
-	SET name = ?, description = ?, questmaker_id = ?, influence_points_map = ?, objectives = ?, rewards = ?
+	SET name = ?, description = ?, quest_owner_id = ?, questmaker_id = ?, influence_points_map = ?, objectives = ?, rewards = ?
 	WHERE id = ?
 	`
 
 	result, err := d.db.Exec(query,
 		quest.Name,
 		quest.Description,
+		quest.QuestOwnerID,
 		quest.QuestmakerID,
 		quest.InfluencePointsMap,
 		quest.Objectives,
@@ -117,7 +120,7 @@ func (d *QuestDAL) DeleteQuest(id string) error {
 
 // GetAllQuests retrieves all quests from the database.
 func (d *QuestDAL) GetAllQuests() ([]*models.Quest, error) {
-	query := `SELECT id, name, description, questmaker_id, influence_points_map, objectives, rewards FROM Quests`
+	query := `SELECT id, name, description, quest_owner_id, questmaker_id, influence_points_map, objectives, rewards FROM Quests`
 	rows, err := d.db.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all quests: %w", err)
@@ -131,6 +134,7 @@ func (d *QuestDAL) GetAllQuests() ([]*models.Quest, error) {
 			&quest.ID,
 			&quest.Name,
 			&quest.Description,
+			&quest.QuestOwnerID,
 			&quest.QuestmakerID,
 			&quest.InfluencePointsMap,
 			&quest.Objectives,

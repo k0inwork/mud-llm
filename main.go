@@ -7,6 +7,13 @@ import (
 	"github.com/sirupsen/logrus"
 	"mud/internal/dal"
 	
+	"mud/internal/game/actionsignificance"
+	"mud/internal/game/events"
+	"mud/internal/game/globalobserver"
+	"mud/internal/game/perception"
+	"mud/internal/game/sentiententitymanager"
+	"mud/internal/llm"
+	"mud/internal/presentation"
 	"mud/internal/server"
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
@@ -184,12 +191,53 @@ func main() {
 	dals.QuestOwnerDAL.Cache.SetMany(questOwnerMap, 300) // Cache for 5 minutes
 
 	// Initialize LLM Service
-	// llmService := llm.NewLLMService(dals) // Temporarily commented out as it's not fully integrated yet
+	llmService := llm.NewLLMService(dals)
+
+	// Initialize Tool Dispatcher
+	toolDispatcher := server.NewToolDispatcher(dals)
+
+	// Initialize Event Bus
+	eventBus := events.NewEventBus()
+
+	// Initialize Perception Filter
+	perceptionFilter := perception.NewPerceptionFilter(dals.RoomDAL, dals.RaceDAL, dals.ProfessionDAL)
+
+	// Initialize Sentient Entity Manager
+	telnetRenderer := presentation.NewTelnetRenderer()
+	sentientEntityManager := sentiententitymanager.NewSentientEntityManager(llmService, dals.NpcDAL, dals.OwnerDAL, dals.QuestmakerDAL, toolDispatcher, telnetRenderer)
+
+	// Initialize Action Significance Monitor
+	actionMonitor := actionsignificance.NewMonitor(eventBus, perceptionFilter, dals.NpcDAL, dals.OwnerDAL, dals.QuestmakerDAL, sentientEntityManager)
+	actionMonitorEventChannel := make(chan interface{})
+	eventBus.Subscribe(events.ActionEventType, actionMonitorEventChannel)
+	go func() {
+		for event := range actionMonitorEventChannel {
+			if ae, ok := event.(*events.ActionEvent); ok {
+				actionMonitor.HandleActionEvent(ae)
+			} else {
+				logrus.Errorf("main: received unexpected event type on ActionEventType: %T", event)
+			}
+		}
+	}()
+
+	// Initialize Global Observer Manager
+	globalObserverManager := globalobserver.NewGlobalObserverManager(eventBus, perceptionFilter, dals.OwnerDAL, dals.RaceDAL, dals.ProfessionDAL)
+	globalObserverEventChannel := make(chan interface{})
+	eventBus.Subscribe(events.ActionEventType, globalObserverEventChannel)
+	go func() {
+		for event := range globalObserverEventChannel {
+			if ae, ok := event.(*events.ActionEvent); ok {
+				globalObserverManager.HandleActionEvent(ae)
+			} else {
+				logrus.Errorf("main: received unexpected event type on ActionEventType for GlobalObserverManager: %T", event)
+			}
+		}
+	}()
 
 	var wg sync.WaitGroup
 
 	// Start Telnet server in a goroutine
-	telnetServer := server.NewTelnetServer("4000")
+	telnetServer := server.NewTelnetServer("4000", eventBus, dals)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

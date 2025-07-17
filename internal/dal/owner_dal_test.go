@@ -3,13 +3,14 @@ package dal
 import (
 	"testing"
 	"mud/internal/models"
+	"mud/internal/testutils"
 )
 
 func TestOwnerDAL_AdvancedQueries(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	ownerDAL := NewOwnerDAL(db)
+	ownerDAL := NewOwnerDAL(db, testutils.NewMockCache())
 
 	// Seed with test data
 	owner1 := &models.Owner{ID: "owner1", Name: "Owner 1", MonitoredAspect: "location", AssociatedID: "town_square"}

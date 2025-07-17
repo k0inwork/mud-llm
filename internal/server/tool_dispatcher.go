@@ -1,9 +1,11 @@
 package server
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"mud/internal/dal"
+	"mud/internal/llm"
+	"mud/internal/models"
 )
 
 type ToolDispatcher struct {
@@ -19,24 +21,19 @@ type ToolCall struct {
 	Parameters map[string]interface{} `json:"parameters"`
 }
 
-func (td *ToolDispatcher) Dispatch(toolCallsJSON string) error {
-	var toolCalls []ToolCall
-	if err := json.Unmarshal([]byte(toolCallsJSON), &toolCalls); err != nil {
-		return fmt.Errorf("failed to unmarshal tool calls: %w", err)
-	}
-
+func (td *ToolDispatcher) Dispatch(ctx context.Context, player *models.Player, entity interface{}, toolCalls []llm.ToolCall) error {
 	for _, call := range toolCalls {
 		switch call.ToolName {
 		case "NPC_memorize":
-			if err := td.handleNPCMemorize(call.Parameters); err != nil {
+			if err := td.handleNPCMemorize(player, entity, call.Parameters); err != nil {
 				return err
 			}
 		case "OWNER_memorize":
-			if err := td.handleOwnerMemorize(call.Parameters); err != nil {
+			if err := td.handleOwnerMemorize(player, entity, call.Parameters); err != nil {
 				return err
 			}
 		case "OWNER_memorize_dependables":
-			if err := td.handleOwnerMemorizeDependables(call.Parameters); err != nil {
+			if err := td.handleOwnerMemorizeDependables(player, entity, call.Parameters); err != nil {
 				return err
 			}
 		default:
@@ -47,15 +44,23 @@ func (td *ToolDispatcher) Dispatch(toolCallsJSON string) error {
 	return nil
 }
 
-func (td *ToolDispatcher) handleNPCMemorize(params map[string]interface{}) error {
+func (td *ToolDispatcher) handleNPCMemorize(player *models.Player, entity interface{}, params map[string]interface{}) error {
 	npcID, ok := params["npc_id"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid npc_id")
 	}
-	playerID, ok := params["player_id"].(string)
-	if !ok {
-		return fmt.Errorf("missing or invalid player_id")
+	// Use player.ID directly if available, otherwise get from params
+	var playerID string
+	if player != nil {
+		playerID = player.ID
+	} else {
+		pid, ok := params["player_id"].(string)
+		if !ok {
+			return fmt.Errorf("missing or invalid player_id")
+		}
+		playerID = pid
 	}
+
 	memory, ok := params["memory_string"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid memory_string")
@@ -77,14 +82,21 @@ func (td *ToolDispatcher) handleNPCMemorize(params map[string]interface{}) error
 	return td.dal.NpcDAL.UpdateNPC(npc)
 }
 
-func (td *ToolDispatcher) handleOwnerMemorize(params map[string]interface{}) error {
+func (td *ToolDispatcher) handleOwnerMemorize(player *models.Player, entity interface{}, params map[string]interface{}) error {
 	ownerID, ok := params["owner_id"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid owner_id")
 	}
-	playerID, ok := params["player_id"].(string)
-	if !ok {
-		return fmt.Errorf("missing or invalid player_id")
+	// Use player.ID directly if available, otherwise get from params
+	var playerID string
+	if player != nil {
+		playerID = player.ID
+	} else {
+		pid, ok := params["player_id"].(string)
+		if !ok {
+			return fmt.Errorf("missing or invalid player_id")
+		}
+		playerID = pid
 	}
 	memory, ok := params["memory_string"].(string)
 	if !ok {
@@ -107,14 +119,21 @@ func (td *ToolDispatcher) handleOwnerMemorize(params map[string]interface{}) err
 	return td.dal.OwnerDAL.UpdateOwner(owner)
 }
 
-func (td *ToolDispatcher) handleOwnerMemorizeDependables(params map[string]interface{}) error {
+func (td *ToolDispatcher) handleOwnerMemorizeDependables(player *models.Player, entity interface{}, params map[string]interface{}) error {
 	ownerID, ok := params["owner_id"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid owner_id")
 	}
-	playerID, ok := params["player_id"].(string)
-	if !ok {
-		return fmt.Errorf("missing or invalid player_id")
+	// Use player.ID directly if available, otherwise get from params
+	var playerID string
+	if player != nil {
+		playerID = player.ID
+	} else {
+		pid, ok := params["player_id"].(string)
+		if !ok {
+			return fmt.Errorf("missing or invalid player_id")
+		}
+		playerID = pid
 	}
 	memory, ok := params["memory_string"].(string)
 	if !ok {
@@ -138,3 +157,5 @@ func (td *ToolDispatcher) handleOwnerMemorizeDependables(params map[string]inter
 
 	return nil
 }
+
+

@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"mud/internal/testutils"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -37,7 +38,7 @@ func TestRoomDAL(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	roomDAL := NewRoomDAL(db)
+	roomDAL := NewRoomDAL(db, testutils.NewMockCache())
 
 	// 1. Test CreateRoom
 	exits, _ := json.Marshal(map[string]interface{}{"north": "room2"})
