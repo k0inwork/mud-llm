@@ -13,8 +13,8 @@ type ItemDAL struct {
 }
 
 // NewItemDAL creates a new ItemDAL.
-func NewItemDAL(db *sql.DB) *ItemDAL {
-	return &ItemDAL{db: db, Cache: NewCache()}
+func NewItemDAL(db *sql.DB, cache *Cache) *ItemDAL {
+	return &ItemDAL{db: db, Cache: cache}
 }
 
 // CreateItem inserts a new item into the database.

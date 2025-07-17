@@ -13,8 +13,8 @@ type LoreDAL struct {
 }
 
 // NewLoreDAL creates a new LoreDAL.
-func NewLoreDAL(db *sql.DB) *LoreDAL {
-	return &LoreDAL{db: db, Cache: NewCache()}
+func NewLoreDAL(db *sql.DB, cache *Cache) *LoreDAL {
+	return &LoreDAL{db: db, Cache: cache}
 }
 
 // CreateLore inserts a new lore entry into the database.

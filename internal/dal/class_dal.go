@@ -13,8 +13,8 @@ type ClassDAL struct {
 }
 
 // NewClassDAL creates a new ClassDAL.
-func NewClassDAL(db *sql.DB) *ClassDAL {
-	return &ClassDAL{db: db, Cache: NewCache()}
+func NewClassDAL(db *sql.DB, cache *Cache) *ClassDAL {
+	return &ClassDAL{db: db, Cache: cache}
 }
 
 // CreateClass inserts a new class into the database.

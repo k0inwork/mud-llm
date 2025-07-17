@@ -13,8 +13,8 @@ type SkillDAL struct {
 }
 
 // NewSkillDAL creates a new SkillDAL.
-func NewSkillDAL(db *sql.DB) *SkillDAL {
-	return &SkillDAL{db: db, Cache: NewCache()}
+func NewSkillDAL(db *sql.DB, cache *Cache) *SkillDAL {
+	return &SkillDAL{db: db, Cache: cache}
 }
 
 // CreateSkill inserts a new skill into the database.

@@ -168,18 +168,22 @@ func (s *AdminWebServer) handleDeleteRoom(w http.ResponseWriter, r *http.Request
 
 // Item Handlers
 func (s *AdminWebServer) handleCreateItem(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache()
 	var item models.Item
-	s.handleCreate(w, r, &item, func(m interface{}) error { return dal.NewItemDAL(s.db).CreateItem(m.(*models.Item)) })
+	s.handleCreate(w, r, &item, func(m interface{}) error { return dal.NewItemDAL(s.db, sharedCache).CreateItem(m.(*models.Item)) })
 }
 func (s *AdminWebServer) handleGetItem(w http.ResponseWriter, r *http.Request) {
-	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewItemDAL(s.db).GetItemByID(id) })
+	sharedCache := dal.NewCache()
+	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewItemDAL(s.db, sharedCache).GetItemByID(id) })
 }
 func (s *AdminWebServer) handleUpdateItem(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache()
 	var item models.Item
-	s.handleUpdate(w, r, &item, func(m interface{}) error { return dal.NewItemDAL(s.db).UpdateItem(m.(*models.Item)) })
+	s.handleUpdate(w, r, &item, func(m interface{}) error { return dal.NewItemDAL(s.db, sharedCache).UpdateItem(m.(*models.Item)) })
 }
 func (s *AdminWebServer) handleDeleteItem(w http.ResponseWriter, r *http.Request) {
-	s.handleDelete(w, r, dal.NewItemDAL(s.db).DeleteItem)
+	sharedCache := dal.NewCache()
+	s.handleDelete(w, r, dal.NewItemDAL(s.db, sharedCache).DeleteItem)
 }
 
 // NPC Handlers
@@ -224,16 +228,20 @@ func (s *AdminWebServer) handleDeleteOwner(w http.ResponseWriter, r *http.Reques
 
 // Lore Handlers
 func (s *AdminWebServer) handleCreateLore(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache()
 	var lore models.Lore
-	s.handleCreate(w, r, &lore, func(m interface{}) error { return dal.NewLoreDAL(s.db).CreateLore(m.(*models.Lore)) })
+	s.handleCreate(w, r, &lore, func(m interface{}) error { return dal.NewLoreDAL(s.db, sharedCache).CreateLore(m.(*models.Lore)) })
 }
 func (s *AdminWebServer) handleGetLore(w http.ResponseWriter, r *http.Request) {
-	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewLoreDAL(s.db).GetLoreByID(id) })
+	sharedCache := dal.NewCache()
+	s.handleGet(w, r, func(id string) (interface{}, error) { return dal.NewLoreDAL(s.db, sharedCache).GetLoreByID(id) })
 }
 func (s *AdminWebServer) handleUpdateLore(w http.ResponseWriter, r *http.Request) {
+	sharedCache := dal.NewCache()
 	var lore models.Lore
-	s.handleUpdate(w, r, &lore, func(m interface{}) error { return dal.NewLoreDAL(s.db).UpdateLore(m.(*models.Lore)) })
+	s.handleUpdate(w, r, &lore, func(m interface{}) error { return dal.NewLoreDAL(s.db, sharedCache).UpdateLore(m.(*models.Lore)) })
 }
 func (s *AdminWebServer) handleDeleteLore(w http.ResponseWriter, r *http.Request) {
-	s.handleDelete(w, r, dal.NewLoreDAL(s.db).DeleteLore)
+	sharedCache := dal.NewCache()
+	s.handleDelete(w, r, dal.NewLoreDAL(s.db, sharedCache).DeleteLore)
 }

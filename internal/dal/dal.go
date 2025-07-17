@@ -31,20 +31,20 @@ func NewDAL(db *sql.DB) *DAL {
 	newCache := NewCache()
 	return &DAL{
 		RoomDAL:          NewRoomDAL(db, newCache),
-		ItemDAL:          NewItemDAL(db),
+		ItemDAL:          NewItemDAL(db, newCache),
 		NpcDAL:           NewNPCDAL(db, newCache),
 		OwnerDAL:         NewOwnerDAL(db, newCache),
-		LoreDAL:          NewLoreDAL(db),
+		LoreDAL:          NewLoreDAL(db, newCache),
 		PlayerDAL:        NewPlayerDAL(db),
-		QuestDAL:         NewQuestDAL(db),
+		QuestDAL:         NewQuestDAL(db, newCache),
 		QuestmakerDAL:    NewQuestmakerDAL(db, newCache),
-		QuestOwnerDAL:    NewQuestOwnerDAL(db),
+		QuestOwnerDAL:    NewQuestOwnerDAL(db, newCache),
 		PlayerQuestState: NewPlayerQuestStateDAL(db),
 		RaceDAL:          NewRaceDAL(db, newCache),
 		ProfessionDAL:    NewProfessionDAL(db, newCache),
-		SkillDAL:         NewSkillDAL(db),
+		SkillDAL:         NewSkillDAL(db, newCache),
 		PlayerSkillDAL:   NewPlayerSkillDAL(db),
-		ClassDAL:         NewClassDAL(db),
+		ClassDAL:         NewClassDAL(db, newCache),
 		PlayerClassDAL:   NewPlayerClassDAL(db),
 	}
 }

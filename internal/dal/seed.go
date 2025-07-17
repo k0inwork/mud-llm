@@ -31,17 +31,17 @@ func SeedData(db *sql.DB) {
 
 	// Create DALs
 	roomDAL := NewRoomDAL(db, sharedCache)
-	itemDAL := NewItemDAL(db)
+	itemDAL := NewItemDAL(db, sharedCache)
 	npcDAL := NewNPCDAL(db, sharedCache)
 	ownerDAL := NewOwnerDAL(db, sharedCache)
-	loreDAL := NewLoreDAL(db)
+	loreDAL := NewLoreDAL(db, sharedCache)
 	playerDAL := NewPlayerDAL(db)
-	questDAL := NewQuestDAL(db)
+	questDAL := NewQuestDAL(db, sharedCache)
 	questmakerDAL := NewQuestmakerDAL(db, sharedCache)
-	questOwnerDAL := NewQuestOwnerDAL(db)
+	questOwnerDAL := NewQuestOwnerDAL(db, sharedCache)
 	raceDAL := NewRaceDAL(db, sharedCache)
 	professionDAL := NewProfessionDAL(db, sharedCache)
-	skillDAL := NewSkillDAL(db)
+	skillDAL := NewSkillDAL(db, sharedCache)
 
 	// Seed Rooms
 	// Bag End

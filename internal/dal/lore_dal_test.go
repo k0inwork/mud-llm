@@ -9,7 +9,7 @@ func TestLoreDAL_AdvancedQueries(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	loreDAL := NewLoreDAL(db)
+	loreDAL := NewLoreDAL(db, NewCache())
 
 	// Seed with test data
 	globalLore1 := &models.Lore{ID: "global1", Title: "Global 1", Content: "...", Scope: "global"}

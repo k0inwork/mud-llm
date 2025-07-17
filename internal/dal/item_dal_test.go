@@ -9,7 +9,7 @@ func TestItemDAL_AdvancedQueries(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	itemDAL := NewItemDAL(db)
+	itemDAL := NewItemDAL(db, NewCache())
 
 	// Seed with test data
 	item1 := &models.Item{ID: "item1", Name: "Sword", Type: "weapon", Properties: `{"location_room_id": "roomA"}`}

@@ -13,8 +13,8 @@ type QuestOwnerDAL struct {
 }
 
 // NewQuestOwnerDAL creates a new QuestOwnerDAL.
-func NewQuestOwnerDAL(db *sql.DB) *QuestOwnerDAL {
-	return &QuestOwnerDAL{db: db, Cache: NewCache()}
+func NewQuestOwnerDAL(db *sql.DB, cache *Cache) *QuestOwnerDAL {
+	return &QuestOwnerDAL{db: db, Cache: cache}
 }
 
 // CreateQuestOwner inserts a new quest owner into the database.

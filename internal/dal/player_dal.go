@@ -168,7 +168,7 @@ func (d *PlayerDAL) GetPlayerInventory(playerID string) ([]*models.Item, error) 
 	}
 
 	var items []*models.Item
-	itemDAL := NewItemDAL(d.db) // Create a new ItemDAL instance
+	itemDAL := NewItemDAL(d.db, NewCache()) // Create a new ItemDAL instance
 
 	for _, itemID := range player.Inventory {
 		item, err := itemDAL.GetItemByID(itemID)

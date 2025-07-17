@@ -10,7 +10,7 @@ func TestPlayerDAL_AdvancedQueries(t *testing.T) {
 	defer cleanup()
 
 	playerDAL := NewPlayerDAL(db)
-	itemDAL := NewItemDAL(db)
+	itemDAL := NewItemDAL(db, NewCache())
 
 	// Seed items for inventory
 	item1 := &models.Item{ID: "sword_of_testing", Name: "Sword of Testing", Type: "weapon", Properties: "{}"}

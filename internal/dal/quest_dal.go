@@ -13,8 +13,8 @@ type QuestDAL struct {
 }
 
 // NewQuestDAL creates a new QuestDAL.
-func NewQuestDAL(db *sql.DB) *QuestDAL {
-	return &QuestDAL{db: db, Cache: NewCache()}
+func NewQuestDAL(db *sql.DB, cache *Cache) *QuestDAL {
+	return &QuestDAL{db: db, Cache: cache}
 }
 
 // CreateQuest inserts a new quest into the database.
