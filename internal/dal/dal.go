@@ -8,44 +8,47 @@ import (
 
 // DAL is a struct that holds all the data access layers.
 type DAL struct {
-	RoomDAL          *RoomDAL
-	ItemDAL          *ItemDAL
-	NpcDAL           *NPCDAL
-	OwnerDAL         *OwnerDAL
-	LoreDAL          *LoreDAL
-	PlayerDAL        *PlayerDAL
-	QuestDAL         *QuestDAL
-	QuestmakerDAL    *QuestmakerDAL
-	QuestOwnerDAL    *QuestOwnerDAL
-	PlayerQuestState *PlayerQuestStateDAL
-	RaceDAL          *RaceDAL
-	ProfessionDAL    *ProfessionDAL
-	SkillDAL         *SkillDAL
-	PlayerSkillDAL   *PlayerSkillDAL
-	ClassDAL         *ClassDAL
-	PlayerClassDAL   *PlayerClassDAL
+	RoomDAL               RoomDALInterface
+	ItemDAL               ItemDALInterface
+	NpcDAL                NPCDALInterface
+	OwnerDAL              OwnerDALInterface
+	LoreDAL               LoreDALInterface
+	PlayerAccountDAL      PlayerAccountDALInterface
+	PlayerCharacterDAL    PlayerCharacterDALInterface
+	QuestDAL              QuestDALInterface
+	QuestmakerDAL         QuestmakerDALInterface
+	QuestOwnerDAL         QuestOwnerDALInterface
+	PlayerQuestState      PlayerQuestStateDALInterface
+	RaceDAL               RaceDALInterface
+	ProfessionDAL         ProfessionDALInterface
+	SkillDAL              SkillDALInterface
+	PlayerSkillDAL        PlayerSkillDALInterface
+	ClassDAL              ClassDALInterface
+	PlayerClassDAL        PlayerClassDALInterface
 }
 
 // NewDAL creates a new DAL instance with all its sub-DALs.
 func NewDAL(db *sql.DB) *DAL {
 	newCache := NewCache()
+	itemDAL := NewItemDAL(db, newCache)
 	return &DAL{
-		RoomDAL:          NewRoomDAL(db, newCache),
-		ItemDAL:          NewItemDAL(db),
-		NpcDAL:           NewNPCDAL(db, newCache),
-		OwnerDAL:         NewOwnerDAL(db, newCache),
-		LoreDAL:          NewLoreDAL(db),
-		PlayerDAL:        NewPlayerDAL(db),
-		QuestDAL:         NewQuestDAL(db),
-		QuestmakerDAL:    NewQuestmakerDAL(db, newCache),
-		QuestOwnerDAL:    NewQuestOwnerDAL(db),
-		PlayerQuestState: NewPlayerQuestStateDAL(db),
-		RaceDAL:          NewRaceDAL(db, newCache),
-		ProfessionDAL:    NewProfessionDAL(db, newCache),
-		SkillDAL:         NewSkillDAL(db),
-		PlayerSkillDAL:   NewPlayerSkillDAL(db),
-		ClassDAL:         NewClassDAL(db),
-		PlayerClassDAL:   NewPlayerClassDAL(db),
+		RoomDAL:               NewRoomDAL(db, newCache),
+		ItemDAL:               itemDAL,
+		NpcDAL:                NewNPCDAL(db, newCache),
+		OwnerDAL:              NewOwnerDAL(db, newCache),
+		LoreDAL:               NewLoreDAL(db, newCache),
+		PlayerAccountDAL:      NewPlayerAccountDAL(db),
+		PlayerCharacterDAL:    NewPlayerCharacterDAL(db, newCache, itemDAL),
+		QuestDAL:              NewQuestDAL(db, newCache),
+		QuestmakerDAL:         NewQuestmakerDAL(db, newCache),
+		QuestOwnerDAL:         NewQuestOwnerDAL(db, newCache),
+		PlayerQuestState:      NewPlayerQuestStateDAL(db, newCache),
+		RaceDAL:               NewRaceDAL(db, newCache),
+		ProfessionDAL:         NewProfessionDAL(db, newCache),
+		SkillDAL:              NewSkillDAL(db, newCache),
+		PlayerSkillDAL:        NewPlayerSkillDAL(db, newCache),
+		ClassDAL:              NewClassDAL(db, newCache),
+		PlayerClassDAL:        NewPlayerClassDAL(db, newCache),
 	}
 }
 
@@ -64,19 +67,29 @@ func InitDB(dataSourceName string) (*sql.DB, error) {
 
 	// Create tables
 	schema := `
-	CREATE TABLE IF NOT EXISTS Players (
+	CREATE TABLE IF NOT EXISTS player_accounts (
 		id TEXT PRIMARY KEY NOT NULL,
+		username TEXT NOT NULL UNIQUE,
+		hashed_password TEXT NOT NULL,
+		email TEXT UNIQUE,
+		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		last_login_at TIMESTAMP
+	);
+
+	CREATE TABLE IF NOT EXISTS player_characters (
+		id TEXT PRIMARY KEY NOT NULL,
+		player_account_id TEXT NOT NULL,
 		name TEXT NOT NULL UNIQUE,
 		race_id TEXT NOT NULL,
 		profession_id TEXT NOT NULL,
 		current_room_id TEXT NOT NULL,
 		health INTEGER NOT NULL,
 		max_health INTEGER NOT NULL,
-		inventory JSON NOT NULL,
-		visited_room_ids JSON NOT NULL,
+		inventory TEXT NOT NULL,
+		visited_room_ids TEXT NOT NULL,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-		last_login_at TIMESTAMP,
-		last_logout_at TIMESTAMP
+		last_played_at TIMESTAMP,
+		FOREIGN KEY (player_account_id) REFERENCES player_accounts(id)
 	);
 
 	CREATE TABLE IF NOT EXISTS Rooms (

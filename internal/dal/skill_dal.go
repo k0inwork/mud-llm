@@ -9,12 +9,16 @@ import (
 // SkillDAL handles database operations for Skill entities.
 type SkillDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	cache CacheInterface
+}
+
+func (d *SkillDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewSkillDAL creates a new SkillDAL.
-func NewSkillDAL(db *sql.DB) *SkillDAL {
-	return &SkillDAL{db: db, Cache: NewCache()}
+func NewSkillDAL(db *sql.DB, cache CacheInterface) *SkillDAL {
+	return &SkillDAL{db: db, cache: cache}
 }
 
 // CreateSkill inserts a new skill into the database.

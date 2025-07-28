@@ -27,6 +27,8 @@ const (
 	ColorHighlight SemanticColorType = "highlight"
 	ColorSuccess   SemanticColorType = "success"
 	ColorError     SemanticColorType = "error"
+	ColorWarning   SemanticColorType = "warning"
+	ColorNarrative SemanticColorType = "narrative"
 	ColorNPC       SemanticColorType = "npc"
 	ColorPlayer    SemanticColorType = "player"
 	ColorItem      SemanticColorType = "item"

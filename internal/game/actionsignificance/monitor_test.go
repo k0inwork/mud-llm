@@ -17,6 +17,8 @@ type MockNPCDAL struct {
 	npcs map[string]*models.NPC
 	GetAllNPCsFunc func() ([]*models.NPC, error)
 	GetNPCByIDFunc func(id string) (*models.NPC, error)
+	GetNPCsByOwnerFunc func(ownerID string) ([]*models.NPC, error)
+	UpdateNPCFunc func(npc *models.NPC) error
 }
 
 func (m *MockNPCDAL) GetAllNPCs() ([]*models.NPC, error) {
@@ -36,6 +38,35 @@ func (m *MockNPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 	}
 	return m.npcs[id], nil
 }
+
+func (m *MockNPCDAL) GetNPCsByOwner(ownerID string) ([]*models.NPC, error) {
+	if m.GetNPCsByOwnerFunc != nil {
+		return m.GetNPCsByOwnerFunc(ownerID)
+	}
+	var ownedNPCs []*models.NPC
+	for _, npc := range m.npcs {
+		for _, oid := range npc.OwnerIDs { // Corrected to iterate through OwnerIDs
+			if oid == ownerID {
+				ownedNPCs = append(ownedNPCs, npc)
+				break // Found, move to next NPC
+			}
+		}
+	}
+	return ownedNPCs, nil
+}
+
+func (m *MockNPCDAL) UpdateNPC(npc *models.NPC) error {
+	if m.UpdateNPCFunc != nil {
+		return m.UpdateNPCFunc(npc)
+	}
+	m.npcs[npc.ID] = npc
+	return nil
+}
+
+func (m *MockNPCDAL) CreateNPC(npc *models.NPC) error { return nil }
+func (m *MockNPCDAL) DeleteNPC(id string) error { return nil }
+func (m *MockNPCDAL) GetNPCsByRoom(roomID string) ([]*models.NPC, error) { return nil, nil }
+func (m *MockNPCDAL) Cache() dal.CacheInterface { return nil }
 
 type MockOwnerDAL struct {
 	owners map[string]*models.Owner
@@ -70,6 +101,10 @@ func (m *MockOwnerDAL) UpdateOwner(owner *models.Owner) error {
 	return nil
 }
 
+func (m *MockOwnerDAL) CreateOwner(owner *models.Owner) error { return nil }
+func (m *MockOwnerDAL) DeleteOwner(id string) error { return nil }
+func (m *MockOwnerDAL) Cache() dal.CacheInterface { return nil }
+
 type MockQuestmakerDAL struct {
 	questmakers map[string]*models.Questmaker
 	GetAllQuestmakersFunc func() ([]*models.Questmaker, error)
@@ -93,6 +128,11 @@ func (m *MockQuestmakerDAL) GetQuestmakerByID(id string) (*models.Questmaker, er
 	}
 	return m.questmakers[id], nil
 }
+
+func (m *MockQuestmakerDAL) CreateQuestmaker(questmaker *models.Questmaker) error { return nil }
+func (m *MockQuestmakerDAL) UpdateQuestmaker(questmaker *models.Questmaker) error { return nil }
+func (m *MockQuestmakerDAL) DeleteQuestmaker(id string) error { return nil }
+func (m *MockQuestmakerDAL) Cache() dal.CacheInterface { return nil }
 
 type MockPerceptionFilter struct {
 	FilterFunc func(event *events.ActionEvent, observer interface{}) (*perception.PerceivedAction, error)
@@ -211,7 +251,7 @@ func TestActionSignificanceMonitor_HandleActionEvent(t *testing.T) {
 	)
 
 	// Create a player for the action event
-	player := &models.Player{
+	player := &models.PlayerCharacter{
 		ID:           "player1",
 		Name:         "TestPlayer",
 		RaceID:       "human",

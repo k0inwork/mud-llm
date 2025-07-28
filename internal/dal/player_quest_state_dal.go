@@ -10,12 +10,16 @@ import (
 // PlayerQuestStateDAL handles database operations for PlayerQuestState entities.
 type PlayerQuestStateDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	cache CacheInterface
+}
+
+func (d *PlayerQuestStateDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewPlayerQuestStateDAL creates a new PlayerQuestStateDAL.
-func NewPlayerQuestStateDAL(db *sql.DB) *PlayerQuestStateDAL {
-	return &PlayerQuestStateDAL{db: db, Cache: NewCache()}
+func NewPlayerQuestStateDAL(db *sql.DB, cache CacheInterface) *PlayerQuestStateDAL {
+	return &PlayerQuestStateDAL{db: db, cache: cache}
 }
 
 // CreatePlayerQuestState inserts a new player quest state into the database.
@@ -40,7 +44,7 @@ func (d *PlayerQuestStateDAL) CreatePlayerQuestState(pqs *models.PlayerQuestStat
 }
 
 // GetPlayerQuestState retrieves a player quest state by player and quest ID.
-func (d *PlayerQuestStateDAL) GetPlayerQuestState(playerID, questID string) (*models.PlayerQuestState, error) {
+func (d *PlayerQuestStateDAL) GetPlayerQuestStateByID(playerID, questID string) (*models.PlayerQuestState, error) {
 	query := `SELECT player_id, quest_id, current_progress, last_action_timestamp, questmaker_influence_accumulated, status FROM PlayerQuestStates WHERE player_id = ? AND quest_id = ?`
 	row := d.db.QueryRow(query, playerID, questID)
 

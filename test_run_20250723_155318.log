@@ -1,0 +1,7 @@
+Seeding database with initial data...
+Database seeding complete.
+{"level":"info","msg":"Successfully connected to SQLite database and ensured tables exist.","time":"2025-07-23T15:53:21+01:00"}
+{"level":"info","msg":"GoMUD server starting...","time":"2025-07-23T15:53:21+01:00"}
+Admin web server listening on port 8080
+2025/07/23 15:53:21 Telnet server listening on port 4000
+signal: killed

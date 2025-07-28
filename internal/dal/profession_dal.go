@@ -10,12 +10,16 @@ import (
 // ProfessionDAL handles database operations for Profession entities.
 type ProfessionDAL struct {
 	db    *sql.DB
-	Cache CacheInterface
+	cache CacheInterface
+}
+
+func (d *ProfessionDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewProfessionDAL creates a new ProfessionDAL.
 func NewProfessionDAL(db *sql.DB, cache CacheInterface) *ProfessionDAL {
-	return &ProfessionDAL{db: db, Cache: cache}
+	return &ProfessionDAL{db: db, cache: cache}
 }
 
 // CreateProfession inserts a new profession into the database.
@@ -45,13 +49,13 @@ func (d *ProfessionDAL) CreateProfession(prof *models.Profession) error {
 	if err != nil {
 		return fmt.Errorf("failed to create profession: %w", err)
 	}
-	d.Cache.Set(prof.ID, prof, 300)
+	d.Cache().Set(prof.ID, prof, 300)
 	return nil
 }
 
 // GetProfessionByID retrieves a profession by its ID.
 func (d *ProfessionDAL) GetProfessionByID(id string) (*models.Profession, error) {
-	if cachedProf, found := d.Cache.Get(id); found {
+	if cachedProf, found := d.Cache().Get(id); found {
 		if prof, ok := cachedProf.(*models.Profession); ok {
 			return prof, nil
 		}
@@ -87,7 +91,7 @@ func (d *ProfessionDAL) GetProfessionByID(id string) (*models.Profession, error)
 		prof.PerceptionBiases = make(map[string]float64)
 	}
 
-	d.Cache.Set(prof.ID, prof, 300)
+	d.Cache().Set(prof.ID, prof, 300)
 	return prof, nil
 }
 
@@ -127,7 +131,7 @@ func (d *ProfessionDAL) UpdateProfession(prof *models.Profession) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("profession with ID %s not found for update", prof.ID)
 	}
-	d.Cache.Delete(prof.ID)
+	d.Cache().Delete(prof.ID)
 	return nil
 }
 
@@ -146,7 +150,7 @@ func (d *ProfessionDAL) DeleteProfession(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("profession with ID %s not found for deletion", id)
 	}
-	d.Cache.Delete(id)
+	d.Cache().Delete(id)
 	return nil
 }
 

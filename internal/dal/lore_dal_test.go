@@ -3,13 +3,15 @@ package dal
 import (
 	"testing"
 	"mud/internal/models"
+	"mud/internal/testutils"
 )
 
 func TestLoreDAL_AdvancedQueries(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	loreDAL := NewLoreDAL(db)
+	mockCache := testutils.NewMockCache()
+	loreDAL := NewLoreDAL(db, mockCache)
 
 	// Seed with test data
 	globalLore1 := &models.Lore{ID: "global1", Title: "Global 1", Content: "...", Scope: "global"}

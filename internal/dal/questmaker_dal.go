@@ -9,11 +9,15 @@ import (
 
 type QuestmakerDAL struct {
 	db    *sql.DB
-	Cache CacheInterface
+	cache CacheInterface
+}
+
+func (d *QuestmakerDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 func NewQuestmakerDAL(db *sql.DB, cache CacheInterface) *QuestmakerDAL {
-	return &QuestmakerDAL{db: db, Cache: cache}
+	return &QuestmakerDAL{db: db, cache: cache}
 }
 
 func (d *QuestmakerDAL) CreateQuestmaker(qm *models.Questmaker) error {
@@ -34,12 +38,12 @@ func (d *QuestmakerDAL) CreateQuestmaker(qm *models.Questmaker) error {
 	if err != nil {
 		return fmt.Errorf("failed to create questmaker: %w", err)
 	}
-	d.Cache.Set(qm.ID, qm, 300)
+	d.Cache().Set(qm.ID, qm, 300)
 	return nil
 }
 
 func (d *QuestmakerDAL) GetQuestmakerByID(id string) (*models.Questmaker, error) {
-	if cached, found := d.Cache.Get(id); found {
+	if cached, found := d.Cache().Get(id); found {
 		if qm, ok := cached.(*models.Questmaker); ok {
 			return qm, nil
 		}
@@ -65,7 +69,7 @@ func (d *QuestmakerDAL) GetQuestmakerByID(id string) (*models.Questmaker, error)
 		return nil, fmt.Errorf("failed to unmarshal tools: %w", err)
 	}
 
-	d.Cache.Set(qm.ID, qm, 300)
+	d.Cache().Set(qm.ID, qm, 300)
 	return qm, nil
 }
 
@@ -88,7 +92,7 @@ func (d *QuestmakerDAL) UpdateQuestmaker(qm *models.Questmaker) error {
 	if err != nil {
 		return fmt.Errorf("failed to update questmaker: %w", err)
 	}
-	d.Cache.Delete(qm.ID)
+	d.Cache().Delete(qm.ID)
 	return nil
 }
 
@@ -98,7 +102,7 @@ func (d *QuestmakerDAL) DeleteQuestmaker(id string) error {
 	if err != nil {
 		return fmt.Errorf("failed to delete questmaker: %w", err)
 	}
-	d.Cache.Delete(id)
+	d.Cache().Delete(id)
 	return nil
 }
 

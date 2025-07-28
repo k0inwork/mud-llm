@@ -1,0 +1,12 @@
+# mud/internal/server
+internal/server/telnet_server.go:36:16: undefined: net
+internal/server/telnet_server.go:47:21: undefined: net
+internal/server/telnet_server.go:53:21: undefined: sync
+internal/server/telnet_server.go:58:31: undefined: net
+internal/server/telnet_server.go:109:22: undefined: net
+internal/server/telnet_server.go:142:19: undefined: strings
+internal/server/telnet_server.go:276:10: undefined: strings
+internal/server/telnet_server.go:290:5: undefined: strings
+internal/server/telnet_server.go:304:20: undefined: strconv
+internal/server/telnet_server.go:337:20: undefined: time
+internal/server/telnet_server.go:337:20: too many errors

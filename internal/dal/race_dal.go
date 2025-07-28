@@ -10,12 +10,16 @@ import (
 // RaceDAL handles database operations for Race entities.
 type RaceDAL struct {
 	db    *sql.DB
-	Cache CacheInterface
+	cache CacheInterface
+}
+
+func (d *RaceDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewRaceDAL creates a new RaceDAL.
 func NewRaceDAL(db *sql.DB, cache CacheInterface) *RaceDAL {
-	return &RaceDAL{db: db, Cache: cache}
+	return &RaceDAL{db: db, cache: cache}
 }
 
 // CreateRace inserts a new race into the database.
@@ -46,13 +50,13 @@ func (d *RaceDAL) CreateRace(race *models.Race) error {
 	if err != nil {
 		return fmt.Errorf("failed to create race: %w", err)
 	}
-	d.Cache.Set(race.ID, race, 300) // Cache for 5 minutes
+	d.Cache().Set(race.ID, race, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetRaceByID retrieves a race by its ID.
 func (d *RaceDAL) GetRaceByID(id string) (*models.Race, error) {
-	if cachedRace, found := d.Cache.Get(id); found {
+	if cachedRace, found := d.Cache().Get(id); found {
 		if race, ok := cachedRace.(*models.Race); ok {
 			return race, nil
 		}
@@ -90,7 +94,7 @@ func (d *RaceDAL) GetRaceByID(id string) (*models.Race, error) {
 		race.PerceptionBiases = make(map[string]float64) // Initialize to empty map
 	}
 
-	d.Cache.Set(race.ID, race, 300) // Cache for 5 minutes
+	d.Cache().Set(race.ID, race, 300) // Cache for 5 minutes
 	return race, nil
 }
 
@@ -131,7 +135,7 @@ func (d *RaceDAL) UpdateRace(race *models.Race) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("race with ID %s not found for update", race.ID)
 	}
-	d.Cache.Delete(race.ID) // Invalidate cache on update
+	d.Cache().Delete(race.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -150,7 +154,7 @@ func (d *RaceDAL) DeleteRace(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("race with ID %s not found for deletion", id)
 	}
-	d.Cache.Delete(id) // Invalidate cache on delete
+	d.Cache().Delete(id) // Invalidate cache on delete
 	return nil
 }
 

@@ -10,12 +10,16 @@ import (
 // OwnerDAL handles database operations for Owner entities.
 type OwnerDAL struct {
 	db    *sql.DB
-	Cache CacheInterface
+	cache CacheInterface
+}
+
+func (d *OwnerDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewOwnerDAL creates a new OwnerDAL.
 func NewOwnerDAL(db *sql.DB, cache CacheInterface) *OwnerDAL {
-	return &OwnerDAL{db: db, Cache: cache}
+	return &OwnerDAL{db: db, cache: cache}
 }
 
 // CreateOwner inserts a new owner into the database.
@@ -56,13 +60,13 @@ func (d *OwnerDAL) CreateOwner(owner *models.Owner) error {
 	if err != nil {
 		return fmt.Errorf("failed to create owner: %w", err)
 	}
-	d.Cache.Set(owner.ID, owner, 300) // Cache for 5 minutes
+	d.Cache().Set(owner.ID, owner, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetOwnerByID retrieves an owner by their ID.
 func (d *OwnerDAL) GetOwnerByID(id string) (*models.Owner, error) {
-	if cachedOwner, found := d.Cache.Get(id); found {
+	if cachedOwner, found := d.Cache().Get(id); found {
 		if owner, ok := cachedOwner.(*models.Owner); ok {
 			return owner, nil
 		}
@@ -105,7 +109,7 @@ func (d *OwnerDAL) GetOwnerByID(id string) (*models.Owner, error) {
 		return nil, fmt.Errorf("failed to unmarshal initiated quests: %w", err)
 	}
 
-	d.Cache.Set(owner.ID, owner, 300) // Cache for 5 minutes
+	d.Cache().Set(owner.ID, owner, 300) // Cache for 5 minutes
 	return owner, nil
 }
 
@@ -156,7 +160,7 @@ func (d *OwnerDAL) UpdateOwner(owner *models.Owner) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("owner with ID %s not found for update", owner.ID)
 	}
-	d.Cache.Delete(owner.ID) // Invalidate cache on update
+	d.Cache().Delete(owner.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -175,7 +179,7 @@ func (d *OwnerDAL) DeleteOwner(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("owner with ID %s not found for deletion", id)
 	}
-	d.Cache.Delete(id) // Invalidate cache on delete
+	d.Cache().Delete(id) // Invalidate cache on delete
 	return nil
 }
 

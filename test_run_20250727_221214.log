@@ -1,0 +1,26 @@
+Seeding database with initial data...
+Database seeding complete.
+{"level":"info","msg":"Successfully connected to SQLite database and ensured tables exist.","time":"2025-07-27T22:12:16+01:00"}
+{"level":"info","msg":"GoMUD server starting...","time":"2025-07-27T22:12:16+01:00"}
+Admin web server listening on port 8080
+{"level":"info","msg":"Telnet server listening on port 4000\n","time":"2025-07-27T22:12:16+01:00"}
+signal: killed
+st files]
+ok  	mud/internal/dal	(cached)
+?   	mud/internal/game	[no test files]
+ok  	mud/internal/game/actionsignificance	(cached)
+?   	mud/internal/game/events	[no test files]
+ok  	mud/internal/game/globalobserver	(cached)
+ok  	mud/internal/game/perception	(cached)
+ok  	mud/internal/game/sentiententitymanager	(cached)
+ok  	mud/internal/llm	(cached)
+?   	mud/internal/mocks	[no test files]
+?   	mud/internal/models	[no test files]
+?   	mud/internal/presentation	[no test files]
+# mud/internal/server [mud/internal/server.test]
+internal/server/telnet_server_test.go:4:2: "bufio" imported and not used
+internal/server/telnet_server_test.go:292:19: renderer.ContainsMessage undefined (type *mocks.TestRenderer has no field or method ContainsMessage)
+internal/server/telnet_server_test.go:293:118: renderer.AllMessages undefined (type *mocks.TestRenderer has no field or method AllMessages)
+FAIL	mud/internal/server [build failed]
+?   	mud/internal/testutils	[no test files]
+FAIL

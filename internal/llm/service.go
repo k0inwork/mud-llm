@@ -14,15 +14,15 @@ type LLMService struct {
 	dal         *dal.DAL
 }
 
-func NewLLMService(dal *dal.DAL) *LLMService {
+func NewLLMService(client *Client, dal *dal.DAL) *LLMService {
 	return &LLMService{
-		client:      NewClient(),
+		client:      client,
 		cache:       NewCacheManager(),
 		dal:         dal,
 	}
 }
 
-func (s *LLMService) ProcessAction(ctx context.Context, entity interface{}, player *models.Player, playerAction string) (*InnerLLMResponse, error) {
+func (s *LLMService) ProcessAction(ctx context.Context, entity interface{}, player *models.PlayerCharacter, playerAction string) (*InnerLLMResponse, error) {
 	entityID, err := getEntityID(entity)
 	if err != nil {
 		return nil, err
@@ -51,10 +51,14 @@ func (s *LLMService) ProcessAction(ctx context.Context, entity interface{}, play
 	}
 
 	// 3. Append dynamic player action
-	finalPrompt := fmt.Sprintf("%s\nPlayer action: %s", basePrompt, playerAction)
+	finalPrompt := fmt.Sprintf("%s\nPlayer action: %s", basePrompt, playerAction);
 
 	// 4. Send to LLM
 	return s.client.SendPrompt(ctx, finalPrompt)
+}
+
+func (s *LLMService) AnalyzeResponse(ctx context.Context, narrative string, query string) (float64, error) {
+	return s.client.AnalyzeResponse(ctx, narrative, query)
 }
 
 func getEntityID(entity interface{}) (string, error) {
@@ -64,7 +68,7 @@ func getEntityID(entity interface{}) (string, error) {
 	case *models.Owner:
 		return v.ID, nil
 	case *models.Questmaker:
-		return v.ID, nil
+		return v.ID, nil	
 	default:
 		return "", fmt.Errorf("unknown entity type for getting ID")
 	}

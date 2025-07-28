@@ -10,12 +10,16 @@ import (
 // RoomDAL handles database operations for Room entities.
 type RoomDAL struct {
 	db    *sql.DB
-	Cache CacheInterface
+	cache CacheInterface
+}
+
+func (d *RoomDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewRoomDAL creates a new RoomDAL.
 func NewRoomDAL(db *sql.DB, cache CacheInterface) *RoomDAL {
-	return &RoomDAL{db: db, Cache: cache}
+	return &RoomDAL{db: db, cache: cache}
 }
 
 // CreateRoom inserts a new room into the database.
@@ -43,13 +47,13 @@ func (d *RoomDAL) CreateRoom(room *models.Room) error {
 	if err != nil {
 		return fmt.Errorf("failed to create room: %w", err)
 	}
-	d.Cache.Set(room.ID, room, 300) // Cache for 5 minutes
+	d.Cache().Set(room.ID, room, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetRoomByID retrieves a room by its ID.
 func (d *RoomDAL) GetRoomByID(id string) (*models.Room, error) {
-	if cachedRoom, found := d.Cache.Get(id); found {
+	if cachedRoom, found := d.Cache().Get(id); found {
 		if room, ok := cachedRoom.(*models.Room); ok {
 			return room, nil
 		}
@@ -84,7 +88,7 @@ func (d *RoomDAL) GetRoomByID(id string) (*models.Room, error) {
 		room.PerceptionBiases = make(map[string]float64)
 	}
 
-	d.Cache.Set(room.ID, room, 300) // Cache for 5 minutes
+	d.Cache().Set(room.ID, room, 300) // Cache for 5 minutes
 	return room, nil
 }
 
@@ -164,7 +168,7 @@ func (d *RoomDAL) UpdateRoom(room *models.Room) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("room with ID %s not found for update", room.ID)
 	}
-	d.Cache.Delete(room.ID) // Invalidate cache on update
+	d.Cache().Delete(room.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -183,6 +187,6 @@ func (d *RoomDAL) DeleteRoom(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("room with ID %s not found for deletion", id)
 	}
-	d.Cache.Delete(id) // Invalidate cache on delete
+	d.Cache().Delete(id) // Invalidate cache on delete
 	return nil
 }

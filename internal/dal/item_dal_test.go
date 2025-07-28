@@ -3,13 +3,15 @@ package dal
 import (
 	"testing"
 	"mud/internal/models"
+	"mud/internal/testutils"
 )
 
 func TestItemDAL_AdvancedQueries(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	itemDAL := NewItemDAL(db)
+	mockCache := testutils.NewMockCache()
+	itemDAL := NewItemDAL(db, mockCache)
 
 	// Seed with test data
 	item1 := &models.Item{ID: "item1", Name: "Sword", Type: "weapon", Properties: `{"location_room_id": "roomA"}`}

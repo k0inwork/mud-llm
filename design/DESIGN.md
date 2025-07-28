@@ -20,13 +20,17 @@ The architecture is designed to be modular, scalable, and maintainable, with a c
 
 1.  **Database:** A local database (e.g., SQLite) that stores all persistent world data, including lore, rooms, items, NPCs, and Owners.
 2.  **Data Access Layer (DAL):** A Go module that provides a clean, typed API for all database operations. All other modules interact with the database exclusively through the DAL.
-3.  **Core Game Engine:** Manages the fundamental state of the MUD and enforces game rules. It uses the DAL to access game data and processes player commands (e.g., `move`, `unlock`). Player-initiated actions are handled here directly.
-4.  **AI Interaction Module:**
+3.  **Player Account and Character Management:**
+    *   **Player Accounts:** Represent the real-world user, allowing for secure login and management of multiple in-game characters.
+    *   **Player Characters:** Are the in-game avatars controlled by a Player Account. Each character has its own stats, inventory, location, and progression.
+    *   The initial Telnet connection flow will guide users through account creation/login and character selection/creation.
+4.  **Core Game Engine:** Manages the fundamental state of the MUD and enforces game rules. It uses the DAL to access game data and processes player commands (e.g., `move`, `unlock`). Player-initiated actions are handled here directly.
+5.  **AI Interaction Module:**
     *   **Action Significance Monitor:** Tracks player actions from the Core Game Engine, scores them for significance, and batches them for relevant NPCs/Owners.
     *   **LLM Integration Client:** Constructs prompts (using cached data for performance) and handles communication with the LLM API.
     *   **Tool Dispatcher:** Executes Go functions based on tool calls *received from the LLM*.
-5.  **Server-Side Presentation Layer:** Contains client-specific renderers (e.g., `TelnetRenderer`) that translate semantic JSON from the core engine into the final format for the client.
-6.  **Web Server & Admin API:** A lightweight web server running within the main Go application. It serves the static files for the admin front-end and exposes a versioned **REST API** for all content management operations. The API handlers call the DAL to interact with the database.
+6.  **Server-Side Presentation Layer:** Contains client-specific renderers (e.g., `TelnetRenderer`) that translate semantic JSON from the core engine into the final format for the client.
+7.  **Web Server & Admin API:** A lightweight web server running within the main Go application. It serves the static files for the admin front-end and exposes a versioned **REST API** for all content management operations. The API handlers call the DAL to interact with the database.
 
 ## 4. Phased Design Documents
 

@@ -9,12 +9,16 @@ import (
 // PlayerClassDAL handles database operations for PlayerClass entities.
 type PlayerClassDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	cache CacheInterface
+}
+
+func (d *PlayerClassDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewPlayerClassDAL creates a new PlayerClassDAL.
-func NewPlayerClassDAL(db *sql.DB) *PlayerClassDAL {
-	return &PlayerClassDAL{db: db, Cache: NewCache()}
+func NewPlayerClassDAL(db *sql.DB, cache CacheInterface) *PlayerClassDAL {
+	return &PlayerClassDAL{db: db, cache: cache}
 }
 
 // CreatePlayerClass inserts a new player class entry into the database.
@@ -37,7 +41,7 @@ func (d *PlayerClassDAL) CreatePlayerClass(pc *models.PlayerClass) error {
 }
 
 // GetPlayerClass retrieves a player class entry by player and class ID.
-func (d *PlayerClassDAL) GetPlayerClass(playerID, classID string) (*models.PlayerClass, error) {
+func (d *PlayerClassDAL) GetPlayerClassByID(playerID, classID string) (*models.PlayerClass, error) {
 	query := `SELECT player_id, class_id, level, experience FROM PlayerClasses WHERE player_id = ? AND class_id = ?`
 	row := d.db.QueryRow(query, playerID, classID)
 

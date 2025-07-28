@@ -3,15 +3,19 @@ package llm
 import (
 	"fmt"
 	"mud/internal/dal"
+	"mud/internal/game/perception"
 	"mud/internal/models"
 	"strings"
 )
 
 type PromptData struct {
-	Entity      interface{}
-	Player      *models.Player
-	DAL         *dal.DAL
-	PlayerAction string
+	Entity        interface{}
+	Player        *models.PlayerCharacter
+	Room          *models.Room
+	RecentActions []*perception.PerceivedAction
+	LoreEntries   []*models.Lore
+	DAL           *dal.DAL
+	PlayerAction  string
 }
 
 func AssemblePrompt(data *PromptData) (string, error) {
@@ -51,19 +55,24 @@ func AssemblePrompt(data *PromptData) (string, error) {
 	}
 
 	// 4. Add relevant lore
-	lore, err := getRelevantLore(data)
-	if err != nil {
-		return "", err
-	}
-	if len(lore) > 0 {
+	if len(data.LoreEntries) > 0 {
 		sb.WriteString("Relevant lore:\n")
-		for _, l := range lore {
+		for _, l := range data.LoreEntries {
 			sb.WriteString(fmt.Sprintf("- %s: %s\n", l.Title, l.Content))
 		}
 		sb.WriteString("\n")
 	}
 
-	// 5. Add the player's action
+	// 5. Add recent actions
+	if len(data.RecentActions) > 0 {
+		sb.WriteString("Recent perceived actions by the player:\n")
+		for _, action := range data.RecentActions {
+			sb.WriteString(fmt.Sprintf("- %s (Significance: %.2f)\n", action.PerceivedActionType, action.BaseSignificance))
+		}
+		sb.WriteString("\n")
+	}
+
+	// 6. Add the player's action
 	sb.WriteString(fmt.Sprintf("The player's action: %s\n", data.PlayerAction))
 
 	return sb.String(), nil
@@ -115,10 +124,4 @@ func getEntityMemories(entity interface{}, playerID string) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("unknown entity type for memories")
 	}
-}
-
-func getRelevantLore(data *PromptData) ([]*models.Lore, error) {
-	// For now, we'll just fetch global lore.
-	// In the future, this could be expanded to fetch lore based on the entity's scope.
-	return data.DAL.LoreDAL.GetAllLore()
 }

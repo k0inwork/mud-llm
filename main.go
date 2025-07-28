@@ -1,12 +1,13 @@
 package main
 
 import (
+	"net"
 	"os"
 	"sync"
 
 	"github.com/sirupsen/logrus"
 	"mud/internal/dal"
-	
+
 	"mud/internal/game/actionsignificance"
 	"mud/internal/game/events"
 	"mud/internal/game/globalobserver"
@@ -15,6 +16,7 @@ import (
 	"mud/internal/llm"
 	"mud/internal/presentation"
 	"mud/internal/server"
+
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
 
@@ -45,7 +47,7 @@ func main() {
 	for _, room := range rooms {
 		roomMap[room.ID] = room
 	}
-	dals.RoomDAL.Cache.SetMany(roomMap, 300) // Cache for 5 minutes
+	dals.RoomDAL.Cache().SetMany(roomMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the item cache
 	items, err := dals.ItemDAL.GetAllItems()
@@ -56,7 +58,7 @@ func main() {
 	for _, item := range items {
 		itemMap[item.ID] = item
 	}
-	dals.ItemDAL.Cache.SetMany(itemMap, 300) // Cache for 5 minutes
+	dals.ItemDAL.Cache().SetMany(itemMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the NPC cache
 	npcs, err := dals.NpcDAL.GetAllNPCs()
@@ -67,7 +69,7 @@ func main() {
 	for _, npc := range npcs {
 		npcMap[npc.ID] = npc
 	}
-	dals.NpcDAL.Cache.SetMany(npcMap, 300) // Cache for 5 minutes
+	dals.NpcDAL.Cache().SetMany(npcMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the owner cache
 	owners, err := dals.OwnerDAL.GetAllOwners()
@@ -78,7 +80,7 @@ func main() {
 	for _, owner := range owners {
 		ownerMap[owner.ID] = owner
 	}
-	dals.OwnerDAL.Cache.SetMany(ownerMap, 300) // Cache for 5 minutes
+	dals.OwnerDAL.Cache().SetMany(ownerMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the lore cache
 	lores, err := dals.LoreDAL.GetAllLore()
@@ -89,18 +91,18 @@ func main() {
 	for _, lore := range lores {
 		loreMap[lore.ID] = lore
 	}
-	dals.LoreDAL.Cache.SetMany(loreMap, 300) // Cache for 5 minutes
+	dals.LoreDAL.Cache().SetMany(loreMap, 300) // Cache for 5 minutes
 
-	// Pre-warm the player cache
-	players, err := dals.PlayerDAL.GetAllPlayers()
+	// Pre-warm the player character cache
+	characters, err := dals.PlayerCharacterDAL.GetAllCharacters()
 	if err != nil {
-		logrus.Fatalf("Failed to pre-warm player cache: %v", err)
+		logrus.Fatalf("Failed to pre-warm player character cache: %v", err)
 	}
-	playerMap := make(map[string]interface{})
-	for _, player := range players {
-		playerMap[player.ID] = player
+	characterMap := make(map[string]interface{})
+	for _, character := range characters {
+		characterMap[character.ID] = character
 	}
-	dals.PlayerDAL.Cache.SetMany(playerMap, 300) // Cache for 5 minutes
+	dals.PlayerCharacterDAL.Cache().SetMany(characterMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the player quest state cache
 	playerQuestStates, err := dals.PlayerQuestState.GetAllPlayerQuestStates()
@@ -111,7 +113,7 @@ func main() {
 	for _, pqs := range playerQuestStates {
 		playerQuestStateMap[pqs.PlayerID+"-"+pqs.QuestID] = pqs // Composite key for cache
 	}
-	dals.PlayerQuestState.Cache.SetMany(playerQuestStateMap, 300) // Cache for 5 minutes
+	dals.PlayerQuestState.Cache().SetMany(playerQuestStateMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the quest cache
 	quests, err := dals.QuestDAL.GetAllQuests()
@@ -122,7 +124,7 @@ func main() {
 	for _, quest := range quests {
 		questMap[quest.ID] = quest
 	}
-	dals.QuestDAL.Cache.SetMany(questMap, 300) // Cache for 5 minutes
+	dals.QuestDAL.Cache().SetMany(questMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the questmaker cache
 	questmakers, err := dals.QuestmakerDAL.GetAllQuestmakers()
@@ -133,7 +135,7 @@ func main() {
 	for _, qm := range questmakers {
 		questmakerMap[qm.ID] = qm
 	}
-	dals.QuestmakerDAL.Cache.SetMany(questmakerMap, 300) // Cache for 5 minutes
+	dals.QuestmakerDAL.Cache().SetMany(questmakerMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the race cache
 	races, err := dals.RaceDAL.GetAllRaces()
@@ -144,7 +146,7 @@ func main() {
 	for _, race := range races {
 		raceMap[race.ID] = race
 	}
-	dals.RaceDAL.Cache.SetMany(raceMap, 300) // Cache for 5 minutes
+	dals.RaceDAL.Cache().SetMany(raceMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the profession cache
 	professions, err := dals.ProfessionDAL.GetAllProfessions()
@@ -155,7 +157,7 @@ func main() {
 	for _, prof := range professions {
 		professionMap[prof.ID] = prof
 	}
-	dals.ProfessionDAL.Cache.SetMany(professionMap, 300) // Cache for 5 minutes
+	dals.ProfessionDAL.Cache().SetMany(professionMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the skill cache
 	skills, err := dals.SkillDAL.GetAllSkills()
@@ -166,7 +168,7 @@ func main() {
 	for _, skill := range skills {
 		skillMap[skill.ID] = skill
 	}
-	dals.SkillDAL.Cache.SetMany(skillMap, 300) // Cache for 5 minutes
+	dals.SkillDAL.Cache().SetMany(skillMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the class cache
 	classes, err := dals.ClassDAL.GetAllClasses()
@@ -177,7 +179,7 @@ func main() {
 	for _, class := range classes {
 		classMap[class.ID] = class
 	}
-	dals.ClassDAL.Cache.SetMany(classMap, 300) // Cache for 5 minutes
+	dals.ClassDAL.Cache().SetMany(classMap, 300) // Cache for 5 minutes
 
 	// Pre-warm the quest owner cache
 	questOwners, err := dals.QuestOwnerDAL.GetAllQuestOwners()
@@ -188,10 +190,11 @@ func main() {
 	for _, qo := range questOwners {
 		questOwnerMap[qo.ID] = qo
 	}
-	dals.QuestOwnerDAL.Cache.SetMany(questOwnerMap, 300) // Cache for 5 minutes
+	dals.QuestOwnerDAL.Cache().SetMany(questOwnerMap, 300) // Cache for 5 minutes
 
 	// Initialize LLM Service
-	llmService := llm.NewLLMService(dals)
+	llmClient := llm.NewClient()
+	llmService := llm.NewLLMService(llmClient, dals)
 
 	// Initialize Tool Dispatcher
 	toolDispatcher := server.NewToolDispatcher(dals)
@@ -204,11 +207,11 @@ func main() {
 
 	// Initialize Sentient Entity Manager
 	telnetRenderer := presentation.NewTelnetRenderer()
-	sentientEntityManager := sentiententitymanager.NewSentientEntityManager(llmService, dals.NpcDAL, dals.OwnerDAL, dals.QuestmakerDAL, toolDispatcher, telnetRenderer)
+	sentientEntityManager := sentiententitymanager.NewSentientEntityManager(llmService, dals.NpcDAL, dals.OwnerDAL, dals.QuestmakerDAL, toolDispatcher, telnetRenderer, eventBus)
 
 	// Initialize Action Significance Monitor
 	actionMonitor := actionsignificance.NewMonitor(eventBus, perceptionFilter, dals.NpcDAL, dals.OwnerDAL, dals.QuestmakerDAL, sentientEntityManager)
-	actionMonitorEventChannel := make(chan interface{})
+	actionMonitorEventChannel := make(chan interface{}, 500)
 	eventBus.Subscribe(events.ActionEventType, actionMonitorEventChannel)
 	go func() {
 		for event := range actionMonitorEventChannel {
@@ -222,12 +225,12 @@ func main() {
 
 	// Initialize Global Observer Manager
 	globalObserverManager := globalobserver.NewGlobalObserverManager(eventBus, perceptionFilter, dals.OwnerDAL, dals.RaceDAL, dals.ProfessionDAL)
-	globalObserverEventChannel := make(chan interface{})
+	globalObserverEventChannel := make(chan interface{}, 100)
 	eventBus.Subscribe(events.ActionEventType, globalObserverEventChannel)
 	go func() {
 		for event := range globalObserverEventChannel {
 			if ae, ok := event.(*events.ActionEvent); ok {
-				globalObserverManager.HandleActionEvent(ae)
+				go globalObserverManager.HandleActionEvent(ae)
 			} else {
 				logrus.Errorf("main: received unexpected event type on ActionEventType for GlobalObserverManager: %T", event)
 			}
@@ -237,7 +240,11 @@ func main() {
 	var wg sync.WaitGroup
 
 	// Start Telnet server in a goroutine
-	telnetServer := server.NewTelnetServer("4000", eventBus, dals)
+	listener, err := net.Listen("tcp", ":4000") // Listen on a specific port for the main server
+	if err != nil {
+		logrus.Fatalf("Failed to listen on port 4000: %v", err)
+	}
+	telnetServer := server.NewTelnetServer(listener, telnetRenderer, eventBus, dals, llmService)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

@@ -6,18 +6,19 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 	"mud/internal/models"
 )
 
 // SeedData populates the database with initial test data.
 func SeedData(db *sql.DB) {
 	// Check if data already exists to prevent duplicate entries
-	// A simple check on a key table like Rooms is sufficient.
 	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM Rooms").Scan(&count)
+	err := db.QueryRow("SELECT COUNT(*) FROM player_accounts").Scan(&count)
 	if err != nil {
-		logrus.Fatalf("Failed to query room count: %v", err)
+		logrus.Fatalf("Failed to query player_accounts count: %v", err)
 	}
 	if count > 0 {
 		fmt.Println("Database already seeded. Skipping.")
@@ -31,24 +32,60 @@ func SeedData(db *sql.DB) {
 
 	// Create DALs
 	roomDAL := NewRoomDAL(db, sharedCache)
-	itemDAL := NewItemDAL(db)
+	itemDAL := NewItemDAL(db, sharedCache)
 	npcDAL := NewNPCDAL(db, sharedCache)
 	ownerDAL := NewOwnerDAL(db, sharedCache)
-	loreDAL := NewLoreDAL(db)
-	playerDAL := NewPlayerDAL(db)
-	questDAL := NewQuestDAL(db)
+	loreDAL := NewLoreDAL(db, sharedCache)
+	characterDAL := NewPlayerCharacterDAL(db, sharedCache, itemDAL)
+	questDAL := NewQuestDAL(db, sharedCache)
 	questmakerDAL := NewQuestmakerDAL(db, sharedCache)
-	questOwnerDAL := NewQuestOwnerDAL(db)
+	questOwnerDAL := NewQuestOwnerDAL(db, sharedCache)
 	raceDAL := NewRaceDAL(db, sharedCache)
 	professionDAL := NewProfessionDAL(db, sharedCache)
-	skillDAL := NewSkillDAL(db)
+	skillDAL := NewSkillDAL(db, sharedCache)
+
+	// Seed Player Account and Character
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
+	testAccount := &models.PlayerAccount{
+		ID:             uuid.New().String(),
+		Username:       "test",
+		HashedPassword: string(hashedPassword),
+		Email:          "test@example.com",
+		CreatedAt:      time.Now(),
+		LastLoginAt:    time.Now(),
+	}
+	_, err = db.Exec("INSERT INTO player_accounts (id, username, hashed_password, email, created_at, last_login_at) VALUES (?, ?, ?, ?, ?, ?)",
+		testAccount.ID, testAccount.Username, testAccount.HashedPassword, testAccount.Email, testAccount.CreatedAt, testAccount.LastLoginAt)
+	if err != nil {
+		logrus.Fatalf("Failed to seed player account: %v", err)
+	}
+
+	inventoryJSON, _ := json.Marshal([]string{})
+	visitedRoomsJSON, _ := json.Marshal([]string{"bag_end"})
+	testCharacter := &models.PlayerCharacter{
+		ID:              "test_character",
+		PlayerAccountID: testAccount.ID,
+		Name:            "TestPlayer",
+		RaceID:          "human",
+		ProfessionID:    "warrior",
+		CurrentRoomID:   "bag_end",
+		Health:          100,
+		MaxHealth:       100,
+		Inventory:       string(inventoryJSON),
+		VisitedRoomIDs:  string(visitedRoomsJSON),
+		CreatedAt:       time.Now(),
+		LastPlayedAt:    time.Now(),
+	}
+	if err := characterDAL.CreateCharacter(testCharacter); err != nil {
+		logrus.Fatalf("Failed to seed player character: %v", err)
+	}
 
 	// Seed Rooms
 	// Bag End
 	bagEndExits, _ := json.Marshal(map[string]interface{}{
 		"east": map[string]interface{}{
 			"Direction":    "east",
-			"TargetRoomID": "hobbiton_path",
+			"target_room_id": "hobbiton_path",
 			"IsLocked":     false,
 			"KeyID":        "",
 		},
@@ -71,9 +108,9 @@ func SeedData(db *sql.DB) {
 
 	// Hobbiton Path
 	hobbitonPathExits, _ := json.Marshal(map[string]interface{}{
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "bag_end", "IsLocked": false, "KeyID": ""},
-		"east": map[string]interface{}{"Direction": "east", "TargetRoomID": "bree_road", "IsLocked": false, "KeyID": ""},
-		"south": map[string]interface{}{"Direction": "south", "TargetRoomID": "green_dragon_inn", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "bag_end", "IsLocked": false, "KeyID": ""},
+		"east": map[string]interface{}{"Direction": "east", "target_room_id": "bree_road", "IsLocked": false, "KeyID": ""},
+		"south": map[string]interface{}{"Direction": "south", "target_room_id": "green_dragon_inn", "IsLocked": false, "KeyID": ""},
 	})
 	hobbitonPath := &models.Room{
 		ID:          "hobbiton_path",
@@ -91,7 +128,7 @@ func SeedData(db *sql.DB) {
 
 	// The Green Dragon Inn
 	greenDragonInnExits, _ := json.Marshal(map[string]interface{}{
-		"north": map[string]interface{}{"Direction": "north", "TargetRoomID": "hobbiton_path", "IsLocked": false, "KeyID": ""},
+		"north": map[string]interface{}{"Direction": "north", "target_room_id": "hobbiton_path", "IsLocked": false, "KeyID": ""},
 	})
 	greenDragonInn := &models.Room{
 		ID:          "green_dragon_inn",
@@ -111,8 +148,8 @@ func SeedData(db *sql.DB) {
 
 	// Bree Road
 	breeRoadExits, _ := json.Marshal(map[string]interface{}{
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "hobbiton_path", "IsLocked": false, "KeyID": ""},
-		"east": map[string]interface{}{"Direction": "east", "TargetRoomID": "prancing_pony", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "hobbiton_path", "IsLocked": false, "KeyID": ""},
+		"east": map[string]interface{}{"Direction": "east", "target_room_id": "prancing_pony", "IsLocked": false, "KeyID": ""},
 	})
 	breeRoad := &models.Room{
 		ID:          "bree_road",
@@ -132,9 +169,9 @@ func SeedData(db *sql.DB) {
 
 	// The Prancing Pony
 	prancingPonyExits, _ := json.Marshal(map[string]interface{}{
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "bree_road", "IsLocked": false, "KeyID": ""},
-		"south": map[string]interface{}{"Direction": "south", "TargetRoomID": "prancing_pony_stables", "IsLocked": false, "KeyID": ""},
-		"east": map[string]interface{}{"Direction": "east", "TargetRoomID": "prancing_pony_private_room", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "bree_road", "IsLocked": false, "KeyID": ""},
+		"south": map[string]interface{}{"Direction": "south", "target_room_id": "prancing_pony_stables", "IsLocked": false, "KeyID": ""},
+		"east": map[string]interface{}{"Direction": "east", "target_room_id": "prancing_pony_private_room", "IsLocked": false, "KeyID": ""},
 	})
 	prancingPony := &models.Room{
 		ID:          "prancing_pony",
@@ -154,7 +191,7 @@ func SeedData(db *sql.DB) {
 
 	// Prancing Pony Stables
 	prancingPonyStablesExits, _ := json.Marshal(map[string]interface{}{
-		"north": map[string]interface{}{"Direction": "north", "TargetRoomID": "prancing_pony", "IsLocked": false, "KeyID": ""},
+		"north": map[string]interface{}{"Direction": "north", "target_room_id": "prancing_pony", "IsLocked": false, "KeyID": ""},
 	})
 	prancingPonyStables := &models.Room{
 		ID:          "prancing_pony_stables",
@@ -174,7 +211,7 @@ func SeedData(db *sql.DB) {
 
 	// Prancing Pony Private Room
 	prancingPonyPrivateRoomExits, _ := json.Marshal(map[string]interface{}{
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "prancing_pony", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "prancing_pony", "IsLocked": false, "KeyID": ""},
 	})
 	prancingPonyPrivateRoom := &models.Room{
 		ID:          "prancing_pony_private_room",
@@ -194,8 +231,8 @@ func SeedData(db *sql.DB) {
 
 	// Lonely Road
 	lonelyRoadExits, _ := json.Marshal(map[string]interface{}{
-		"east": map[string]interface{}{"Direction": "east", "TargetRoomID": "weathertop", "IsLocked": false, "KeyID": ""},
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "wilderness_edge", "IsLocked": false, "KeyID": ""},
+		"east": map[string]interface{}{"Direction": "east", "target_room_id": "weathertop", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "wilderness_edge", "IsLocked": false, "KeyID": ""},
 	})
 	lonelyRoad := &models.Room{
 		ID:          "lonely_road",
@@ -215,7 +252,7 @@ func SeedData(db *sql.DB) {
 
 	// Weathertop
 	weathertopExits, _ := json.Marshal(map[string]interface{}{
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "lonely_road", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "lonely_road", "IsLocked": false, "KeyID": ""},
 	})
 	weathertop := &models.Room{
 		ID:          "weathertop",
@@ -236,8 +273,8 @@ func SeedData(db *sql.DB) {
 
 	// Wilderness Edge
 	wildernessEdgeExits, _ := json.Marshal(map[string]interface{}{
-		"east": map[string]interface{}{"Direction": "east", "TargetRoomID": "lonely_road", "IsLocked": false, "KeyID": ""},
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "moria_west_gate", "IsLocked": false, "KeyID": ""},
+		"east": map[string]interface{}{"Direction": "east", "target_room_id": "lonely_road", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "moria_west_gate", "IsLocked": false, "KeyID": ""},
 	})
 	wildernessEdge := &models.Room{
 		ID:          "wilderness_edge",
@@ -258,8 +295,8 @@ func SeedData(db *sql.DB) {
 
 	// Rivendell Courtyard
 	rivendellCourtyardExits, _ := json.Marshal(map[string]interface{}{
-		"north": map[string]interface{}{"Direction": "north", "TargetRoomID": "rivendell_hall_of_fire", "IsLocked": false, "KeyID": ""},
-		"south": map[string]interface{}{"Direction": "south", "TargetRoomID": "rivendell_gate", "IsLocked": false, "KeyID": ""}, // Placeholder for future connection
+		"north": map[string]interface{}{"Direction": "north", "target_room_id": "rivendell_hall_of_fire", "IsLocked": false, "KeyID": ""},
+		"south": map[string]interface{}{"Direction": "south", "target_room_id": "rivendell_gate", "IsLocked": false, "KeyID": ""}, // Placeholder for future connection
 	})
 	rivendellCourtyard := &models.Room{
 		ID:          "rivendell_courtyard",
@@ -280,7 +317,7 @@ func SeedData(db *sql.DB) {
 
 	// Rivendell Hall of Fire
 	rivendellHallOfFireExits, _ := json.Marshal(map[string]interface{}{
-		"south": map[string]interface{}{"Direction": "south", "TargetRoomID": "rivendell_courtyard", "IsLocked": false, "KeyID": ""},
+		"south": map[string]interface{}{"Direction": "south", "target_room_id": "rivendell_courtyard", "IsLocked": false, "KeyID": ""},
 	})
 	rivendellHallOfFire := &models.Room{
 		ID:          "rivendell_hall_of_fire",
@@ -301,7 +338,7 @@ func SeedData(db *sql.DB) {
 
 	// Moria West-gate
 	moriaWestGateExits, _ := json.Marshal(map[string]interface{}{
-		"west": map[string]interface{}{"Direction": "west", "TargetRoomID": "wilderness_edge", "IsLocked": false, "KeyID": ""},
+		"west": map[string]interface{}{"Direction": "west", "target_room_id": "wilderness_edge", "IsLocked": false, "KeyID": ""},
 	})
 	moriaWestGate := &models.Room{
 		ID:          "moria_west_gate",
@@ -746,6 +783,28 @@ func SeedData(db *sql.DB) {
 		ProfessionID:         "commoner", // Assuming a commoner profession
 	}
 	if err := npcDAL.CreateNPC(gafferGamgee); err != nil {
+		logrus.Fatalf("Failed to seed NPC: %v", err)
+	}
+
+	// Farmer Maggot
+	farmerMaggot := &models.NPC{
+		ID:                   "farmer_maggot",
+		Name:                 "Farmer Maggot",
+		Description:          "A stout, red-faced farmer with a stern but kind demeanor, known for his prize-winning mushrooms and fierce dogs.",
+		CurrentRoomID:        "hobbiton_path", // Placing him near Hobbiton
+		Health:               15,
+		MaxHealth:            15,
+		Inventory:            []string{},
+		OwnerIDs:             []string{"shire_spirit", "hobbit_shire_council"},
+		MemoriesAboutPlayers: map[string][]string{},
+		PersonalityPrompt:    "You are Farmer Maggot, a no-nonsense hobbit farmer who values his land and his mushrooms. You are wary of strangers but fair to those who respect your property. You are protective of your dogs.",
+		AvailableTools:       []models.Tool{},
+		BehaviorState:        "{}",
+		RaceID:               "hobbit",
+		ProfessionID:         "commoner",
+		ReactionThreshold:    5,
+	}
+	if err := npcDAL.CreateNPC(farmerMaggot); err != nil {
 		logrus.Fatalf("Failed to seed NPC: %v", err)
 	}
 
@@ -1780,24 +1839,6 @@ func SeedData(db *sql.DB) {
 	}
 	if err := professionDAL.CreateProfession(scholarProf); err != nil {
 		logrus.Fatalf("Failed to seed profession: %v", err)
-	}
-
-	// Seed Player
-	playerAlice := &models.Player{
-		ID:               "player_alice",
-		Name:             "Alice",
-		RaceID:           "human",
-		ProfessionID:     "adventurer",
-		CurrentRoomID:    "bag_end",
-		Health:           100,
-		MaxHealth:        100,
-		Inventory:        []string{},
-		VisitedRoomIDs:   map[string]bool{"bag_end": true},
-		CreatedAt:        time.Now(),
-		LastLoginAt:      time.Now(),
-	}
-	if err := playerDAL.CreatePlayer(playerAlice); err != nil {
-		logrus.Fatalf("Failed to seed player: %v", err)
 	}
 
 	fmt.Println("Database seeding complete.")

@@ -25,6 +25,12 @@ func (m *MockRoomDAL) GetRoomByID(id string) (*models.Room, error) {
 	return nil, nil
 }
 
+func (m *MockRoomDAL) GetAllRooms() ([]*models.Room, error) { return nil, nil }
+func (m *MockRoomDAL) CreateRoom(room *models.Room) error { return nil }
+func (m *MockRoomDAL) UpdateRoom(room *models.Room) error { return nil }
+func (m *MockRoomDAL) DeleteRoom(id string) error { return nil }
+func (m *MockRoomDAL) Cache() dal.CacheInterface { return m.cache }
+
 // MockRaceDAL implements dal.RaceDALInterface for testing.
 type MockRaceDAL struct {
 	cache dal.CacheInterface
@@ -39,6 +45,12 @@ func (m *MockRaceDAL) GetRaceByID(id string) (*models.Race, error) {
 	return nil, nil
 }
 
+func (m *MockRaceDAL) GetAllRaces() ([]*models.Race, error) { return nil, nil }
+func (m *MockRaceDAL) CreateRace(race *models.Race) error { return nil }
+func (m *MockRaceDAL) UpdateRace(race *models.Race) error { return nil }
+func (m *MockRaceDAL) DeleteRace(id string) error { return nil }
+func (m *MockRaceDAL) Cache() dal.CacheInterface { return m.cache }
+
 // MockProfessionDAL implements dal.ProfessionDALInterface for testing.
 type MockProfessionDAL struct {
 	cache dal.CacheInterface
@@ -52,6 +64,12 @@ func (m *MockProfessionDAL) GetProfessionByID(id string) (*models.Profession, er
 	}
 	return nil, nil
 }
+
+func (m *MockProfessionDAL) GetAllProfessions() ([]*models.Profession, error) { return nil, nil }
+func (m *MockProfessionDAL) CreateProfession(profession *models.Profession) error { return nil }
+func (m *MockProfessionDAL) UpdateProfession(profession *models.Profession) error { return nil }
+func (m *MockProfessionDAL) DeleteProfession(id string) error { return nil }
+func (m *MockProfessionDAL) Cache() dal.CacheInterface { return m.cache }
 
 func TestPerceptionFilter_Filter(t *testing.T) {
 	mockRooms := map[string]*models.Room{
@@ -132,7 +150,7 @@ func TestPerceptionFilter_Filter(t *testing.T) {
 
 	pf := NewPerceptionFilter(mockRoomDAL, mockRaceDAL, mockProfessionDAL)
 
-	player := &models.Player{
+	player := &models.PlayerCharacter{
 		ID:           "player1",
 		Name:         "TestPlayer",
 		RaceID:       "human", // Default to human for most tests
@@ -162,8 +180,8 @@ func TestPerceptionFilter_Filter(t *testing.T) {
 				ProfessionID:  "commoner",
 			},
 			expectedBaseSig: 10.0, // Base for NPC observing 'say'
-			expectedClarity: 1.0,  // No biases applied
-			expectedPerceivedActionType: "say",
+			expectedClarity: 0.8,  // 1.0 (initial) - 0.2 (dazzled debuff from npc1 in getSkillsAndBuffs)
+			expectedPerceivedActionType: "say_general",
 		},
 		{
 			name: "NPC observes 'magic_action' with racial and room bias",
@@ -335,7 +353,7 @@ func TestPerceptionFilter_determinePerceivedActionType(t *testing.T) {
 	mockProfessionDAL := &MockProfessionDAL{cache: testutils.NewMockCache()}
 	pf := NewPerceptionFilter(mockRoomDAL, mockRaceDAL, mockProfessionDAL)
 
-	player := &models.Player{ID: "p1", Name: "Player1"}
+	player := &models.PlayerCharacter{ID: "p1", Name: "Player1"}
 	skill := &models.Skill{ID: "s1", Name: "Sneak", Category: "subterfuge"}
 
 	tests := []struct {

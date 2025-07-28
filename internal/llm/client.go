@@ -9,6 +9,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -150,4 +152,73 @@ func (c *Client) SendPrompt(ctx context.Context, prompt string) (*InnerLLMRespon
 	}
 
 	return &innerLLMResponse, nil
+}
+
+func (c *Client) AnalyzeResponse(ctx context.Context, narrative string, query string) (float64, error) {
+	modelName := os.Getenv("LLM_MODEL_NAME")
+	if modelName == "" {
+		modelName = "gpt-4.1-2025-04-14"
+	}
+
+	fullPrompt := fmt.Sprintf("Given the following narrative: \"%s\"\n\n%s\n\nRespond ONLY with a single numerical value.", narrative, query)
+
+	reqBody := LLMRequest{
+		Model: modelName,
+		Messages: []Message{
+			{
+				Role:    "system",
+				Content: "You are an analytical assistant. Your task is to evaluate text based on specific queries and respond only with a single numerical value.",
+			},
+			{
+				Role:    "user",
+				Content: fullPrompt,
+			},
+		},
+		// Do not request JSON object for analysis, as we expect a raw number
+	}
+
+	reqBytes, err := json.Marshal(reqBody)
+	if err != nil {
+		return 0, err
+	}
+
+	requestURL := c.apiURL + "/completions"
+	req, err := http.NewRequestWithContext(ctx, "POST", requestURL, bytes.NewBuffer(reqBytes))
+	if err != nil {
+		return 0, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+c.apiKey)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return 0, fmt.Errorf("failed to read analysis response body: %w", err)
+	}
+
+	fmt.Printf("Raw LLM Analysis Response: %s\n", string(bodyBytes))
+
+	var llmResponse LLMResponse
+	if err := json.Unmarshal(bodyBytes, &llmResponse); err != nil {
+		return 0, fmt.Errorf("failed to decode LLM analysis response: %w", err)
+	}
+
+	if len(llmResponse.Choices) == 0 {
+		return 0, errors.New("no choices in LLM analysis response")
+	}
+
+	// Attempt to parse the content as a float64
+	scoreStr := strings.TrimSpace(llmResponse.Choices[0].Message.Content)
+	score, err := strconv.ParseFloat(scoreStr, 64)
+	if err != nil {
+		return 0, fmt.Errorf("failed to parse LLM analysis score '%s': %w", scoreStr, err)
+	}
+
+	return score, nil
 }

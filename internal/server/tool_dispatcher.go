@@ -21,7 +21,7 @@ type ToolCall struct {
 	Parameters map[string]interface{} `json:"parameters"`
 }
 
-func (td *ToolDispatcher) Dispatch(ctx context.Context, player *models.Player, entity interface{}, toolCalls []llm.ToolCall) error {
+func (td *ToolDispatcher) Dispatch(ctx context.Context, player *models.PlayerCharacter, entity interface{}, toolCalls []llm.ToolCall) error {
 	for _, call := range toolCalls {
 		switch call.ToolName {
 		case "NPC_memorize":
@@ -44,7 +44,7 @@ func (td *ToolDispatcher) Dispatch(ctx context.Context, player *models.Player, e
 	return nil
 }
 
-func (td *ToolDispatcher) handleNPCMemorize(player *models.Player, entity interface{}, params map[string]interface{}) error {
+func (td *ToolDispatcher) handleNPCMemorize(player *models.PlayerCharacter, entity interface{}, params map[string]interface{}) error {
 	npcID, ok := params["npc_id"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid npc_id")
@@ -82,7 +82,7 @@ func (td *ToolDispatcher) handleNPCMemorize(player *models.Player, entity interf
 	return td.dal.NpcDAL.UpdateNPC(npc)
 }
 
-func (td *ToolDispatcher) handleOwnerMemorize(player *models.Player, entity interface{}, params map[string]interface{}) error {
+func (td *ToolDispatcher) handleOwnerMemorize(player *models.PlayerCharacter, entity interface{}, params map[string]interface{}) error {
 	ownerID, ok := params["owner_id"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid owner_id")
@@ -119,7 +119,7 @@ func (td *ToolDispatcher) handleOwnerMemorize(player *models.Player, entity inte
 	return td.dal.OwnerDAL.UpdateOwner(owner)
 }
 
-func (td *ToolDispatcher) handleOwnerMemorizeDependables(player *models.Player, entity interface{}, params map[string]interface{}) error {
+func (td *ToolDispatcher) handleOwnerMemorizeDependables(player *models.PlayerCharacter, entity interface{}, params map[string]interface{}) error {
 	ownerID, ok := params["owner_id"].(string)
 	if !ok {
 		return fmt.Errorf("missing or invalid owner_id")

@@ -140,7 +140,7 @@ func (pf *PerceptionFilter) Filter(event *events.ActionEvent, observer interface
 		racialBiases = map[string]float64{}
 		professionBiases = map[string]float64{}
 		roomBiases = map[string]float64{}
-	case *models.Player:
+	case *models.PlayerCharacter:
 		observerType = "player"
 		// Fetch racial biases for player
 		if obs.RaceID != "" {
@@ -187,9 +187,12 @@ func (pf *PerceptionFilter) Filter(event *events.ActionEvent, observer interface
 		perceivedAction.BaseSignificance = 0.5 // Default very low significance if action type not specified
 	}
 
-	// Layer 0: Physical Sensory Check (Placeholder)
-	// For now, assume perfect sensory input.
-	// In a real implementation, this would check line of sight, distance, etc.
+	// Layer 0: Physical Sensory Check
+	// This layer would typically involve checks for line of sight, distance, environmental factors (e.g., darkness, fog),
+	// and the observer's sensory capabilities (e.g., night vision, acute hearing).
+	// For now, we assume perfect sensory input and no environmental interference.
+	// Future implementation would require spatial data (observer/event coordinates, room geometry)
+	// and potentially a dedicated spatial awareness service.
 
 	// Layer 1: Innate & Cultural Bias (Racial and Territorial)
 	// Apply racial biases
@@ -237,9 +240,29 @@ func (pf *PerceptionFilter) Filter(event *events.ActionEvent, observer interface
 	// Placeholder for Skill Proficiency:
 	// If observer has a relevant skill, increase clarity.
 	// This would involve checking observer's skills against event.SkillUsed.
-
-	// Layer 3: Explicit Modifiers (Passive Skills & Buffs) (Placeholder)
+	// Layer 3: Explicit Modifiers (Passive Skills & Buffs)
 	// This would involve checking observer's active buffs/debuffs or passive skills.
+
+	// Retrieve conceptual skills and buffs for the observer
+	observerSkills, observerBuffs := getSkillsAndBuffs(observer)
+
+	// Apply Skill Proficiency (conceptual)
+	for _, skill := range observerSkills {
+		// Example: If observer has a skill related to the action's category, increase clarity
+		if event.SkillUsed != nil && event.SkillUsed.Category == skill.Category {
+			perceivedAction.Clarity += float64(skill.Level) * 0.02 // Small clarity boost per skill level
+		}
+	}
+
+	// Apply Explicit Modifiers (conceptual)
+	for _, buff := range observerBuffs {
+		switch buff.Type {
+		case "clarity_boost":
+			perceivedAction.Clarity += buff.Value
+		case "perception_debuff":
+			perceivedAction.Clarity += buff.Value
+		}
+	}
 
 	// Cap clarity between 0.0 and 1.0
 	perceivedAction.Clarity = math.Max(0.0, math.Min(1.0, perceivedAction.Clarity))
@@ -252,6 +275,56 @@ func (pf *PerceptionFilter) Filter(event *events.ActionEvent, observer interface
 	perceivedAction.IsCriminal = false                                     // Default to not criminal
 
 	return perceivedAction, nil
+}
+
+// conceptualSkill represents a simplified skill for perception calculation.
+type conceptualSkill struct {
+	ID       string
+	Name     string
+	Category string
+	Level    int
+}
+
+// conceptualBuff represents a simplified buff/debuff for perception calculation.
+type conceptualBuff struct {
+	ID    string
+	Name  string
+	Type  string  // e.g., "clarity_boost", "perception_debuff"
+	Value float64 // e.g., 0.1 for a 10% clarity boost
+}
+
+// getSkillsAndBuffs is a conceptual helper function. In a real implementation,
+// this would retrieve the actual skills and active buffs/debuffs for the observer
+// from the respective models and DALs (e.g., Player.GetSkills(), NPC.GetActiveBuffs()).
+// For this placeholder, it returns hardcoded examples.
+func getSkillsAndBuffs(observer interface{}) ([]conceptualSkill, []conceptualBuff) {
+	// NOTE: To fully implement this, you would need to:
+	// 1. Add methods like `GetSkills()` and `GetActiveBuffs()` to `models.Player`, `models.NPC`, `models.Owner`, `models.Questmaker`.
+	// 2. Implement the logic in these methods to fetch data from relevant DALs (e.g., PlayerSkillDAL, BuffDAL).
+	// 3. Ensure the DALs and database schema support storing and retrieving this information.
+
+	switch obs := observer.(type) {
+	case *models.PlayerCharacter:
+		// Example for a player
+		if obs.ID == "player1" {
+			return []conceptualSkill{
+				{ID: "skill_stealth", Name: "Stealth", Category: "subterfuge", Level: 5},
+				{ID: "skill_detect_magic", Name: "Detect Magic", Category: "magic", Level: 3},
+			}, []conceptualBuff{
+				{ID: "buff_keen_senses", Name: "Keen Senses", Type: "clarity_boost", Value: 0.15},
+			}
+		}
+	case *models.NPC:
+		// Example for an NPC
+		if obs.ID == "npc1" {
+			return []conceptualSkill{
+				{ID: "skill_guarding", Name: "Guarding", Category: "combat", Level: 7},
+			}, []conceptualBuff{
+				{ID: "debuff_dazzled", Name: "Dazzled", Type: "perception_debuff", Value: -0.2},
+			}
+		}
+	}
+	return []conceptualSkill{}, []conceptualBuff{}
 }
 
 // determinePerceivedActionType maps clarity and action details to a perceived action type.

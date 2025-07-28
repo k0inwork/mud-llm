@@ -9,12 +9,16 @@ import (
 // LoreDAL handles database operations for Lore entities.
 type LoreDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	cache CacheInterface
+}
+
+func (d *LoreDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewLoreDAL creates a new LoreDAL.
-func NewLoreDAL(db *sql.DB) *LoreDAL {
-	return &LoreDAL{db: db, Cache: NewCache()}
+func NewLoreDAL(db *sql.DB, cache CacheInterface) *LoreDAL {
+	return &LoreDAL{db: db, cache: cache}
 }
 
 // CreateLore inserts a new lore entry into the database.
@@ -34,13 +38,13 @@ func (d *LoreDAL) CreateLore(lore *models.Lore) error {
 	if err != nil {
 		return fmt.Errorf("failed to create lore: %w", err)
 	}
-	d.Cache.Set(lore.ID, lore, 300) // Cache for 5 minutes
+	d.Cache().Set(lore.ID, lore, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetLoreByID retrieves a lore entry by its ID.
 func (d *LoreDAL) GetLoreByID(id string) (*models.Lore, error) {
-	if cachedLore, found := d.Cache.Get(id); found {
+	if cachedLore, found := d.Cache().Get(id); found {
 		if lore, ok := cachedLore.(*models.Lore); ok {
 			return lore, nil
 		}
@@ -64,7 +68,7 @@ func (d *LoreDAL) GetLoreByID(id string) (*models.Lore, error) {
 		return nil, fmt.Errorf("failed to get lore by ID: %w", err)
 	}
 
-	d.Cache.Set(lore.ID, lore, 300) // Cache for 5 minutes
+	d.Cache().Set(lore.ID, lore, 300) // Cache for 5 minutes
 	return lore, nil
 }
 

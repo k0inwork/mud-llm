@@ -21,15 +21,17 @@ type SentientEntityManagerInterface interface {
 
 // LLMServiceInterface defines the methods used by SentientEntityManager on LLMService.
 type LLMServiceInterface interface {
-	ProcessAction(ctx context.Context, entity interface{}, player *models.Player, playerAction string) (*llm.InnerLLMResponse, error)
+	ProcessAction(ctx context.Context, entity interface{}, player *models.PlayerCharacter, playerAction string) (*llm.InnerLLMResponse, error)
+	AnalyzeResponse(ctx context.Context, narrative string, query string) (float64, error)
 }
 
 // ToolDispatcherInterface defines the methods used by SentientEntityManager on ToolDispatcher.
 type ToolDispatcherInterface interface {
-	Dispatch(ctx context.Context, player *models.Player, entity interface{}, toolCalls []llm.ToolCall) error
+	Dispatch(ctx context.Context, player *models.PlayerCharacter, entity interface{}, toolCalls []llm.ToolCall) error
 }
 
 // TelnetRendererInterface defines the methods used by SentientEntityManager on TelnetRenderer.
 type TelnetRendererInterface interface {
+	RenderMessage(msg presentation.SemanticMessage) string
 	RenderRawString(s string, color presentation.SemanticColorType) string
 }

@@ -4,24 +4,37 @@ This document outlines the proposed database schema for the GoMUD project, adher
 
 ## 1. Core Entities
 
-### 1.1. `Players` Table
+### 1.1. `PlayerAccounts` Table
 
-Stores persistent player data.
+Stores player account information, allowing a single user to manage multiple characters.
 
 | Column Name          | Data Type | Constraints           | Description                                    |
 |----------------------|-----------|-----------------------|------------------------------------------------|
-| `id`                 | TEXT      | PRIMARY KEY, NOT NULL | Unique player identifier (e.g., UUID)          |
-| `name`               | TEXT      | NOT NULL, UNIQUE      | Player's chosen name                           |
+| `id`                 | TEXT      | PRIMARY KEY, NOT NULL | Unique account identifier (e.g., UUID)         |
+| `username`           | TEXT      | NOT NULL, UNIQUE      | Account username                               |
+| `hashed_password`    | TEXT      | NOT NULL              | Hashed password for secure login               |
+| `email`              | TEXT      | UNIQUE                | Optional: Email for account recovery/notifications |
+| `created_at`         | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Record creation timestamp              |
+| `last_login_at`      | TIMESTAMP |                       | Last login timestamp                           |
+
+### 1.2. `PlayerCharacters` Table
+
+Stores persistent player character data, linked to a `PlayerAccount`.
+
+| Column Name          | Data Type | Constraints           | Description                                    |
+|----------------------|-----------|-----------------------|------------------------------------------------|
+| `id`                 | TEXT      | PRIMARY KEY, NOT NULL | Unique character identifier (e.g., UUID)       |
+| `player_account_id`  | TEXT      | NOT NULL, FOREIGN KEY | Reference to `PlayerAccounts` table            |
+| `name`               | TEXT      | NOT NULL, UNIQUE      | Character's chosen name                        |
 | `race_id`            | TEXT      | NOT NULL, FOREIGN KEY | Reference to `Races` table                     |
 | `profession_id`      | TEXT      | NOT NULL, FOREIGN KEY | Reference to `Professions` table               |
-| `current_room_id`    | TEXT      | NOT NULL, FOREIGN KEY | Current room player is in (Reference to `Rooms` table) |
+| `current_room_id`    | TEXT      | NOT NULL, FOREIGN KEY | Current room character is in (Reference to `Rooms` table) |
 | `health`             | INTEGER   | NOT NULL              | Current health points                          |
 | `max_health`         | INTEGER   | NOT NULL              | Maximum health points                          |
 | `inventory`          | JSON      | NOT NULL              | JSON array of item IDs and quantities          |
 | `visited_room_ids`   | JSON      | NOT NULL              | JSON array of room IDs visited                 |
 | `created_at`         | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Record creation timestamp              |
-| `last_login_at`      | TIMESTAMP |                       | Last login timestamp                           |
-| `last_logout_at`     | TIMESTAMP |                       | Last logout timestamp                          |
+| `last_played_at`     | TIMESTAMP |                       | Last time character was played                 |
 
 ### 1.2. `Rooms` Table
 

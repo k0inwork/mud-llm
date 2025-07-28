@@ -2,18 +2,18 @@
 
 ## 1. Objectives
 
-With the core AI infrastructure in place, this phase focuses on enabling dynamic, intelligent behavior for NPCs and Owners. A critical objective is to implement the "Action Significance" model to efficiently manage when and how LLMs are prompted, preventing unnecessary API calls while ensuring AI entities react appropriately to meaningful player actions.
+With the core AI infrastructure in place, this phase focuses on enabling dynamic, intelligent behavior for NPCs and Owners. A critical objective is to implement the "Action Significance" model to efficiently manage when and how LLMs are prompted, preventing unnecessary API calls while ensuring AI entities react appropriately to meaningful player character actions.
 
 ## 2. Key Components to be Implemented
 
 ### 2.1. Action Significance Monitor
 
-This new module (`internal/game/actionsignificance/monitor.go`) has been implemented to sit between the Core Game Engine and the LLM Integration Module. Its purpose is to filter and batch player actions, ensuring that LLM calls are only triggered for events deemed significant by the game design.
+This new module (`internal/game/actionsignificance/monitor.go`) has been implemented to sit between the Core Game Engine and the LLM Integration Module. Its purpose is to filter and batch player character actions, ensuring that LLM calls are only triggered for events deemed significant by the game design.
 
-*   **Action Logging:** The Core Game Engine has been modified to log all player actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player, per-entity (NPC/Owner/Questmaker) action buffer. Each logged action includes its type, relevant parameters, and a timestamp.
-    *   **Action Buffer Location & Garbage Collection:** The action buffer is an in-memory map, likely attached to the active player's session object. When a player logs out, their session and the associated action buffer will be destroyed, ensuring proper garbage collection.
+*   **Action Logging:** The Core Game Engine has been modified to log all player character actions (e.g., `move`, `attack`, `talk`, `use item`) to a temporary, per-player character, per-entity (NPC/Owner/Questmaker) action buffer. Each logged action includes its type, relevant parameters, and a timestamp.
+    *   **Action Buffer Location & Garbage Collection:** The action buffer is an in-memory map, likely attached to the active player character's session object. When a player character logs out, their session and the associated action buffer will be destroyed, ensuring proper garbage collection.
 *   **Hardcoded Prompt Prefixes:** The fundamental role and identity of Owners, Quest Owners, and Questmakers will be defined by hardcoded, static prompt prefixes. These prefixes will be prepended to the dynamic `LLMPromptContext` retrieved from the database, ensuring consistent and unalterable core instructions for the LLM. The `LLMPromptContext` field in the database will *only* contain customizable personality traits, goals, or specific instructions that can change dynamically, not their core identity or function.
-*   **Significance Scoring:** Each player action type has a predefined "significance score." This score is configurable (e.g., in the database via the web editor from Phase 1). The relevance of an action to a specific LLM entity (NPC, Owner, Questmaker) is also determined by its target and context.
+*   **Significance Scoring:** Each player character action type has a predefined "significance score." This score is configurable (e.g., in the database via the web editor from Phase 1). The relevance of an action to a specific LLM entity (NPC, Owner, Questmaker) is also determined by its target and context.
     *   For **NPCs**: Actions directly involving the NPC (e.g., `talk to NPC_X`, `attack NPC_X`) or actions within the NPC's immediate vicinity.
     *   For **Owners**: Actions targeting entities or resources within the Owner's monitored domain (e.g., `attack town_guard`, `steal from market_stall` for a `town_council_owner`), or actions within rooms/zones associated with the Owner.
     *   For **Questmakers**: Actions directly targeting quest objectives (e.g., `recover item_X`, `defeat NPC_Y`), or actions moving towards quest-relevant locations, or actions involving quest-related NPCs.
@@ -27,9 +27,9 @@ This new module (`internal/game/actionsignificance/monitor.go`) has been impleme
         *   `pray`: High significance (e.g., 8 points)
 *   **Threshold-Based Triggering:**
     *   For each NPC, Owner, and Questmaker, a "reaction threshold" has been added to their respective models (`models/npc.go`, `models/owner.go`, `models/questmaker.go`) and DALs (`internal/dal/npc_dal.go`, `internal/dal/owner_dal.go`, `internal/dal/questmaker_dal.go`). This threshold is configurable (e.g., via the web editor).
-    *   The Action Significance Monitor continuously sums the significance scores of actions in a player's buffer that are relevant to a specific entity (as determined by the targeting/context rules above).
-    *   **Trigger Rule:** An LLM prompt is triggered the moment an entity's cumulative score for a player meets or exceeds its threshold. If a single action has a score higher than the threshold, it triggers immediately. After triggering, the cumulative score for that entity is reset to zero.
-*   **Action Batching:** When an LLM prompt is triggered, all relevant batched actions from the player's buffer (since the last reaction for that specific entity) will be included in the prompt context. This allows the LLM to react to a sequence of events rather than just the last one. The buffer for that entity will then be cleared.
+    *   The Action Significance Monitor continuously sums the significance scores of actions in a player character's buffer that are relevant to a specific entity (as determined by the targeting/context rules above).
+    *   **Trigger Rule:** An LLM prompt is triggered the moment an entity's cumulative score for a player character meets or exceeds its threshold. If a single action has a score higher than the threshold, it triggers immediately. After triggering, the cumulative score for that entity is reset to zero.
+*   **Action Batching:** When an LLM prompt is triggered, all relevant batched actions from the player character's buffer (since the last reaction for that specific entity) will be included in the prompt context. This allows the LLM to react to a sequence of events rather than just the last one. The buffer for that entity will then be cleared.
 
 ### 2.2. Sentient Entity Manager (Enhanced)
 
@@ -37,12 +37,12 @@ This manager will orchestrate AI responses based on the Action Significance Moni
 
 *   **Event Subscription:** The Sentient Entity Manager will subscribe to "significant action" events generated by the Action Significance Monitor.
 *   **Prompt Initiation:** When a significant action event is received for an NPC or Owner, the manager will:
-    1.  Retrieve the relevant batched actions from the Action Significance Monitor for the specific player and entity.
+    1.  Retrieve the relevant batched actions from the Action Significance Monitor for the specific player character and entity.
     2.  Call the Prompt Assembler (from Phase 3) to construct the LLM prompt. This prompt will include the batched actions as part of the dynamic context, allowing the LLM to understand the sequence of events leading to its activation.
     3.  Send the constructed prompt to the LLM API Client.
 *   **Response Handling:**
     1.  Receive the LLM response (containing narrative and potential tool calls).
-    2.  Send the narrative part to the Server-Side Presentation Layer for display to the player.
+    2.  Send the narrative part to the Server-Side Presentation Layer for display to the player character.
     3.  Send any tool calls to the Tool Dispatcher for execution.
 
 ### 2.3. Integrating AI Responses
@@ -56,11 +56,11 @@ This manager will orchestrate AI responses based on the Action Significance Moni
 ## 3. Acceptance Criteria
 
 1.  Player actions are correctly logged and assigned significance scores.
-2.  NPCs and Owners only trigger LLM interactions when their configurable significance threshold is met by relevant player actions.
-3.  When an LLM interaction is triggered, the LLM receives a batch of all relevant player actions that accumulated since its last reaction.
-4.  NPCs and Owners react dynamically and contextually to these batched player actions (e.g., an NPC in a room reacts to a player `say` command, an Owner reacts to a `pray` command or a significant action in its monitored domain).
-5.  All AI-generated narrative is correctly formatted and displayed to the player via the server-side presentation layer.
-6.  The system demonstrates efficient LLM usage, avoiding unnecessary API calls for trivial player actions, and the Action Significance Monitor effectively filters and batches events.
+2.  NPCs and Owners only trigger LLM interactions when their configurable significance threshold is met by relevant player character actions.
+3.  When an LLM interaction is triggered, the LLM receives a batch of all relevant player character actions that accumulated since its last reaction.
+4.  NPCs and Owners react dynamically and contextually to these batched player character actions (e.g., an NPC in a room reacts to a player character `say` command, an Owner reacts to a `pray` command or a significant action in its monitored domain).
+5.  All AI-generated narrative is correctly formatted and displayed to the player character via the server-side presentation layer.
+6.  The system demonstrates efficient LLM usage, avoiding unnecessary API calls for trivial player character actions, and the Action Significance Monitor effectively filters and batches events.
 
 ## 4. Test Data Requirements
 
@@ -68,7 +68,7 @@ To test the Action Significance Monitor and Sentient Entity Manager in Phase 4, 
 
 ### 4.1. Action Significance Scores Configuration
 
-This data defines the significance of various player actions. It would be stored in a dedicated configuration table in the database.
+This data defines the significance of various player character actions. It would be stored in a dedicated configuration table in the database.
 
 ```json
 [
@@ -84,7 +84,7 @@ This data defines the significance of various player actions. It would be stored
 
 ### 4.2. NPC with Reaction Threshold
 
-This NPC will react to accumulated player actions.
+This NPC will react to accumulated player character actions.
 
 ```json
 {
@@ -96,9 +96,9 @@ This NPC will react to accumulated player actions.
   "AvailableTools": [
     {
       "Name": "NPC_memorize",
-      "Description": "Records a personal memory about a player.",
+      "Description": "Records a personal memory about a player character.",
       "Parameters": {
-        "player_id": {"type": "string"},
+        "player character_id": {"type": "string"},
         "memory_string": {"type": "string"}
       }
     }
@@ -125,17 +125,17 @@ This Owner will react to actions within its monitored domain.
   "AvailableTools": [
     {
       "Name": "OWNER_memorize",
-      "Description": "Records a private memory about a player.",
+      "Description": "Records a private memory about a player character.",
       "Parameters": {
-        "player_id": {"type": "string"},
+        "player character_id": {"type": "string"},
         "memory_string": {"type": "string"}
       }
     },
     {
       "Name": "OWNER_memorize_dependables",
-      "Description": "Broadcasts a memory about a player to all subordinate NPCs.",
+      "Description": "Broadcasts a memory about a player character to all subordinate NPCs.",
       "Parameters": {
-        "player_id": {"type": "string"},
+        "player character_id": {"type": "string"},
         "memory_string": {"type": "string"}
       }
     }
@@ -148,7 +148,7 @@ This Owner will react to actions within its monitored domain.
 
 ```json
 {
-  "ID": "player_alice",
+  "ID": "player character_alice",
   "Name": "Alice",
   "Race": "human",
   "Profession": "adventurer",
@@ -163,35 +163,35 @@ This Owner will react to actions within its monitored domain.
 ### 4.5. Testing Scenarios with Data
 
 *   **Scenario 1: Accumulating Significance for NPC:**
-    1.  `player_alice` `move`s (score 1) into `town_square` (monitored by `guard_captain_thomas`).
-    2.  `player_alice` `look`s (score 0).
-    3.  `player_alice` `say`s "Hello!" (score 2).
-    4.  `player_alice` `move`s (score 1).
+    1.  `player character_alice` `move`s (score 1) into `town_square` (monitored by `guard_captain_thomas`).
+    2.  `player character_alice` `look`s (score 0).
+    3.  `player character_alice` `say`s "Hello!" (score 2).
+    4.  `player character_alice` `move`s (score 1).
     *Expected:* No LLM call for `guard_captain_thomas` yet (total score 4 < threshold 7).
-    5.  `player_alice` `talk`s to `guard_captain_thomas` (score 5).
+    5.  `player character_alice` `talk`s to `guard_captain_thomas` (score 5).
     *Expected:* LLM call for `guard_captain_thomas` is triggered (total score 4+5=9 >= threshold 7). The prompt includes all batched actions: `move`, `look`, `say`, `move`, `talk`.
 
 *   **Scenario 2: Owner Reaction to High Significance Action:**
-    1.  `player_alice` is in `town_square` (monitored by `city_watch_owner`).
-    2.  `player_alice` `attack`s a training dummy (score 10).
+    1.  `player character_alice` is in `town_square` (monitored by `city_watch_owner`).
+    2.  `player character_alice` `attack`s a training dummy (score 10).
     *Expected:* LLM call for `city_watch_owner` is triggered immediately (score 10 < threshold 15, but this is a single high-impact action that might bypass accumulation or have a lower direct trigger threshold for Owners, or the threshold is met). The prompt includes the `attack` action.
 
 *   **Scenario 3: Batching and Clearing:**
     *   Perform a series of low-significance actions that eventually cross a threshold. Verify that all actions in the batch are sent to the LLM, and the buffer for that entity is cleared after the reaction.
 
 *   **Scenario 4: No Reaction for Irrelevant Actions:**
-    *   Have `player_alice` perform actions in a room not monitored by `guard_captain_thomas` or `city_watch_owner`. Verify no LLM calls are triggered for these entities.
+    *   Have `player character_alice` perform actions in a room not monitored by `guard_captain_thomas` or `city_watch_owner`. Verify no LLM calls are triggered for these entities.
 
 *   **Scenario 5: "The Great Mushroom Hunt" Quest Integration Test:**
-    *   **Objective:** Verify the end-to-end flow of the example quest, including Owner/Quest Owner/Questmaker interactions, player progression, and LLM prompting at key stages.
+    *   **Objective:** Verify the end-to-end flow of the example quest, including Owner/Quest Owner/Questmaker interactions, player character progression, and LLM prompting at key stages.
     *   **Setup:** Ensure the database is seeded with all entities for "The Great Mushroom Hunt" quest (Owner: `shire_spirit`, Quest Owner: `shire_local_governance`, Questmaker: `mushroom_hunt_questmaker`, Quest: `the_great_mushroom_hunt`, relevant NPCs, items, and rooms).
     *   **Steps:**
-        1.  Player `player_alice` enters a room monitored by `shire_spirit` and performs an action that triggers `shire_spirit`'s reaction threshold (e.g., `talk to farmer_maggot`).
+        1.  Player `player character_alice` enters a room monitored by `shire_spirit` and performs an action that triggers `shire_spirit`'s reaction threshold (e.g., `talk to farmer_maggot`).
         2.  Verify `shire_spirit` (Owner) initiates the quest or provides a hint, and an LLM call is made to `shire_spirit`.
-        3.  Player `player_alice` interacts with the quest-giving NPC (e.g., `talk to farmer_maggot`).
-        4.  Verify `mushroom_hunt_questmaker` (Questmaker) is prompted and guides the player, and the player's quest state updates (e.g., `player_quest_state.CurrentObjective` changes).
-        5.  Player `player_alice` performs actions to progress the quest (e.g., `gather maggots_prize_mushrooms`, `give maggots_prize_mushrooms to farmer_maggot`).
-        6.  Verify `mushroom_hunt_questmaker` is prompted at each significant step, and the player's quest state updates correctly.
+        3.  Player `player character_alice` interacts with the quest-giving NPC (e.g., `talk to farmer_maggot`).
+        4.  Verify `mushroom_hunt_questmaker` (Questmaker) is prompted and guides the player character, and the player character's quest state updates (e.g., `player character_quest_state.CurrentObjective` changes).
+        5.  Player `player character_alice` performs actions to progress the quest (e.g., `gather maggots_prize_mushrooms`, `give maggots_prize_mushrooms to farmer_maggot`).
+        6.  Verify `mushroom_hunt_questmaker` is prompted at each significant step, and the player character's quest state updates correctly.
         7.  Verify `shire_local_governance` (Quest Owner) is prompted and reacts to major quest milestones (e.g., quest completion), potentially influencing global narrative or unlocking new quests.
-        8.  Verify the quest is marked as complete in `player_quest_state` upon successful completion.
+        8.  Verify the quest is marked as complete in `player character_quest_state` upon successful completion.
         9.  Verify all LLM interactions are logged and contextually relevant to the quest progression.

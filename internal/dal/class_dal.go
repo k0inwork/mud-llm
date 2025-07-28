@@ -9,12 +9,16 @@ import (
 // ClassDAL handles database operations for Class entities.
 type ClassDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	cache CacheInterface
+}
+
+func (d *ClassDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewClassDAL creates a new ClassDAL.
-func NewClassDAL(db *sql.DB) *ClassDAL {
-	return &ClassDAL{db: db, Cache: NewCache()}
+func NewClassDAL(db *sql.DB, cache CacheInterface) *ClassDAL {
+	return &ClassDAL{db: db, cache: cache}
 }
 
 // CreateClass inserts a new class into the database.

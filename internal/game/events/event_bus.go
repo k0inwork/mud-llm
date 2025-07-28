@@ -11,8 +11,15 @@ type EventType string
 const (
 	// ActionEventType represents a player action event.
 	ActionEventType EventType = "ActionEvent"
-	// Add other event types here as needed
+	// PlayerMessageEventType represents a message intended for a specific player.
+	PlayerMessageEventType EventType = "PlayerMessageEvent"
 )
+
+// PlayerMessageEvent is an event carrying a message for a specific player.
+type PlayerMessageEvent struct {
+	PlayerID string
+	Content  string
+}
 
 // EventBus manages the subscription and publication of events.
 type EventBus struct {

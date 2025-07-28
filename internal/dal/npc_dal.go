@@ -10,12 +10,16 @@ import (
 // NPCDAL handles database operations for NPC entities.
 type NPCDAL struct {
 	db    *sql.DB
-	Cache CacheInterface
+	cache CacheInterface
+}
+
+func (d *NPCDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewNPCDAL creates a new NPCDAL.
 func NewNPCDAL(db *sql.DB, cache CacheInterface) *NPCDAL {
-	return &NPCDAL{db: db, Cache: cache}
+	return &NPCDAL{db: db, cache: cache}
 }
 
 // CreateNPC inserts a new NPC into the database.
@@ -62,13 +66,13 @@ func (d *NPCDAL) CreateNPC(npc *models.NPC) error {
 	if err != nil {
 		return fmt.Errorf("failed to create NPC: %w", err)
 	}
-	d.Cache.Set(npc.ID, npc, 300) // Cache for 5 minutes
+	d.Cache().Set(npc.ID, npc, 300) // Cache for 5 minutes
 	return nil
 }
 
 // GetNPCByID retrieves an NPC by their ID.
 func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
-	if cachedNPC, found := d.Cache.Get(id); found {
+	if cachedNPC, found := d.Cache().Get(id); found {
 		if npc, ok := cachedNPC.(*models.NPC); ok {
 			return npc, nil
 		}
@@ -116,7 +120,7 @@ func (d *NPCDAL) GetNPCByID(id string) (*models.NPC, error) {
 		return nil, fmt.Errorf("failed to unmarshal available tools: %w", err)
 	}
 
-	d.Cache.Set(npc.ID, npc, 300) // Cache for 5 minutes
+	d.Cache().Set(npc.ID, npc, 300) // Cache for 5 minutes
 	return npc, nil
 }
 
@@ -173,7 +177,7 @@ func (d *NPCDAL) UpdateNPC(npc *models.NPC) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("NPC with ID %s not found for update", npc.ID)
 	}
-	d.Cache.Delete(npc.ID) // Invalidate cache on update
+	d.Cache().Delete(npc.ID) // Invalidate cache on update
 	return nil
 }
 
@@ -192,7 +196,7 @@ func (d *NPCDAL) DeleteNPC(id string) error {
 	if rowsAffected == 0 {
 		return fmt.Errorf("NPC with ID %s not found for deletion", id)
 	}
-	d.Cache.Delete(id) // Invalidate cache on delete
+	d.Cache().Delete(id) // Invalidate cache on delete
 	return nil
 }
 

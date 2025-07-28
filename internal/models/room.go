@@ -1,5 +1,13 @@
 package models
 
+// Exit represents a single exit from a room.
+type Exit struct {
+	Direction    string `json:"direction"`
+	TargetRoomID string `json:"TargetRoomID"`
+	IsLocked     bool   `json:"is_locked"`
+	KeyID        string `json:"key_id,omitempty"`
+}
+
 // Room represents a game room or location.
 type Room struct {
 	ID          string `json:"id"`

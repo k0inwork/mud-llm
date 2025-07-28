@@ -9,12 +9,16 @@ import (
 // QuestDAL handles database operations for Quest entities.
 type QuestDAL struct {
 	db    *sql.DB
-	Cache *Cache
+	cache CacheInterface
+}
+
+func (d *QuestDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewQuestDAL creates a new QuestDAL.
-func NewQuestDAL(db *sql.DB) *QuestDAL {
-	return &QuestDAL{db: db, Cache: NewCache()}
+func NewQuestDAL(db *sql.DB, cache CacheInterface) *QuestDAL {
+	return &QuestDAL{db: db, cache: cache}
 }
 
 // CreateQuest inserts a new quest into the database.

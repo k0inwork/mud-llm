@@ -39,6 +39,7 @@ func NewTelnetRenderer() *TelnetRenderer {
 			ColorHighlight: Yellow,
 			ColorSuccess:   Green,
 			ColorError:     Red,
+			ColorNarrative: Blue,
 			ColorNPC:       Cyan,
 			ColorPlayer:    Blue,
 			ColorItem:      BrightYellow,

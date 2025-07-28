@@ -1,0 +1,1469 @@
+Seeding database with initial data...
+Database seeding complete.
+{"level":"info","msg":"Successfully connected to SQLite database and ensured tables exist.","time":"2025-07-26T21:29:54+01:00"}
+{"level":"info","msg":"GoMUD server starting...","time":"2025-07-26T21:29:54+01:00"}
+Admin web server listening on port 8080
+{"level":"info","msg":"Telnet server listening on port 4000\n","time":"2025-07-26T21:29:54+01:00"}
+signal: killed
+st files]
+ok  	mud/internal/dal	(cached)
+?   	mud/internal/game	[no test files]
+ok  	mud/internal/game/actionsignificance	(cached)
+?   	mud/internal/game/events	[no test files]
+ok  	mud/internal/game/globalobserver	(cached)
+ok  	mud/internal/game/perception	(cached)
+ok  	mud/internal/game/sentiententitymanager	(cached)
+ok  	mud/internal/llm	(cached)
+?   	mud/internal/mocks	[no test files]
+?   	mud/internal/models	[no test files]
+?   	mud/internal/presentation	[no test files]
+Seeding database with initial data...
+Database seeding complete.
+time="2025-07-26T21:30:08+01:00" level=info msg="Telnet server listening on port 41747\n"
+time="2025-07-26T21:30:08+01:00" level=info msg="New Telnet connection from [::1]:49430\n"
+time="2025-07-26T21:30:08+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] \nWelcome to GoMUD!\n1. Login\n2. Create Account\n\n"
+time="2025-07-26T21:30:08+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:30:18+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] Enter desired username: \n"
+time="2025-07-26T21:30:18+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:30:28+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] Enter password: \n"
+time="2025-07-26T21:30:28+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:30:38+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] Enter email (optional): \n"
+time="2025-07-26T21:30:38+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:30:49+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] Account created successfully!\n"
+time="2025-07-26T21:30:49+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:30:49+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] \n--- Character Selection ---\nYou have no characters.\n\nType a number to select a character, or 'new' to create one.\n\n"
+time="2025-07-26T21:30:49+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:09+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] Enter character name: \n"
+time="2025-07-26T21:31:09+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:19+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] Welcome, TestChar!\n"
+time="2025-07-26T21:31:19+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:19+01:00" level=info msg="Attempting to send to [::1]:49430: [room_update] \n--- Bag End, Hobbiton ---\nA cozy hobbit-hole, warm and inviting, with a round green door. The smell of pipe-weed and fresh baking lingers in the air. A path leads east.\nExits: east ()\nNPCs present: Frodo Baggins, Samwise Gamgee\n\n"
+time="2025-07-26T21:31:19+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [system_message] You typed: look\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [room_update] \n--- Bag End, Hobbiton ---\nA cozy hobbit-hole, warm and inviting, with a round green door. The smell of pipe-weed and fresh baking lingers in the air. A path leads east.\nExits: east ()\nNPCs present: Frodo Baggins, Samwise Gamgee\n\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] Frodo Baggins says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player 09b77b4a-bbdf-4b3d-97cb-79c854026766. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:31:39+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:31:39+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:31:39+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar."
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] Frodo Baggins says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="Attempting to send to [::1]:49430: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player TestChar performed action unclear_action (clarity 1.00). Respond to this.' by TestChar.\n"
+time="2025-07-26T21:31:39+01:00" level=info msg="Successfully sent message to [::1]:49430"
+time="2025-07-26T21:31:39+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:31:39+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:31:39+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:31:49+01:00" level=info msg="Telnet server listener closed, shutting down."
+--- FAIL: TestTelnetServer_FullFlow (102.13s)
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:179
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Welcome to GoMUD!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:182
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter desired username:
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:186
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter password:
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:189
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter email (optional):
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:193
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Account created successfully!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:194
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: --- Character Selection ---
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:198
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter character name:
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:203
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: Welcome, TestChar!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:204
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: --- Bag End, Hobbiton ---
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:211
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_FullFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: You typed: look
+        	            	Got: 
+time="2025-07-26T21:31:49+01:00" level=info msg="Client [::1]:49430 disconnected: read tcp [::1]:41747->[::1]:49430: read: connection reset by peer\n"
+time="2025-07-26T21:31:49+01:00" level=info msg="Client [::1]:49430 disconnected: <nil>\n"
+Seeding database with initial data...
+Database seeding complete.
+time="2025-07-26T21:31:50+01:00" level=info msg="Telnet server listening on port 41103\n"
+time="2025-07-26T21:31:50+01:00" level=info msg="New Telnet connection from [::1]:59566\n"
+time="2025-07-26T21:31:50+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] \nWelcome to GoMUD!\n1. Login\n2. Create Account\n\n"
+time="2025-07-26T21:31:50+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:32:00+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] Enter desired username: \n"
+time="2025-07-26T21:32:00+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:32:10+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] Enter password: \n"
+time="2025-07-26T21:32:10+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:32:20+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] Enter email (optional): \n"
+time="2025-07-26T21:32:20+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:32:31+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] Account created successfully!\n"
+time="2025-07-26T21:32:31+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:32:31+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] \n--- Character Selection ---\nYou have no characters.\n\nType a number to select a character, or 'new' to create one.\n\n"
+time="2025-07-26T21:32:31+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:32:51+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] Enter character name: \n"
+time="2025-07-26T21:32:51+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:01+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] Welcome, QuestPlayer!\n"
+time="2025-07-26T21:33:01+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:01+01:00" level=info msg="Attempting to send to [::1]:59566: [room_update] \n--- Bag End, Hobbiton ---\nA cozy hobbit-hole, warm and inviting, with a round green door. The smell of pipe-weed and fresh baking lingers in the air. A path leads east.\nExits: east ()\nNPCs present: Frodo Baggins, Samwise Gamgee\n\n"
+time="2025-07-26T21:33:01+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: east\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:33:21+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:33:21+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:33:21+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:21+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:21+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:33:21+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:33:21+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: talk farmer_maggot\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You try to talk to farmer_maggot.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:33:42+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'talk' with significance 1.00. New budget: 105.00"
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 10.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 10.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 1.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 1.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 10.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 10.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 1.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 1.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'talk' with significance 1.00. New budget: 105.00"
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 10.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 10.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 1.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 1.00, Threshold: 0"
+time="2025-07-26T21:33:42+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:33:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'talk' with significance 1.00. New budget: 90.00"
+time="2025-07-26T21:33:42+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'talk' with significance 1.00. New budget: 90.00"
+time="2025-07-26T21:33:42+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'talk' with significance 1.00. New budget: 105.00"
+time="2025-07-26T21:33:42+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:33:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action talk (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:33:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:33:42+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'talk' with significance 1.00. New budget: 90.00"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: gather mushrooms\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You attempt to gather mushrooms.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:34:02+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Urgent Message Quest Controller (ID: urgent_message_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 7.00, Threshold: 5"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity urgent_message_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity urgent_message_questmaker. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pony Quest Controller (ID: missing_pony_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 7.00, Threshold: 5"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity missing_pony_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pony_questmaker. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Shire Census Quest Controller (ID: shire_census_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 7.00, Threshold: 5"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity shire_census_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity shire_census_questmaker. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pipe-Weed Quest Controller (ID: missing_pipe_weed_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 7.00, Threshold: 5"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity missing_pipe_weed_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pipe_weed_questmaker. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Elder of Men (ID: human_elder) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity human_elder"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity human_elder. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Warrior's Guild Master (ID: warrior_guild_master) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity warrior_guild_master"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity warrior_guild_master. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Investigate Weathertop Quest Controller (ID: investigate_weathertop_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity investigate_weathertop_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity investigate_weathertop_questmaker. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Training Regimen Quest Controller (ID: training_regimen_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity training_regimen_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity training_regimen_questmaker. No LLM call made."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:02+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:02+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:02+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:02+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:02+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:34:02+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:34:02+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:34:02+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:34:02+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: gather mushrooms\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You attempt to gather mushrooms.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:34:22+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Urgent Message Quest Controller (ID: urgent_message_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity urgent_message_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity urgent_message_questmaker. No LLM call made."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pony Quest Controller (ID: missing_pony_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity missing_pony_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pony_questmaker. No LLM call made."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Shire Census Quest Controller (ID: shire_census_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity shire_census_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity shire_census_questmaker. No LLM call made."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pipe-Weed Quest Controller (ID: missing_pipe_weed_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity missing_pipe_weed_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pipe_weed_questmaker. No LLM call made."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Road to Rivendell Quest Controller (ID: road_to_rivendell_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 16.50, Threshold: 15"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity road_to_rivendell_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="No perceived actions met the reaction threshold (15.00) for entity road_to_rivendell_questmaker. No LLM call made."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:22+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:22+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:22+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:22+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:22+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:34:22+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:34:22+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:34:22+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:34:22+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: gather mushrooms\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You attempt to gather mushrooms.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:34:42+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Elder of Men (ID: human_elder) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity human_elder"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity human_elder. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Warrior's Guild Master (ID: warrior_guild_master) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity warrior_guild_master"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity warrior_guild_master. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Urgent Message Quest Controller (ID: urgent_message_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity urgent_message_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity urgent_message_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pony Quest Controller (ID: missing_pony_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity missing_pony_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pony_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Investigate Weathertop Quest Controller (ID: investigate_weathertop_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity investigate_weathertop_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity investigate_weathertop_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Delving into Darkness Quest Controller (ID: delving_darkness_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 20.00, Threshold: 20"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity delving_darkness_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: talk (Clarity: 1.00, Significance: 1.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (20.00) for entity delving_darkness_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Shire Census Quest Controller (ID: shire_census_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity shire_census_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity shire_census_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Training Regimen Quest Controller (ID: training_regimen_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity training_regimen_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity training_regimen_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pipe-Weed Quest Controller (ID: missing_pipe_weed_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity missing_pipe_weed_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pipe_weed_questmaker. No LLM call made."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:34:42+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:34:42+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:34:42+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:34:42+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:34:42+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:34:42+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:34:42+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:34:42+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:34:42+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: gather mushrooms\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You attempt to gather mushrooms.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:35:03+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Urgent Message Quest Controller (ID: urgent_message_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity urgent_message_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity urgent_message_questmaker. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pony Quest Controller (ID: missing_pony_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity missing_pony_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pony_questmaker. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Shire Census Quest Controller (ID: shire_census_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity shire_census_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity shire_census_questmaker. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pipe-Weed Quest Controller (ID: missing_pipe_weed_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity missing_pipe_weed_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pipe_weed_questmaker. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Elder of Men (ID: human_elder) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity human_elder"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity human_elder. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Warrior's Guild Master (ID: warrior_guild_master) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity warrior_guild_master"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity warrior_guild_master. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Investigate Weathertop Quest Controller (ID: investigate_weathertop_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity investigate_weathertop_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity investigate_weathertop_questmaker. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Training Regimen Quest Controller (ID: training_regimen_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.00, Threshold: 10"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity training_regimen_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity training_regimen_questmaker. No LLM call made."
+time="2025-07-26T21:35:03+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:03+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:03+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:03+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:03+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:03+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:35:03+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:35:03+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:35:03+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:35:03+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: gather mushrooms\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You attempt to gather mushrooms.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:35:23+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Urgent Message Quest Controller (ID: urgent_message_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity urgent_message_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity urgent_message_questmaker. No LLM call made."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pony Quest Controller (ID: missing_pony_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity missing_pony_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pony_questmaker. No LLM call made."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Road to Rivendell Quest Controller (ID: road_to_rivendell_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 16.50, Threshold: 15"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity road_to_rivendell_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="No perceived actions met the reaction threshold (15.00) for entity road_to_rivendell_questmaker. No LLM call made."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Shire Census Quest Controller (ID: shire_census_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity shire_census_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity shire_census_questmaker. No LLM call made."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pipe-Weed Quest Controller (ID: missing_pipe_weed_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 6.50, Threshold: 5"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity missing_pipe_weed_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pipe_weed_questmaker. No LLM call made."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 3.00, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:23+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:23+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:23+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action gather_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:23+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:23+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:35:23+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'gather_item' with significance 3.00. New budget: 105.00"
+time="2025-07-26T21:35:23+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:35:23+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:35:23+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'gather_item' with significance 3.00. New budget: 90.00"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: give mushrooms to farmer_maggot\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You try to give mushrooms to farmer_maggot.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+EventBus: Dropping event of type ActionEvent, channel is full.
+EventBus: Dropping event of type ActionEvent, channel is full.
+time="2025-07-26T21:35:43+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Urgent Message Quest Controller (ID: urgent_message_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 5.50, Threshold: 5"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity urgent_message_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity urgent_message_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pony Quest Controller (ID: missing_pony_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 5.50, Threshold: 5"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity missing_pony_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pony_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Shire Census Quest Controller (ID: shire_census_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 5.50, Threshold: 5"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity shire_census_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity shire_census_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Missing Pipe-Weed Quest Controller (ID: missing_pipe_weed_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 5.50, Threshold: 5"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity missing_pipe_weed_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (5.00) for entity missing_pipe_weed_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Elder of Men (ID: human_elder) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.50, Threshold: 10"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity human_elder"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity human_elder. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Warrior's Guild Master (ID: warrior_guild_master) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.50, Threshold: 10"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity warrior_guild_master"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity warrior_guild_master. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Investigate Weathertop Quest Controller (ID: investigate_weathertop_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.50, Threshold: 10"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity investigate_weathertop_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity investigate_weathertop_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Delving into Darkness Quest Controller (ID: delving_darkness_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 20.50, Threshold: 20"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity delving_darkness_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (20.00) for entity delving_darkness_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Training Regimen Quest Controller (ID: training_regimen_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 10.50, Threshold: 10"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity training_regimen_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: gather_item (Clarity: 1.00, Significance: 3.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="No perceived actions met the reaction threshold (10.00) for entity training_regimen_questmaker. No LLM call made."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 2.00, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: deliver_item (Clarity: 1.00, Significance: 2.00)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:35:43+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:35:43+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:35:43+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action deliver_item (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:35:43+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:35:43+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'deliver_item' with significance 2.00. New budget: 105.00"
+time="2025-07-26T21:35:43+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'deliver_item' with significance 2.00. New budget: 105.00"
+time="2025-07-26T21:35:43+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:35:43+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'deliver_item' with significance 2.00. New budget: 90.00"
+time="2025-07-26T21:35:43+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'deliver_item' with significance 2.00. New budget: 90.00"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [system_message] You typed: look\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [room_update] \n--- Bag End, Hobbiton ---\nA cozy hobbit-hole, warm and inviting, with a round green door. The smell of pipe-weed and fresh baking lingers in the air. A path leads east.\nExits: east ()\nNPCs present: Frodo Baggins, Samwise Gamgee\n\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Frodo Baggins (ID: frodo_baggins) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity frodo_baggins"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for frodo_baggins: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for Samwise Gamgee (ID: samwise_gamgee) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity samwise_gamgee"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for samwise_gamgee: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Spirit of the Shire (ID: shire_spirit) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity shire_spirit"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for shire_spirit: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="ActionSignificanceMonitor: Triggering reaction for The Great Mushroom Hunt Controller (ID: mushroom_hunt_questmaker) to player dc8e1970-d781-44e1-bdc2-427aa4ed2a07. Cumulative Significance: 0.50, Threshold: 0"
+time="2025-07-26T21:36:13+01:00" level=info msg="Triggering reaction for entity mushroom_hunt_questmaker"
+time="2025-07-26T21:36:13+01:00" level=info msg="  Perceived Action: unclear_action (Clarity: 1.00, Significance: 0.50)"
+time="2025-07-26T21:36:13+01:00" level=info msg="LLM Narrative for mushroom_hunt_questmaker: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer."
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Frodo Baggins says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] Samwise Gamgee says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Spirit of the Shire says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="Attempting to send to [::1]:59566: [narrative] The Great Mushroom Hunt Controller says: Mock LLM response for action 'Player QuestPlayer performed action unclear_action (clarity 1.00). Respond to this.' by QuestPlayer.\n"
+time="2025-07-26T21:36:13+01:00" level=info msg="Successfully sent message to [::1]:59566"
+time="2025-07-26T21:36:13+01:00" level=info msg="GlobalObserverManager: Owner Warrior's Guild Master (Monitors: profession warrior) perceived action 'unclear_action' with significance 0.50. New budget: 105.00"
+time="2025-07-26T21:36:13+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:36:13+01:00" level=info msg="GlobalObserverManager: Owner Elder of Men (Monitors: race human) perceived action 'unclear_action' with significance 0.50. New budget: 90.00"
+time="2025-07-26T21:36:24+01:00" level=info msg="Telnet server listener closed, shutting down."
+time="2025-07-26T21:36:24+01:00" level=info msg="Client [::1]:59566 disconnected: read tcp [::1]:41103->[::1]:59566: read: connection reset by peer\n"
+time="2025-07-26T21:36:24+01:00" level=info msg="Client [::1]:59566 disconnected: <nil>\n"
+--- FAIL: TestTelnetServer_QuestingFlow (274.21s)
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:228
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Welcome to GoMUD!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:231
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter desired username:
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:235
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter password:
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:238
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter email (optional):
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:242
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Account created successfully!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:243
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: --- Character Selection ---
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:247
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: Enter character name:
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:251
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: Welcome, QuestPlayer!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:255
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: --- Bag End, Hobbiton ---
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:259
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You move east.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:260
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: --- Hobbiton Path ---
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:264
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You try to talk to Farmer Maggot.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:265
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: Farmer Maggot says: Ah, a new face! Have you seen my prize mushrooms? Those rascals keep wandering off. If you could gather 5 of them from my field, I'd be much obliged!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:270
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You attempt to gather mushrooms.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:272
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: The Great Mushroom Hunt Controller says: Excellent! You've gathered a mushroom. Keep up the good work!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:270
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You attempt to gather mushrooms.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:272
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: The Great Mushroom Hunt Controller says: Excellent! You've gathered a mushroom. Keep up the good work!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:270
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You attempt to gather mushrooms.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:272
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: The Great Mushroom Hunt Controller says: Excellent! You've gathered a mushroom. Keep up the good work!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:270
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You attempt to gather mushrooms.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:272
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: The Great Mushroom Hunt Controller says: Excellent! You've gathered a mushroom. Keep up the good work!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:270
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You attempt to gather mushrooms.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:272
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: The Great Mushroom Hunt Controller says: Excellent! You've gathered a mushroom. Keep up the good work!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:277
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Raw: You try to give mushrooms to Farmer Maggot.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:278
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: Farmer Maggot says: Splendid! You've found them all! Here's a little something for your trouble.
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:279
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: Content: The Shire Council says: Well done, young one! Your efforts have brought great joy to Farmer Maggot and the Shire. Your reputation here grows!
+        	            	Got: 
+    telnet_server_test.go:298: 
+        	Error Trace:	telnet_server_test.go:298
+        	            				telnet_server_test.go:283
+        	Error:      	Condition never satisfied
+        	Test:       	TestTelnetServer_QuestingFlow
+        	Messages:   	Failed to find expected string in output.
+        	            	Expected: You typed: look
+        	            	Got: 
+FAIL
+FAIL	mud/internal/server	376.751s
+?   	mud/internal/testutils	[no test files]
+FAIL

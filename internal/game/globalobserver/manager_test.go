@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"mud/internal/dal"
 	"mud/internal/game/events"
 	"mud/internal/game/perception"
 	"mud/internal/models"
@@ -49,6 +50,10 @@ func (m *MockOwnerDAL) UpdateOwner(owner *models.Owner) error {
 	return nil
 }
 
+func (m *MockOwnerDAL) CreateOwner(owner *models.Owner) error { return nil }
+func (m *MockOwnerDAL) DeleteOwner(id string) error { return nil }
+func (m *MockOwnerDAL) Cache() dal.CacheInterface { return nil }
+
 type MockRaceDAL struct{}
 
 func (m *MockRaceDAL) GetRaceByID(id string) (*models.Race, error) { return nil, nil }
@@ -56,6 +61,7 @@ func (m *MockRaceDAL) GetAllRaces() ([]*models.Race, error) { return nil, nil }
 func (m *MockRaceDAL) CreateRace(race *models.Race) error { return nil }
 func (m *MockRaceDAL) UpdateRace(race *models.Race) error { return nil }
 func (m *MockRaceDAL) DeleteRace(id string) error { return nil }
+func (m *MockRaceDAL) Cache() dal.CacheInterface { return nil }
 
 type MockProfessionDAL struct{}
 
@@ -64,6 +70,7 @@ func (m *MockProfessionDAL) GetAllProfessions() ([]*models.Profession, error) { 
 func (m *MockProfessionDAL) CreateProfession(profession *models.Profession) error { return nil }
 func (m *MockProfessionDAL) UpdateProfession(profession *models.Profession) error { return nil }
 func (m *MockProfessionDAL) DeleteProfession(id string) error { return nil }
+func (m *MockProfessionDAL) Cache() dal.CacheInterface { return nil }
 
 func TestNewGlobalObserverManager(t *testing.T) {
 	eventBus := events.NewEventBus()
@@ -122,7 +129,7 @@ func TestGlobalObserverManager_HandleActionEvent_NoGlobalObservers(t *testing.T)
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
+		Player:     &models.PlayerCharacter{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -179,7 +186,7 @@ func TestGlobalObserverManager_HandleActionEvent_RaceBasedObserver(t *testing.T)
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
+		Player:     &models.PlayerCharacter{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -236,7 +243,7 @@ func TestGlobalObserverManager_HandleActionEvent_ProfessionBasedObserver(t *test
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
+		Player:     &models.PlayerCharacter{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -284,7 +291,7 @@ func TestGlobalObserverManager_HandleActionEvent_OwnerNotObserving(t *testing.T)
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
+		Player:     &models.PlayerCharacter{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -325,7 +332,7 @@ func TestGlobalObserverManager_HandleActionEvent_GetAllOwnersError(t *testing.T)
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
+		Player:     &models.PlayerCharacter{ID: "player1", RaceID: "human", ProfessionID: "warrior"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -370,7 +377,7 @@ func TestGlobalObserverManager_ProcessGlobalObservation_Success(t *testing.T) {
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1"},
+		Player:     &models.PlayerCharacter{ID: "player1"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -412,7 +419,7 @@ func TestGlobalObserverManager_ProcessGlobalObservation_BudgetCapping(t *testing
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1"},
+		Player:     &models.PlayerCharacter{ID: "player1"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -449,7 +456,7 @@ func TestGlobalObserverManager_ProcessGlobalObservation_FilterError(t *testing.T
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1"},
+		Player:     &models.PlayerCharacter{ID: "player1"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}
@@ -487,7 +494,7 @@ func TestGlobalObserverManager_ProcessGlobalObservation_UpdateOwnerError(t *test
 
 	actionEvent := &events.ActionEvent{
 		ActionType: "test_action",
-		Player:     &models.Player{ID: "player1"},
+		Player:     &models.PlayerCharacter{ID: "player1"},
 		Room:       &models.Room{ID: "room1"},
 		Timestamp:  time.Now(),
 	}

@@ -8,12 +8,17 @@ import (
 
 // PlayerSkillDAL handles database operations for PlayerSkill entities.
 type PlayerSkillDAL struct {
-	db *sql.DB
+	db    *sql.DB
+	cache CacheInterface
+}
+
+func (d *PlayerSkillDAL) Cache() CacheInterface {
+	return d.cache
 }
 
 // NewPlayerSkillDAL creates a new PlayerSkillDAL.
-func NewPlayerSkillDAL(db *sql.DB) *PlayerSkillDAL {
-	return &PlayerSkillDAL{db: db}
+func NewPlayerSkillDAL(db *sql.DB, cache CacheInterface) *PlayerSkillDAL {
+	return &PlayerSkillDAL{db: db, cache: cache}
 }
 
 // CreatePlayerSkill inserts a new player skill into the database.
@@ -36,8 +41,7 @@ func (d *PlayerSkillDAL) CreatePlayerSkill(ps *models.PlayerSkill) error {
 	return nil
 }
 
-// GetPlayerSkill retrieves a player skill by player and skill ID.
-func (d *PlayerSkillDAL) GetPlayerSkill(playerID, skillID string) (*models.PlayerSkill, error) {
+func (d *PlayerSkillDAL) GetPlayerSkillByID(playerID, skillID string) (*models.PlayerSkill, error) {
 	query := `SELECT player_id, skill_id, percentage, granted_by_entity_type, granted_by_entity_id FROM PlayerSkills WHERE player_id = ? AND skill_id = ?`
 	row := d.db.QueryRow(query, playerID, skillID)
 
@@ -57,6 +61,38 @@ func (d *PlayerSkillDAL) GetPlayerSkill(playerID, skillID string) (*models.Playe
 	}
 
 	return ps, nil
+}
+
+// GetAllPlayerSkills retrieves all player skills from the database.
+func (d *PlayerSkillDAL) GetAllPlayerSkills() ([]*models.PlayerSkill, error) {
+	query := `SELECT player_id, skill_id, percentage, granted_by_entity_type, granted_by_entity_id FROM PlayerSkills`
+	rows, err := d.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all player skills: %w", err)
+	}
+	defer rows.Close()
+
+	var playerSkills []*models.PlayerSkill
+	for rows.Next() {
+		ps := &models.PlayerSkill{}
+		err := rows.Scan(
+			&ps.PlayerID,
+			&ps.SkillID,
+			&ps.Percentage,
+			&ps.GrantedByEntityType,
+			&ps.GrantedByEntityID,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan player skill: %w", err)
+		}
+		playerSkills = append(playerSkills, ps)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error after iterating through player skills: %w", err)
+	}
+
+	return playerSkills, nil
 }
 
 // UpdatePlayerSkill updates an existing player skill in the database.

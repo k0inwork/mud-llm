@@ -9,7 +9,7 @@ import (
 // It is the output of the PerceptionFilter.
 type PerceivedAction struct {
 	Observer     interface{} // The entity doing the perceiving.
-	SourcePlayer *models.Player
+	SourcePlayer *models.PlayerCharacter
 	Target       interface{} // The specific target of this perception.
 
 	// PerceivedActionType is a string representing the observer's understanding of the action.

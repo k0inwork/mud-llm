@@ -1,6 +1,26 @@
 # Current Project Backlog
 
-This document summarizes the completed work for Phase 2 and Phase 4, and outlines the current state of the project.
+This document summarizes the completed work for the project.
+
+## Phase 0: Core Player Management (Completed)
+
+This phase focused on establishing the foundational player account and character management system. All objectives were successfully met:
+
+*   **Player Account System:**
+    *   Implemented `PlayerAccount` model and `PlayerAccountDAL` for full CRUD operations.
+    *   Integrated secure password hashing using bcrypt.
+*   **Player Character System:**
+    *   Refactored the `Player` model to `PlayerCharacter` and linked it to `PlayerAccount`.
+    *   Renamed `PlayerDAL` to `PlayerCharacterDAL` and updated its methods accordingly.
+*   **Telnet Server Integration:**
+    *   The `TelnetServer` now presents a complete login/account creation menu on initial connection.
+    *   The server correctly handles the login, authentication, character selection, and character creation flow.
+*   **Database Schema Updates:**
+    *   Added the `player_accounts` table.
+    *   Renamed the `players` table to `player_characters` and added the `player_account_id` foreign key.
+*   **Testing:**
+    *   Unit tests for `PlayerAccountDAL` and `PlayerCharacterDAL` are in place.
+    *   The `telnet_server_test.go` file covers the new login, account creation, and character selection flows.
 
 ## Phase 2: Lore & Data Logic (Completed)
 
